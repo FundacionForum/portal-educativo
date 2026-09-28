@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎧 Listen & Learn · Compact + Varied Voices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Poppins', 'Comic Sans MS', cursive, sans-serif; }
 
@@ -15,6 +20,7 @@
             display: flex; align-items: flex-start; justify-content: center;
             padding: 12px; overflow-x: hidden;
         }
+        
 
         .game-container {
             max-width: 1250px; width: 100%;
@@ -555,6 +561,32 @@ body{
   color:var(--af-ink);
   padding:18px;
 }
+
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Espacio entre la flecha y el texto */
+  color: #0b4f6c; /* Color azul oscuro similar a la imagen */
+  font-size: 1.1rem;
+  font-weight: 700; /* Texto en negrita */
+  text-decoration: none; /* Elimina la línea subrayada de enlace */
+  font-family: system-ui, -apple-system, sans-serif;
+  transition: opacity 0.2s ease;
+}
+
+.breadcrumb:hover {
+  opacity: 0.8; /* Efecto sutil al pasar el mouse */
+}
+
+/* Si deseas centrarlo completamente en el contenedor superior */
+section.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
 .game-container{
   max-width:1200px;
   background:rgba(255,255,255,.96);
@@ -697,6 +729,11 @@ body{
     </style>
 </head>
 <body>
+<main class="container"><section class="hero">
+    <a href="../../inicio.html" class="breadcrumb"><i class="fas fa-arrow-left"></i>
+  <span data-es="Volver al inicio" data-en="Back to home">Volver al inicio</span>
+</a>
+  </section>
 
 <!-- ============ LOGIN SCREEN ============ -->
 <div class="login-screen" id="loginScreen">
@@ -822,6 +859,13 @@ body{
         <p>points</p>
         <button class="primary" id="playAgainBtn">🔄 Play Again</button>
         <button class="secondary" id="changeUserBtn">👤 Change Player</button>
+        
+        <!-- CORREGIDO: Se usa <a> para enlaces con la flecha y el texto adentro -->
+        <a href="../../inicio.html" class="breadcrumb">
+            <i class="fas fa-arrow-left"></i>
+            <h1></h1>
+            <span data-es="Volver al inicio" data-en="Back to home">Volver al inicio</span>
+        </a> 
     </div>
 </div>
 
