@@ -329,16 +329,42 @@ footer p{font-size:14px;}
   <p>&copy; 2026 <strong>Fundación Academia Forum</strong> | <span data-es="Educación, Valores y Tecnología." data-en="Education, Values and Technology.">Educación, Valores y Tecnología.</span></p>
 </footer>
 
+
 <script>
-function changeLanguage(language){
+function changeLanguage(language) {
+  if (language !== 'es' && language !== 'en') return;
+
+  // Preferencia global de idioma para todas las pantallas.
+  localStorage.setItem('academiaForumLanguage', language);
+
   document.documentElement.lang = language;
-  document.querySelectorAll('[data-es]').forEach(el=>{
-    const t = el.getAttribute('data-'+language);
-    if(t) el.textContent = t;
+
+  // Solo se traducen elementos que tienen AMBAS traducciones.
+  document.querySelectorAll('[data-es][data-en]').forEach(element => {
+    const text = element.getAttribute('data-' + language);
+    if (text !== null) element.textContent = text;
   });
-  document.getElementById('btnES').classList.toggle('active', language==='es');
-  document.getElementById('btnEN').classList.toggle('active', language==='en');
-  document.title = language==='en' ? 'Academia Forum | Educational Games' : 'Academia Forum | Juegos Educativos';
+
+  const btnES = document.getElementById('btnES');
+  const btnEN = document.getElementById('btnEN');
+
+  if (btnES) btnES.classList.toggle('active', language === 'es');
+  if (btnEN) btnEN.classList.toggle('active', language === 'en');
+
+  document.title = language === 'en'
+    ? 'Academia Forum | Educational Games'
+    : 'Academia Forum | Juegos Educativos';
+}
+
+function applySavedLanguage() {
+  const savedLanguage = localStorage.getItem('academiaForumLanguage') || 'es';
+  changeLanguage(savedLanguage);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applySavedLanguage);
+} else {
+  applySavedLanguage();
 }
 </script>
 <script>

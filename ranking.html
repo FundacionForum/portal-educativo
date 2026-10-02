@@ -754,6 +754,144 @@
     }
 
 
+
+
+    /* =========================
+       PREVISUALIZACIÓN POR JUEGO
+    ========================= */
+
+    .games-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      padding: 4px 0 8px;
+    }
+
+    .game-card {
+      background: #fff;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(20, 48, 82, .07);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(20, 48, 82, .11);
+    }
+
+    .game-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .game-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #edf4fb;
+      color: var(--navy2);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .game-card h3 {
+      margin: 0;
+      color: var(--navy2);
+      font-size: 20px;
+    }
+
+    .game-card-subtitle {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .game-preview-player {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 0;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .game-preview-position {
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .game-preview-name {
+      font-weight: 800;
+      color: var(--navy2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .game-preview-score {
+      color: #b96f00;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .game-view-button, .back-button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 800;
+      background: var(--navy);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .game-view-button {
+      width: 100%;
+    }
+
+    .game-ranking-detail {
+      animation: fadeIn .25s ease;
+    }
+
+    .game-detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .game-detail-header h3 {
+      margin: 0;
+      color: var(--navy2);
+      font-size: 24px;
+    }
+
+    .game-detail-header .back-button {
+      margin-top: 0;
+      background: #edf3f9;
+      color: var(--navy2);
+    }
+
+    .games-empty {
+      text-align: center;
+      padding: 35px 20px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
     /* =========================
        ESTADO
     ========================= */
@@ -1156,54 +1294,41 @@
       </div>
 
 
-      <!-- TABLA -->
+      <!-- PREVISUALIZACIÓN POR JUEGO -->
 
-      <div class="table-container">
+      <div id="games-preview" class="games-preview">
 
-        <table class="ranking-table">
+        <!-- Las tarjetas de cada juego se generan desde Supabase. -->
 
-          <thead>
+      </div>
 
-            <tr>
+      <!-- RANKING COMPLETO DEL JUEGO SELECCIONADO -->
 
-              <th>#</th>
+      <div id="game-ranking-detail" class="game-ranking-detail" style="display:none;">
 
-              <th
-                data-es="Nombre"
-                data-en="Name"
-              >
-                Nombre
-              </th>
+        <div class="game-detail-header">
+          <button class="back-button" onclick="closeGameRanking()">
+            <i class="fas fa-arrow-left"></i>
+            <span data-es="Volver a los juegos" data-en="Back to games">Volver a los juegos</span>
+          </button>
+          <h3 id="selected-game-title"></h3>
+        </div>
 
-              <th
-                data-es="Escuela"
-                data-en="School"
-              >
-                Escuela
-              </th>
+        <div class="table-container">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th data-es="Nombre" data-en="Name">Nombre</th>
+                <th data-es="Escuela" data-en="School">Escuela</th>
+                <th data-es="Puntaje" data-en="Score">Puntaje</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-body"></tbody>
+          </table>
+        </div>
 
-              <th
-                data-es="Puntaje"
-                data-en="Score"
-              >
-                Puntaje
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody id="ranking-body">
-
-            <!--
-              AQUÍ SE CARGAN LOS DATOS
-              DESDE SUPABASE.
-            -->
-
-          </tbody>
-
-        </table>
+      </div>
 
 
         <!-- CARGANDO -->
@@ -1327,52 +1452,32 @@
 
     function changeLanguage(language) {
 
+      if (language !== 'es' && language !== 'en') return;
+
+      localStorage.setItem('academiaForumLanguage', language);
       document.documentElement.lang = language;
 
+      // Solo traducir elementos que tienen ambas versiones.
+      document.querySelectorAll('[data-es][data-en]').forEach(element => {
+        const text = element.getAttribute('data-' + language);
+        if (text !== null) element.textContent = text;
+      });
 
-      document
-        .querySelectorAll('[data-es]')
-        .forEach(element => {
+      const btnES = document.getElementById('btnES');
+      const btnEN = document.getElementById('btnEN');
 
-          const text =
-            element.getAttribute(
-              'data-' + language
-            );
+      if (btnES) btnES.classList.toggle('active', language === 'es');
+      if (btnEN) btnEN.classList.toggle('active', language === 'en');
 
-          if (text) {
-
-            element.textContent = text;
-
-          }
-
-        });
-
-
-      document
-        .getElementById('btnES')
-        .classList
-        .toggle(
-          'active',
-          language === 'es'
-        );
-
-
-      document
-        .getElementById('btnEN')
-        .classList
-        .toggle(
-          'active',
-          language === 'en'
-        );
-
-
-      document.title =
-        language === 'en'
-          ? 'Academia Forum | Leaderboard'
-          : 'Academia Forum | Ranking';
-
+      document.title = language === 'en'
+        ? 'Academia Forum | Leaderboard'
+        : 'Academia Forum | Ranking';
     }
 
+    function applySavedLanguage() {
+      const savedLanguage = localStorage.getItem('academiaForumLanguage') || 'es';
+      changeLanguage(savedLanguage);
+    }
 
     /* =========================================
        ESCAPAR TEXTO
@@ -1540,9 +1645,13 @@
 
     async function loadRanking() {
 
+  const preview = document.getElementById('games-preview');
+  const detail = document.getElementById('game-ranking-detail');
   const tbody = document.getElementById('ranking-body');
 
+  preview.innerHTML = '';
   tbody.innerHTML = '';
+  detail.style.display = 'none';
   showLoading();
 
   try {
@@ -1555,143 +1664,289 @@
       );
     }
 
-    // OBTENER DATOS DE LA TABLA puntajes
     const { data, error } = await client
       .from('puntajes')
       .select('*');
 
-    // MOSTRAR EL ERROR REAL DE SUPABASE
     if (error) {
       console.error('Error Supabase:', error);
       throw new Error(error.message);
     }
 
-    let scores = data || [];
+    const scores = data || [];
 
     console.log('PUNTAJES RECIBIDOS:', scores);
-
-    // ORDENAR POR PUNTAJE
-    scores.sort((a, b) => {
-
-      const scoreA = Number(
-        getField(a, [
-          'score',
-          'points',
-          'puntaje',
-          'puntuacion'
-        ])
-      ) || 0;
-
-      const scoreB = Number(
-        getField(b, [
-          'score',
-          'points',
-          'puntaje',
-          'puntuacion'
-        ])
-      ) || 0;
-
-      return scoreB - scoreA;
-
-    });
 
     if (scores.length === 0) {
       showEmpty();
       return;
     }
 
-    scores.forEach((row, index) => {
+    // Detecta automáticamente el campo utilizado por Supabase para identificar el juego.
+    const gameFields = [
+      'game',
+      'game_name',
+      'game_title',
+      'game_id',
+      'juego',
+      'nombre_juego',
+      'titulo_juego',
+      'juego_id',
+      'actividad',
+      'activity',
+      'quiz',
+      'quiz_name'
+    ];
 
-      const name =
-        getField(row, [
-          'name',
-          'player_name',
-          'player',
-          'nombre',
-          'jugador'
-        ]) || 'Participante';
+    const hasGameField = scores.some(row =>
+      gameFields.some(field => {
+        const value = getField(row, [field]);
+        return value !== null && value !== undefined && String(value).trim() !== '';
+      })
+    );
 
-      const school =
-        getField(row, [
-          'school',
-          'school_name',
-          'escuela',
-          'colegio'
-        ]) || 'Sin escuela registrada';
+    // Si todavía no existe un campo de juego en puntajes, mantenemos el ranking general.
+    if (!hasGameField) {
+      renderGameCards([
+        {
+          name: 'Ranking general',
+          rows: scores
+        }
+      ]);
+      hideStates();
+      return;
+    }
 
-      const score =
-        Number(
-          getField(row, [
-            'score',
-            'points',
-            'puntaje',
-            'puntuacion'
-          ])
-        ) || 0;
+    const groups = new Map();
 
-      let positionContent = index + 1;
-      let positionClass = '';
+    scores.forEach(row => {
+      let game = getField(row, gameFields);
+      game = game === null || game === undefined || String(game).trim() === ''
+        ? 'Sin juego asignado'
+        : String(game).trim();
 
-      if (index === 0) {
-        positionContent = '🥇';
-        positionClass = 'first';
-      } else if (index === 1) {
-        positionContent = '🥈';
-        positionClass = 'second';
-      } else if (index === 2) {
-        positionContent = '🥉';
-        positionClass = 'third';
-      }
-
-      const tr = document.createElement('tr');
-
-      tr.innerHTML = `
-        <td>
-          <span class="position ${positionClass}">
-            ${positionContent}
-          </span>
-        </td>
-
-        <td>
-          <span class="player-name">
-            ${escapeHtml(name)}
-          </span>
-        </td>
-
-        <td>
-          <span class="school-name">
-            ${escapeHtml(school)}
-          </span>
-        </td>
-
-        <td>
-          <span class="score">
-            <i class="fas fa-star"></i>
-            ${score}
-          </span>
-        </td>
-      `;
-
-      tbody.appendChild(tr);
-
+      if (!groups.has(game)) groups.set(game, []);
+      groups.get(game).push(row);
     });
 
+    const games = Array.from(groups, ([name, rows]) => ({ name, rows }));
+    games.forEach(game => sortScores(game.rows));
+
+    renderGameCards(games);
     hideStates();
 
   } catch (error) {
 
-    console.error(
-      'Error cargando ranking:',
-      error
-    );
+    console.error('Error cargando ranking:', error);
 
     showError(
-      'No se pudo cargar el ranking: ' +
-      error.message
+      'No se pudo cargar el ranking: ' + error.message
     );
 
   }
 }
+
+function sortScores(rows) {
+  rows.sort((a, b) => {
+    const scoreA = Number(getField(a, [
+      'score', 'points', 'puntaje', 'puntuacion'
+    ])) || 0;
+
+    const scoreB = Number(getField(b, [
+      'score', 'points', 'puntaje', 'puntuacion'
+    ])) || 0;
+
+    return scoreB - scoreA;
+  });
+}
+
+function renderGameCards(games) {
+
+  const preview = document.getElementById('games-preview');
+  preview.innerHTML = '';
+
+  games.forEach(game => {
+
+    const card = document.createElement('article');
+    card.className = 'game-card';
+
+    const title = escapeHtml(game.name);
+    const topPlayers = game.rows.slice(0, 3);
+
+    let playersHtml = '';
+
+    topPlayers.forEach((row, index) => {
+      const name = getField(row, [
+        'name', 'player_name', 'player', 'nombre', 'jugador'
+      ]) || 'Participante';
+
+      const score = Number(getField(row, [
+        'score', 'points', 'puntaje', 'puntuacion'
+      ])) || 0;
+
+      const medals = ['🥇', '🥈', '🥉'];
+
+      playersHtml += `
+        <div class="game-preview-player">
+          <span class="game-preview-position">${medals[index]}</span>
+          <span class="game-preview-name">${escapeHtml(name)}</span>
+          <span class="game-preview-score">
+            <i class="fas fa-star"></i> ${score}
+          </span>
+        </div>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="game-card-header">
+        <div class="game-icon">
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <div>
+          <h3>${title}</h3>
+          <p class="game-card-subtitle">
+            ${game.rows.length} participante${game.rows.length === 1 ? '' : 's'}
+          </p>
+        </div>
+      </div>
+      ${playersHtml}
+      <button class="game-view-button" type="button">
+        <span data-es="Ver ranking completo" data-en="View full leaderboard">Ver ranking completo</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    `;
+
+    card.querySelector('.game-view-button').addEventListener('click', () => {
+      openGameRanking(game.name, game.rows);
+    });
+
+    preview.appendChild(card);
+  });
+}
+
+let selectedGameName = null;
+
+function openGameRanking(gameName, rows) {
+
+  selectedGameName = gameName;
+
+  const preview = document.getElementById('games-preview');
+  const detail = document.getElementById('game-ranking-detail');
+  const title = document.getElementById('selected-game-title');
+  const tbody = document.getElementById('ranking-body');
+
+  sortScores(rows);
+
+  title.textContent = '🎮 ' + gameName;
+  tbody.innerHTML = '';
+
+  rows.forEach((row, index) => {
+
+    const name = getField(row, [
+      'name', 'player_name', 'player', 'nombre', 'jugador'
+    ]) || 'Participante';
+
+    const school = getField(row, [
+      'school', 'school_name', 'escuela', 'colegio'
+    ]) || 'Sin escuela registrada';
+
+    const score = Number(getField(row, [
+      'score', 'points', 'puntaje', 'puntuacion'
+    ])) || 0;
+
+    let positionContent = index + 1;
+    let positionClass = '';
+
+    if (index === 0) {
+      positionContent = '🥇';
+      positionClass = 'first';
+    } else if (index === 1) {
+      positionContent = '🥈';
+      positionClass = 'second';
+    } else if (index === 2) {
+      positionContent = '🥉';
+      positionClass = 'third';
+    }
+
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td><span class="position ${positionClass}">${positionContent}</span></td>
+      <td><span class="player-name">${escapeHtml(name)}</span></td>
+      <td><span class="school-name">${escapeHtml(school)}</span></td>
+      <td><span class="score"><i class="fas fa-star"></i>${score}</span></td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  preview.style.display = 'none';
+  detail.style.display = 'block';
+  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeGameRanking() {
+  selectedGameName = null;
+  document.getElementById('game-ranking-detail').style.display = 'none';
+  document.getElementById('games-preview').style.display = '';
+}
+
+    /* =========================================
+       IDIOMA GUARDADO
+    ========================================= */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applySavedLanguage);
+    } else {
+      applySavedLanguage();
+    }
+
+    /* =========================================
+       CARGA INICIAL AUTOMATICA
+       El ranking se consulta al abrir la pantalla.
+    ========================================= */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        loadRanking();
+      });
+    } else {
+      loadRanking();
+    }
+
+    /* =========================================
+       ACTUALIZACION AUTOMATICA
+       Consulta Supabase cada 15 segundos.
+    ========================================= */
+    let rankingRefreshBusy = false;
+
+    setInterval(async () => {
+      if (rankingRefreshBusy || document.hidden) return;
+
+      rankingRefreshBusy = true;
+      try {
+        const detail = document.getElementById('game-ranking-detail');
+        const wasDetailOpen = detail && detail.style.display === 'block';
+        const gameToRestore = selectedGameName;
+
+        await loadRanking();
+
+        // Si el usuario estaba viendo un juego, vuelve a abrir ese mismo juego.
+        if (wasDetailOpen && gameToRestore) {
+          const cards = Array.from(document.querySelectorAll('.game-card'));
+          const target = cards.find(card => {
+            const title = card.querySelector('h3');
+            return title && title.textContent.trim() === gameToRestore;
+          });
+          if (target) {
+            const button = target.querySelector('.game-view-button');
+            if (button) button.click();
+          }
+        }
+      } catch (error) {
+        console.error('Actualizacion automatica del ranking:', error);
+      } finally {
+        rankingRefreshBusy = false;
+      }
+    }, 15000);
 
   </script>
 </body>

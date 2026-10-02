@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Conversation · Practice Game</title>
+    <style>
+
+  /* ===== HOME BUTTON ===== */
+  .home-btn {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 10000;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2c3e50, #1f2d3a);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+  }
+  @media (max-width: 600px) {
+    .home-btn {
+      top: 8px;
+      left: 8px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+    }
+  }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f4fa;
+            transition: background 0.8s ease;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: opacity 0.8s ease, background-image 0.8s ease;
+            z-index: -2;
+            opacity: 0.4;
+            filter: saturate(1.1) brightness(1.05);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .bg-scene-0::before { background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80'); } /* Restaurante */
+        .bg-scene-1::before { background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=80'); } /* Hotel */
+        .bg-scene-2::before { background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=80'); } /* Avión */
+        .bg-scene-3::before { background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=80'); } /* Guía turístico */
+        .bg-scene-4::before { background-image: url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=80'); } /* Entrevista */
+        .bg-scene-5::before { background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=80'); } /* Conocer a alguien */
+
+        /* ============ START SCREEN ============ */
+        .start-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #a8d8ea 0%, #fddb92 100%);
+            z-index: 1000;
+            padding: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            overflow-y: auto;
+        }
+
+        .start-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .start-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 36px 40px;
+            max-width: 560px;
+            width: 100%;
+            box-shadow: 0 30px 60px -15px rgba(0, 40, 80, 0.35);
+            border: 3px solid white;
+            text-align: center;
+            animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: 20px auto;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .start-card h1 {
+            font-size: 2rem;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .start-card .bee-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .start-card p {
+            color: #5e6f7e;
+            margin-bottom: 22px;
+            font-size: 0.98rem;
+        }
+
+        .start-card label {
+            display: block;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+            font-size: 0.92rem;
+        }
+
+        .start-card input,
+        .start-card select {
+            width: 100%;
+            padding: 13px 20px;
+            border-radius: 30px;
+            border: 2px solid #cbd8e6;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            outline: none;
+            background: white;
+            transition: border 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+            color: #1e3a5f;
+        }
+
+        .start-card input:focus,
+        .start-card select:focus {
+            border-color: #e6b422;
+            box-shadow: 0 0 0 4px rgba(230, 180, 34, 0.25);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+            border: none;
+            color: #4a2e00;
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 15px 40px;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #c79200, 0 10px 20px rgba(0,0,0,0.15);
+            transition: transform 0.1s, box-shadow 0.1s;
+            width: 100%;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .start-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #c79200, 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .info-badge {
+            background: #eaf0f8;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            color: #5e6f7e;
+            margin-top: 10px;
+            line-height: 1.4;
+            border: 1px solid #cddbe9;
+            text-align: left;
+        }
+
+        /* ============ GAME ============ */
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(10px);
+            border-radius: 48px 48px 32px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 20, 30, 0.45);
+            padding: 22px 26px 26px;
+            border: 3px solid rgba(255, 255, 255, 0.85);
+            position: relative;
+            z-index: 1;
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .header-left {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #7c8fa0, #5e7185);
+            color: white;
+            padding: 7px 14px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #3d4d5c;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.1s;
+        }
+
+        .back-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #3d4d5c;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #1e3c5c, #2e6b9b);
+            color: white;
+            padding: 7px 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .user-badge {
+            background: linear-gradient(135deg, #e6b422, #ffd93d);
+            color: #4a2e00;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #7ed957, #4ab82e);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 0 #2e7a1a;
+        }
+
+        .combo-badge {
+            background: linear-gradient(135deg, #ffd93d, #ffb347);
+            color: #4a2e00;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            box-shadow: 0 3px 8px rgba(230, 180, 34, 0.4);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: #e0e9f2;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 6px 0 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7ed957, #4ab82e);
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* ============ CHAT AREA ============ */
+        .chat-area {
+            background: linear-gradient(135deg, #f7fafd, #eaf2fa);
+            border-radius: 26px;
+            padding: 18px;
+            margin-bottom: 10px;
+            min-height: 260px;
+            max-height: 340px;
+            overflow-y: auto;
+            border: 2px solid #d8e3ee;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-area::-webkit-scrollbar { width: 8px; }
+        .chat-area::-webkit-scrollbar-track { background: transparent; }
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #c3d2e0;
+            border-radius: 20px;
+        }
+
+        .msg {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            animation: msgIn 0.4s ease;
+        }
+
+        @keyframes msgIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.user { flex-direction: row-reverse; }
+
+        .msg-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+        }
+
+        .msg.teacher .msg-avatar { background: linear-gradient(135deg, #2e6b9b, #1e4a6e); }
+        .msg.user .msg-avatar { background: linear-gradient(135deg, #ffb347, #ffcc33); }
+
+        .msg-bubble {
+            padding: 11px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            max-width: 78%;
+            word-wrap: break-word;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .msg.teacher .msg-bubble {
+            background: white;
+            color: #1e3a5f;
+            border-top-left-radius: 6px;
+            border: 1px solid #d8e3ee;
+        }
+
+        .msg.user .msg-bubble {
+            background: linear-gradient(135deg, #ffb347, #ffcc33);
+            color: #4a2e00;
+            border-top-right-radius: 6px;
+            font-weight: 600;
+        }
+
+        .msg-translation {
+            font-size: 0.8rem;
+            color: #8494a4;
+            margin-top: 6px;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .feedback-tag {
+            display: inline-block;
+            font-size: 0.76rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-top: 6px;
+            font-weight: 700;
+        }
+
+        .feedback-tag.correct { background: #d4f7d4; color: #2e7a1a; }
+        .feedback-tag.almost { background: #fff3c4; color: #8a6300; }
+        .feedback-tag.wrong { background: #ffe0e0; color: #a02020; }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 14px 18px;
+            background: white;
+            border-radius: 20px;
+            border-top-left-radius: 6px;
+            width: fit-content;
+            border: 1px solid #d8e3ee;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #b8c9da;
+            border-radius: 50%;
+            animation: typingBounce 1.2s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* ============ SUGGESTIONS ============ */
+        .suggestions-area {
+            background: linear-gradient(135deg, #fff8e8, #ffefc8);
+            border: 2px dashed #ffc94d;
+            border-radius: 22px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            animation: suggIn 0.4s ease;
+        }
+
+        @keyframes suggIn {
+            0% { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .suggestions-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #8a6300;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .suggestions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .suggestion-chip {
+            background: white;
+            border: 2px solid #ffc94d;
+            color: #4a2e00;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+            box-shadow: 0 2px 0 #e6b422;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-align: left;
+            max-width: 100%;
+        }
+
+        .suggestion-chip:hover {
+            background: #fff3c4;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 0 #e6b422;
+        }
+
+        .suggestion-chip:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0 #e6b422;
+        }
+
+        .suggestion-chip:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* ============ INPUT AREA ============ */
+        .input-wrapper {
+            background: white;
+            border-radius: 30px;
+            border: 3px solid #cbd8e6;
+            padding: 6px 6px 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #e6b422;
+            box-shadow: 0 0 0 5px rgba(230, 180, 34, 0.2);
+        }
+
+        .input-wrapper textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #1e3a5f;
+            resize: none;
+            max-height: 80px;
+            min-height: 28px;
+            padding: 8px 0;
+            line-height: 1.4;
+            background: transparent;
+        }
+
+        .input-wrapper textarea::placeholder { color: #a4b3c2; }
+
+        .mic-btn, .send-btn {
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+
+        .mic-btn {
+            background: linear-gradient(135deg, #e0e9f2, #cbd8e6);
+            color: #1e3a5f;
+            box-shadow: 0 3px 0 #b0c0d0;
+        }
+
+        .mic-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #b0c0d0; }
+
+        .mic-btn.recording {
+            background: linear-gradient(135deg, #ff6b6b, #d94a4a);
+            color: white;
+            box-shadow: 0 3px 0 #a02020;
+            animation: pulse 1s infinite;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #2e6b9b, #1e4a6e);
+            color: white;
+            box-shadow: 0 3px 0 #142f43;
+        }
+
+        .send-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #142f43; }
+        .send-btn:disabled { opacity: 0.4; pointer-events: none; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .action-buttons button {
+            border: none;
+            padding: 9px 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #1e3a5f;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.1s;
+            background: #f0f4fa;
+            box-shadow: 0 3px 0 #b8c9da;
+            border: 1px solid #d2dfec;
+        }
+
+        .action-buttons button:active { transform: translateY(2px); box-shadow: 0 1px 0 #b8c9da; }
+        .action-buttons button:disabled { opacity: 0.5; pointer-events: none; }
+
+        .hint-btn {
+            background: linear-gradient(135deg, #ffd93d, #ffb347) !important;
+            color: #4a2e00 !important;
+            box-shadow: 0 3px 0 #c79200 !important;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.72rem;
+            color: #6c7e8f;
+            margin-top: 12px;
+            border-top: 1px solid #d2dfec;
+            padding-top: 8px;
+        }
+
+        /* ============ TRANSITION ============ */
+        .transition-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(30, 58, 95, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .transition-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .transition-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 40px;
+            padding: 28px 44px;
+            box-shadow: 0 25px 60px -10px rgba(0, 40, 80, 0.4);
+            border: 4px solid white;
+            text-align: center;
+            max-width: 90vw;
+            animation: bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .transition-card.correct { background: linear-gradient(135deg, #d4f7d4, #b8f0b8); border-color: #7ed957; }
+        .transition-card.wrong { background: linear-gradient(135deg, #ffe0e0, #ffc9c9); border-color: #ff8b8b; }
+        .transition-card.completed { background: linear-gradient(135deg, #d4f7d4, #a8e6a8); border-color: #4ab82e; }
+
+        .transition-emoji {
+            font-size: 4rem;
+            line-height: 1;
+            animation: wiggle 0.6s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.08); }
+        }
+
+        .transition-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e3a5f;
+            letter-spacing: 0.5px;
+        }
+
+        .transition-sub {
+            font-size: 0.95rem;
+            color: #5e6f7e;
+            font-weight: 600;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -20px;
+            z-index: 1001;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
+
+        .mic-status {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: #ffe0e0;
+            border: 2px solid #ff8b8b;
+            color: #a02020;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin: 6px auto 0;
+            width: fit-content;
+        }
+
+        .mic-status.active { display: flex; animation: pulse 1s infinite; }
+
+        .live-transcript {
+            font-style: italic;
+            color: #5e6f7e;
+            font-size: 0.82rem;
+            text-align: center;
+            margin-top: 4px;
+            min-height: 1.2rem;
+        }
+
+        @media (max-width: 700px) {
+            .game-container { padding: 16px 12px; }
+            .chat-area { padding: 12px; min-height: 220px; max-height: 300px; }
+            .msg-bubble { font-size: 0.92rem; max-width: 85%; }
+            .start-card { padding: 28px 22px; }
+            .start-card h1 { font-size: 1.55rem; }
+            .transition-text { font-size: 1.25rem; }
+            .transition-emoji { font-size: 3.2rem; }
+            .transition-card { padding: 22px 24px; }
+            .level-badge, .user-badge, .score-badge, .combo-badge, .back-btn { font-size: 0.7rem; padding: 5px 10px; }
+            .suggestion-chip { font-size: 0.82rem; padding: 7px 11px; }
+        }
+    </style>
+</head>
+<body>
+<a href="../../inicio.html" class="home-btn" aria-label="Volver a la pantalla de inicio">
+  <span aria-hidden="true">←</span>
+  <span>Volver al inicio</span>
+</a>
+
+<!-- ============ START SCREEN ============ -->
+<div class="start-screen" id="startScreen">
+    <div class="start-card">
+        <span class="bee-icon">💬</span>
+        <h1>English Conversation</h1>
+        <p>Practice real English conversations with voice & branching paths!</p>
+
+        <label for="username">👤 Your name</label>
+        <input type="text" id="username" placeholder="Ex: Sophia" maxlength="20" autocomplete="off">
+      <div class="form-group">
+        <label for="schoolInput">🏫 School / Escuela</label>
+        <input type="text" id="schoolInput" placeholder="Escribe el nombre de tu escuela..." maxlength="80" autocomplete="organization" required>
+      </div>
+
+        <label for="scene">🎭 Choose a scenario</label>
+        <select id="scene">
+            <option value="0">🍽️ At the Restaurant</option>
+            <option value="1">🏨 At the Hotel</option>
+            <option value="2">✈️ On the Plane</option>
+            <option value="3">🗺️ Tour Guide</option>
+            <option value="4">💼 Job Interview</option>
+            <option value="5">👋 Meeting Someone New</option>
+        </select>
+
+        <label for="difficulty">🎚️ Difficulty</label>
+        <select id="difficulty">
+            <option value="easy">Easy — Simple answers</option>
+            <option value="medium">Medium — Full sentences</option>
+            <option value="hard">Hard — Complete responses</option>
+        </select>
+
+        <button class="start-btn" id="startBtn">🚀 Start Conversation</button>
+
+        <div class="info-badge">
+            💡 <b>How it works:</b> Choose from the suggested answers (some are <b>tricky</b>!), use the 🎤 mic, or type your own. Each scenario has <b>branching paths</b> — your answers change what happens next!
+        </div>
+    </div>
+</div>
+
+<!-- ============ TRANSITION ============ -->
+<div class="transition-overlay" id="transitionOverlay">
+    <div class="transition-card" id="transitionCard">
+        <div class="transition-emoji" id="transitionEmoji">🎉</div>
+        <div class="transition-text" id="transitionText">Excellent!</div>
+        <div class="transition-sub" id="transitionSub"></div>
+    </div>
+</div>
+
+<!-- ============ GAME CONTAINER ============ -->
+<div class="game-container" id="gameContainer">
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" id="backBtn" title="Back to menu">⬅ Menu</button>
+            <div class="level-badge" id="levelBadge">🍽️ Restaurant</div>
+            <div class="user-badge" id="userBadge">👤 Player</div>
+            <div class="score-badge" id="scoreBadge">⭐ 0 pts</div>
+            <div class="combo-badge" id="comboBadge">🔥 0</div>
+        </div>
+    </div>
+
+    <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div class="suggestions-area" id="suggestionsArea" style="display:none;">
+        <div class="suggestions-label">💬 Choose an answer or type your own:</div>
+        <div class="suggestions-list" id="suggestionsList"></div>
+    </div>
+
+    <div class="input-wrapper">
+        <textarea id="answerInput" placeholder="Type your answer in English..." rows="1"></textarea>
+        <button class="mic-btn" id="micBtn" title="Speak your answer">🎤</button>
+        <button class="send-btn" id="sendBtn" title="Send">➤</button>
+    </div>
+
+    <div class="mic-status" id="micStatus">🎙️ Listening... Speak now</div>
+    <div class="live-transcript" id="liveTranscript"></div>
+
+    <div class="action-buttons">
+        <button class="hint-btn" id="hintBtn">💡 Hint</button>
+        <button id="repeatBtn">🔊 Repeat</button>
+        <button id="restartBtn">🔄 Restart</button>
+    </div>
+
+    <div class="footer-note">
+        English Conversation · branching paths · voice + text
+    </div>
+</div>
+
+<script>
+(function () {
+    // ==========================================================
+    // SCENARIOS con RUTAS DINÁMICAS
+    // Cada step puede tener: choices (opciones con diferente consecuencia)
+    // Cada choice tiene: text (lo que dice el usuario), correct (true/false),
+    //                    feedback, y next (índice del siguiente step o 'end')
+    // ==========================================================
+    const SCENARIOS = [
+        // ================= RESTAURANTE =================
+        {
+            name: 'At the Restaurant',
+            emoji: '🍽️',
+            bgClass: 'bg-scene-0',
+            startStep: 0,
+            steps: {
+                0: {
+                    bot: "Good evening! Welcome to Bella Italia. Do you have a reservation?",
+                    translation: "¡Buenas noches! Bienvenido a Bella Italia. ¿Tiene reservación?",
+                    choices: [
+                        { text: "Yes, I have a reservation for two.", correct: true, feedback: "✓ Perfect!", next: 1 },
+                        { text: "No, I don't have one.", correct: true, feedback: "✓ That's fine too.", next: 1 },
+                        { text: "I want pizza.", correct: false, feedback: "✗ That doesn't answer the question.", next: null },
+                        { text: "Yes, I'm a chef.", correct: false, feedback: "✗ Weird answer! Try again.", next: null }
+                    ],
+                    hint: "Answer if you have a reservation or not.",
+                    keywords: ['reservation', 'no', 'yes', 'table']
+                },
+                1: {
+                    bot: "Perfect, please follow me. Here is your table. Can I get you something to drink first?",
+                    translation: "Perfecto, sígame. Aquí está su mesa. ¿Les traigo algo de beber primero?",
+                    choices: [
+                        { text: "Some water, please.", correct: true, feedback: "✓ Great choice!", next: 2 },
+                        { text: "A glass of red wine, please.", correct: true, feedback: "✓ Excellent!", next: 2 },
+                        { text: "I would like the menu, please.", correct: false, feedback: "✗ I'm asking about drinks, not food.", next: null },
+                        { text: "Nothing, I don't drink.", correct: false, feedback: "✗ A bit odd, but try again.", next: null }
+                    ],
+                    hint: "Ask for a drink like water, wine, or juice.",
+                    keywords: ['water', 'wine', 'juice', 'drink']
+                },
+                2: {
+                    bot: "Excellent. Are you ready to order your main dish?",
+                    translation: "Excelente. ¿Está listo para ordenar su plato principal?",
+                    choices: [
+                        { text: "Yes, I would like the pizza, please.", correct: true, feedback: "✓ Great choice!", next: 3 },
+                        { text: "Yes, I'll have the pasta with tomato sauce.", correct: true, feedback: "✓ Delicious choice!", next: 3 },
+                        { text: "Can I have the bill, please?", correct: false, feedback: "✗ You haven't eaten yet!", next: null },
+                        { text: "I want a taxi.", correct: false, feedback: "✗ That's not a dish!", next: null }
+                    ],
+                    hint: "Order a main dish like pizza, pasta or salad.",
+                    keywords: ['pizza', 'pasta', 'salad', 'steak', 'fish']
+                },
+                3: {
+                    bot: "Excellent choice. Would you like any dessert after your meal?",
+                    translation: "Excelente elección. ¿Quisiera algún postre después de la comida?",
+                    choices: [
+                        { text: "Yes, tiramisu, please.", correct: true, feedback: "✓ Perfect!", next: 4 },
+                        { text: "No, thank you. Just the bill.", correct: true, feedback: "✓ Alright!", next: 4 },
+                        { text: "Yes, a pizza please.", correct: false, feedback: "✗ Pizza isn't a dessert!", next: null },
+                        { text: "I don't eat.", correct: false, feedback: "✗ But you just ordered dinner!", next: null }
+                    ],
+                    hint: "Choose a dessert like tiramisu, ice cream, or say no.",
+                    keywords: ['tiramisu', 'ice', 'cake', 'no', 'bill']
+                },
+                4: {
+                    bot: "Wonderful! I'll bring your order shortly. Enjoy your meal!",
+                    translation: "¡Maravilloso! Traeré su pedido en breve. ¡Disfrute su comida!",
+                    choices: [
+                        { text: "Thank you very much!", correct: true, feedback: "✓ Polite ending!", next: 'end' },
+                        { text: "Thanks a lot!", correct: true, feedback: "✓ Perfect!", next: 'end' },
+                        { text: "Give me food now.", correct: false, feedback: "✗ That's rude. Try again politely.", next: null },
+                        { text: "Where is the pool?", correct: false, feedback: "✗ This is a restaurant, not a hotel!", next: null }
+                    ],
+                    hint: "Say something polite to finish.",
+                    keywords: ['thank', 'thanks', 'polite']
+                }
+            }
+        },
+
+        // ================= HOTEL =================
+        {
+            name: 'At the Hotel',
+            emoji: '🏨',
+            bgClass: 'bg-scene-1',
+            startStep: 0,
+            steps: {
+                0: {
+                    bot: "Good afternoon! Welcome to the Grand Plaza Hotel. How can I help you?",
+                    translation: "¡Buenas tardes! Bienvenido al Hotel Grand Plaza. ¿En qué puedo ayudarle?",
+                    choices: [
+                        { text: "I have a reservation under Smith.", correct: true, feedback: "✓ Perfect!", next: 1 },
+                        { text: "I would like to check in, please.", correct: true, feedback: "✓ Great!", next: 1 },
+                        { text: "I want to buy a car.", correct: false, feedback: "✗ This is a hotel, not a car dealership!", next: null },
+                        { text: "Can I have a pizza?", correct: false, feedback: "✗ Try again — what do guests usually do here?", next: null }
+                    ],
+                    hint: "Say you want to check in or have a reservation.",
+                    keywords: ['check in', 'reservation', 'room', 'stay']
+                },
+                1: {
+                    bot: "Wonderful! Can I see your ID or passport, please?",
+                    translation: "¡Excelente! ¿Puedo ver su identificación o pasaporte, por favor?",
+                    choices: [
+                        { text: "Of course, here you go.", correct: true, feedback: "✓ Perfect!", next: 2 },
+                        { text: "Yes, here is my passport.", correct: true, feedback: "✓ Very good!", next: 2 },
+                        { text: "No, I don't have one.", correct: false, feedback: "✗ You can't check in without ID.", next: null },
+                        { text: "Why do you need it?", correct: false, feedback: "✗ It's a standard check-in procedure.", next: null }
+                    ],
+                    hint: "Give your ID politely.",
+                    keywords: ['here', 'yes', 'passport', 'id']
+                },
+                2: {
+                    bot: "Thank you. How many nights will you be staying?",
+                    translation: "Gracias. ¿Cuántas noches se quedará?",
+                    choices: [
+                        { text: "Just one night, please.", correct: true, feedback: "✓ Perfect!", next: 3 },
+                        { text: "Three nights, please.", correct: true, feedback: "✓ Very good!", next: 3 },
+                        { text: "Forever!", correct: false, feedback: "✗ That's not a realistic answer.", next: null },
+                        { text: "I don't know.", correct: false, feedback: "✗ The receptionist needs a number.", next: null }
+                    ],
+                    hint: "Say how many nights: one, two, three...",
+                    keywords: ['night', 'nights', 'one', 'two', 'three']
+                },
+                3: {
+                    bot: "Great. Would you like a room with a view or a quiet room?",
+                    translation: "Perfecto. ¿Quisiera una habitación con vista o una tranquila?",
+                    choices: [
+                        { text: "A room with a view, please.", correct: true, feedback: "✓ Excellent choice!", next: 4 },
+                        { text: "A quiet room, please.", correct: true, feedback: "✓ Good choice!", next: 4 },
+                        { text: "A room with a pool inside.", correct: false, feedback: "✗ That's not an option here!", next: null },
+                        { text: "I don't care.", correct: false, feedback: "✗ Be polite — say 'either is fine' next time.", next: null }
+                    ],
+                    hint: "Choose between a room with a view or a quiet room.",
+                    keywords: ['view', 'quiet', 'room']
+                },
+                4: {
+                    bot: "Perfect! Your room is 305. Here is your key. Enjoy your stay!",
+                    translation: "¡Perfecto! Su habitación es la 305. Aquí está su llave. ¡Disfrute su estadía!",
+                    choices: [
+                        { text: "Thank you very much!", correct: true, feedback: "✓ Perfect ending!", next: 'end' },
+                        { text: "Thanks a lot!", correct: true, feedback: "✓ Very polite!", next: 'end' },
+                        { text: "Where is the food?", correct: false, feedback: "✗ Impolite. Try again politely.", next: null },
+                        { text: "I want another room.", correct: false, feedback: "✗ You just got a room!", next: null }
+                    ],
+                    hint: "Say something polite.",
+                    keywords: ['thank', 'thanks', 'polite']
+                }
+            }
+        },
+
+        // ================= AVIÓN =================
+        {
+            name: 'On the Plane',
+            emoji: '✈️',
+            bgClass: 'bg-scene-2',
+            startStep: 0,
+            steps: {
+                0: {
+                    bot: "Good morning! Welcome aboard. May I see your boarding pass, please?",
+                    translation: "¡Buenos días! Bienvenido a bordo. ¿Puedo ver su pase de abordar?",
+                    choices: [
+                        { text: "Yes, here it is.", correct: true, feedback: "✓ Perfect!", next: 1 },
+                        { text: "Of course, here you go.", correct: true, feedback: "✓ Very good!", next: 1 },
+                        { text: "I lost it.", correct: false, feedback: "✗ That would be a problem! Try again.", next: null },
+                        { text: "What's a boarding pass?", correct: false, feedback: "✗ You should know that before flying!", next: null }
+                    ],
+                    hint: "Give your boarding pass politely.",
+                    keywords: ['here', 'yes', 'boarding']
+                },
+                1: {
+                    bot: "Thank you. Your seat is 14A, next to the window. Would you like help with your bag?",
+                    translation: "Gracias. Su asiento es el 14A, junto a la ventana. ¿Necesita ayuda con su equipaje?",
+                    choices: [
+                        { text: "No, thank you. I can manage.", correct: true, feedback: "✓ Perfect!", next: 2 },
+                        { text: "Yes, please. Thank you!", correct: true, feedback: "✓ Very polite!", next: 2 },
+                        { text: "I don't have a bag.", correct: false, feedback: "✗ But the flight attendant just asked about your bag.", next: null },
+                        { text: "Give me your bag.", correct: false, feedback: "✗ That's not how it works!", next: null }
+                    ],
+                    hint: "Answer politely about your bag.",
+                    keywords: ['yes', 'no', 'thank', 'please', 'help']
+                },
+                2: {
+                    bot: "Alright! Would you like something to drink before takeoff?",
+                    translation: "¡Muy bien! ¿Quisiera algo de beber antes del despegue?",
+                    choices: [
+                        { text: "Some water, please.", correct: true, feedback: "✓ Perfect!", next: 3 },
+                        { text: "Orange juice, please.", correct: true, feedback: "✓ Great choice!", next: 3 },
+                        { text: "I want a steak.", correct: false, feedback: "✗ No steak on planes! Try a drink.", next: null },
+                        { text: "Nothing ever.", correct: false, feedback: "✗ Try 'No, thank you' instead.", next: null }
+                    ],
+                    hint: "Ask for a drink or politely decline.",
+                    keywords: ['water', 'juice', 'no', 'thank']
+                },
+                3: {
+                    bot: "Here you are. We'll be taking off shortly. Please fasten your seatbelt.",
+                    translation: "Aquí tiene. Despegaremos en breve. Por favor abroche su cinturón.",
+                    choices: [
+                        { text: "Okay, thank you.", correct: true, feedback: "✓ Perfect!", next: 4 },
+                        { text: "Sure, I'll fasten it now.", correct: true, feedback: "✓ Very good!", next: 4 },
+                        { text: "I don't need a seatbelt.", correct: false, feedback: "✗ It's mandatory for safety!", next: null },
+                        { text: "Where is the exit?", correct: false, feedback: "✗ We haven't taken off yet!", next: null }
+                    ],
+                    hint: "Acknowledge politely.",
+                    keywords: ['okay', 'sure', 'thank', 'yes']
+                },
+                4: {
+                    bot: "Thank you. Enjoy your flight!",
+                    translation: "Gracias. ¡Disfrute su vuelo!",
+                    choices: [
+                        { text: "Thank you very much!", correct: true, feedback: "✓ Perfect ending!", next: 'end' },
+                        { text: "Thanks, you too!", correct: true, feedback: "✓ Very polite!", next: 'end' },
+                        { text: "Land the plane now!", correct: false, feedback: "✗ That's dangerous and rude!", next: null },
+                        { text: "I want to leave.", correct: false, feedback: "✗ You're already in the air!", next: null }
+                    ],
+                    hint: "Say something polite.",
+                    keywords: ['thank', 'thanks', 'polite']
+                }
+            }
+        },
+
+        // ================= GUÍA TURÍSTICO =================
+        {
+            name: 'Tour Guide',
+            emoji: '🗺️',
+            bgClass: 'bg-scene-3',
+            startStep: 0,
+            steps: {
+                0: {
+                    bot: "Hello! Welcome to the city tour. Is this your first time here?",
+                    translation: "¡Hola! Bienvenido al tour de la ciudad. ¿Es su primera vez aquí?",
+                    choices: [
+                        { text: "Yes, it's my first time!", correct: true, feedback: "✓ Great!", next: 1 },
+                        { text: "No, I've been here before.", correct: true, feedback: "✓ Nice!", next: 1 },
+                        { text: "What is a tour?", correct: false, feedback: "✗ You booked the tour! Try again.", next: null },
+                        { text: "I don't speak English.", correct: false, feedback: "✗ But you're speaking English now!", next: null }
+                    ],
+                    hint: "Answer if it's your first time or not.",
+                    keywords: ['yes', 'no', 'first', 'time']
+                },
+                1: {
+                    bot: "Wonderful! What would you like to see the most?",
+                    translation: "¡Maravilloso! ¿Qué le gustaría ver más?",
+                    choices: [
+                        { text: "I would like to see the museum.", correct: true, feedback: "✓ Excellent!", next: 2 },
+                        { text: "The old cathedral, please.", correct: true, feedback: "✓ Great choice!", next: 2 },
+                        { text: "I want to see my house.", correct: false, feedback: "✗ We're on a city tour!", next: null },
+                        { text: "Show me the airport.", correct: false, feedback: "✗ Usually tourists want to see landmarks!", next: null }
+                    ],
+                    hint: "Choose a landmark or attraction.",
+                    keywords: ['museum', 'cathedral', 'park', 'castle', 'see']
+                },
+                2: {
+                    bot: "Great choice! Do you prefer walking or taking the bus?",
+                    translation: "¡Excelente elección! ¿Prefiere caminar o tomar el autobús?",
+                    choices: [
+                        { text: "I prefer walking, thank you.", correct: true, feedback: "✓ Great!", next: 3 },
+                        { text: "Let's take the bus, please.", correct: true, feedback: "✓ Very good!", next: 3 },
+                        { text: "I want a helicopter.", correct: false, feedback: "✗ That's not an option on this tour!", next: null },
+                        { text: "Neither. I want to stay here.", correct: false, feedback: "✗ But we're on a tour! Try again.", next: null }
+                    ],
+                    hint: "Choose walking or bus.",
+                    keywords: ['walking', 'bus', 'walk']
+                },
+                3: {
+                    bot: "Perfect! How long would you like the tour to last?",
+                    translation: "¡Perfecto! ¿Cuánto tiempo le gustaría que durara el tour?",
+                    choices: [
+                        { text: "About two hours, please.", correct: true, feedback: "✓ Perfect!", next: 4 },
+                        { text: "One hour is fine.", correct: true, feedback: "✓ Good!", next: 4 },
+                        { text: "Until I die.", correct: false, feedback: "✗ A bit dramatic! Give a time.", next: null },
+                        { text: "I don't know what time is.", correct: false, feedback: "✗ That's not a real answer.", next: null }
+                    ],
+                    hint: "Give an amount of time like hours.",
+                    keywords: ['hour', 'hours', 'time', 'two', 'one']
+                },
+                4: {
+                    bot: "Great! Let's begin. Follow me and enjoy the tour!",
+                    translation: "¡Genial! Comencemos. ¡Sígame y disfrute el tour!",
+                    choices: [
+                        { text: "Thank you, I'm ready!", correct: true, feedback: "✓ Perfect ending!", next: 'end' },
+                        { text: "Sounds great, let's go!", correct: true, feedback: "✓ Excellent!", next: 'end' },
+                        { text: "I'm leaving now.", correct: false, feedback: "✗ But you just booked the tour!", next: null },
+                        { text: "This is boring.", correct: false, feedback: "✗ Rude! Try something positive.", next: null }
+                    ],
+                    hint: "Say something positive.",
+                    keywords: ['thank', 'ready', 'great', 'go']
+                }
+            }
+        },
+
+        // ================= ENTREVISTA DE TRABAJO =================
+        {
+            name: 'Job Interview',
+            emoji: '💼',
+            bgClass: 'bg-scene-4',
+            startStep: 0,
+            steps: {
+                0: {
+                    bot: "Good morning. Please have a seat. Can you tell me a little about yourself?",
+                    translation: "Buenos días. Por favor tome asiento. ¿Puede hablarme un poco sobre usted?",
+                    choices: [
+                        { text: "My name is Alex. I have five years of experience in marketing.", correct: true, feedback: "✓ Perfect answer!", next: 1 },
+                        { text: "I'm a hardworking person with a passion for learning.", correct: true, feedback: "✓ Excellent!", next: 1 },
+                        { text: "I like pizza and cats.", correct: false, feedback: "✗ That's not a professional answer!", next: null },
+                        { text: "Why do you want to know?", correct: false, feedback: "✗ That's rude in an interview!", next: null }
+                    ],
+                    hint: "Talk about your experience and skills.",
+                    keywords: ['name', 'experience', 'skills', 'work', 'studied']
+                },
+                1: {
+                    bot: "Interesting! Why do you want to work with us?",
+                    translation: "¡Interesante! ¿Por qué quiere trabajar con nosotros?",
+                    choices: [
+                        { text: "Because your company has an excellent reputation.", correct: true, feedback: "✓ Great answer!", next: 2 },
+                        { text: "I admire your work and want to grow professionally here.", correct: true, feedback: "✓ Excellent!", next: 2 },
+                        { text: "Because I need money.", correct: false, feedback: "✗ True, but not the best answer in an interview.", next: null },
+                        { text: "I don't know, I just applied.", correct: false, feedback: "✗ Always prepare an answer for this!", next: null }
+                    ],
+                    hint: "Mention the company's values or your career goals.",
+                    keywords: ['company', 'reputation', 'grow', 'admire', 'work']
+                },
+                2: {
+                    bot: "What would you say is your greatest strength?",
+                    translation: "¿Cuál diría que es su mayor fortaleza?",
+                    choices: [
+                        { text: "I'm very organized and I work well under pressure.", correct: true, feedback: "✓ Excellent!", next: 3 },
+                        { text: "I'm a great team player and I love learning.", correct: true, feedback: "✓ Great!", next: 3 },
+                        { text: "I'm the best at everything.", correct: false, feedback: "✗ Too arrogant! Be humble.", next: null },
+                        { text: "I don't have weaknesses.", correct: false, feedback: "✗ That wasn't the question!", next: null }
+                    ],
+                    hint: "Mention a professional strength.",
+                    keywords: ['organized', 'team', 'learning', 'pressure', 'strength']
+                },
+                3: {
+                    bot: "Good. And what is one weakness you have?",
+                    translation: "Bien. ¿Y cuál es una debilidad que tiene?",
+                    choices: [
+                        { text: "Sometimes I focus too much on details.", correct: true, feedback: "✓ Great — honest but positive.", next: 4 },
+                        { text: "I'm still learning public speaking, but I've been improving.", correct: true, feedback: "✓ Excellent answer!", next: 4 },
+                        { text: "I'm perfect, I have no weaknesses.", correct: false, feedback: "✗ Nobody believes that!", next: null },
+                        { text: "I hate working with people.", correct: false, feedback: "✗ That would disqualify you!", next: null }
+                    ],
+                    hint: "Mention a real weakness but with a positive twist.",
+                    keywords: ['detail', 'learning', 'public', 'improving', 'weakness']
+                },
+                4: {
+                    bot: "Thank you for your time. Do you have any questions for us?",
+                    translation: "Gracias por su tiempo. ¿Tiene alguna pregunta para nosotros?",
+                    choices: [
+                        { text: "Yes, when can I expect to hear back?", correct: true, feedback: "✓ Perfect question!", next: 'end' },
+                        { text: "Yes, what does the day-to-day look like in this role?", correct: true, feedback: "✓ Excellent!", next: 'end' },
+                        { text: "No, I don't care.", correct: false, feedback: "✗ That shows lack of interest!", next: null },
+                        { text: "Can I leave now?", correct: false, feedback: "✗ Very rude way to end an interview!", next: null }
+                    ],
+                    hint: "Ask a professional question.",
+                    keywords: ['hear', 'back', 'role', 'day', 'question']
+                }
+            }
+        },
+
+        // ================= CONOCER A ALGUIEN =================
+        {
+            name: 'Meeting Someone New',
+            emoji: '👋',
+            bgClass: 'bg-scene-5',
+            startStep: 0,
+            steps: {
+                0: {
+                    bot: "Hi! I'm Emma. I don't think we've met before. What's your name?",
+                    translation: "¡Hola! Soy Emma. Creo que no nos hemos conocido. ¿Cómo te llamas?",
+                    choices: [
+                        { text: "Hi Emma! My name is Alex. Nice to meet you.", correct: true, feedback: "✓ Perfect!", next: 1 },
+                        { text: "Hello! I'm Sophia. Nice to meet you too.", correct: true, feedback: "✓ Very polite!", next: 1 },
+                        { text: "Why do you want to know?", correct: false, feedback: "✗ Too defensive for a friendly greeting!", next: null },
+                        { text: "None of your business.", correct: false, feedback: "✗ That's rude! Try again politely.", next: null }
+                    ],
+                    hint: "Say your name and greet politely.",
+                    keywords: ['hi', 'hello', 'name', 'nice', 'meet']
+                },
+                1: {
+                    bot: "Nice to meet you too! So, what do you do for a living?",
+                    translation: "¡Encantada de conocerte también! Entonces, ¿a qué te dedicas?",
+                    choices: [
+                        { text: "I'm a teacher. And you?", correct: true, feedback: "✓ Great — asks back!", next: 2 },
+                        { text: "I work in an office. What about you?", correct: true, feedback: "✓ Very good!", next: 2 },
+                        { text: "I do nothing.", correct: false, feedback: "✗ Not a great answer. Try a job or study.", next: null },
+                        { text: "Why do you ask?", correct: false, feedback: "✗ It's a common friendly question.", next: null }
+                    ],
+                    hint: "Mention your job or studies and ask back.",
+                    keywords: ['teacher', 'work', 'office', 'study', 'job']
+                },
+                2: {
+                    bot: "That's cool! I'm a graphic designer. Do you have any hobbies?",
+                    translation: "¡Qué cool! Soy diseñadora gráfica. ¿Tienes algún pasatiempo?",
+                    choices: [
+                        { text: "Yes, I love reading and hiking.", correct: true, feedback: "✓ Great hobbies!", next: 3 },
+                        { text: "I enjoy playing the guitar and cooking.", correct: true, feedback: "✓ Very interesting!", next: 3 },
+                        { text: "No, I have no life.", correct: false, feedback: "✗ Too negative. Everyone has some hobby!", next: null },
+                        { text: "Hobbies are a waste of time.", correct: false, feedback: "✗ That's not very friendly!", next: null }
+                    ],
+                    hint: "Share one or two hobbies.",
+                    keywords: ['reading', 'hiking', 'guitar', 'cooking', 'hobby', 'hobbies']
+                },
+                3: {
+                    bot: "Nice! I love hiking too. Do you want to grab a coffee sometime?",
+                    translation: "¡Qué bien! A mí también me encanta el senderismo. ¿Quieres tomar un café alguna vez?",
+                    choices: [
+                        { text: "Sure, I'd love to! Here's my number.", correct: true, feedback: "✓ Perfect!", next: 4 },
+                        { text: "Yes, that sounds great!", correct: true, feedback: "✓ Excellent!", next: 4 },
+                        { text: "No way, strangers are dangerous.", correct: false, feedback: "✗ A bit extreme! Try a polite decline.", next: null },
+                        { text: "I only drink tea.", correct: false, feedback: "✗ That doesn't answer the invitation!", next: null }
+                    ],
+                    hint: "Accept or politely decline the invitation.",
+                    keywords: ['sure', 'yes', 'love', 'sounds', 'great']
+                },
+                4: {
+                    bot: "Great! I'll text you. It was really nice meeting you!",
+                    translation: "¡Genial! Te escribiré. ¡Fue un placer conocerte!",
+                    choices: [
+                        { text: "Nice meeting you too! See you soon.", correct: true, feedback: "✓ Perfect ending!", next: 'end' },
+                        { text: "You too! Talk to you later.", correct: true, feedback: "✓ Excellent!", next: 'end' },
+                        { text: "Goodbye forever.", correct: false, feedback: "✗ But you just agreed to meet again!", next: null },
+                        { text: "I hope never to see you again.", correct: false, feedback: "✗ Very rude!", next: null }
+                    ],
+                    hint: "Say something friendly to close.",
+                    keywords: ['nice', 'meeting', 'too', 'see', 'later']
+                }
+            }
+        }
+    ];
+
+    // ---------- STATE ----------
+    let username = 'Player';
+    let school = '';
+    let sceneIndex = 0;
+    let currentStepKey = 0;
+    let score = 0;
+    let combo = 0;
+    let maxCombo = 0;
+    let correctCount = 0;
+    let totalAttempts = 0;
+    let isEvaluating = false;
+    let isRecording = false;
+    let recognition = null;
+    let audioCtx = null;
+    let musicNodes = [];
+
+    // DOM
+    const startScreen = document.getElementById('startScreen');
+    const gameContainer = document.getElementById('gameContainer');
+    const backBtn = document.getElementById('backBtn');
+    const levelBadge = document.getElementById('levelBadge');
+    const userBadge = document.getElementById('userBadge');
+    const scoreBadge = document.getElementById('scoreBadge');
+    const comboBadge = document.getElementById('comboBadge');
+    const progressFill = document.getElementById('progressFill');
+    const chatArea = document.getElementById('chatArea');
+    const suggestionsArea = document.getElementById('suggestionsArea');
+    const suggestionsList = document.getElementById('suggestionsList');
+    const answerInput = document.getElementById('answerInput');
+    const micBtn = document.getElementById('micBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const micStatus = document.getElementById('micStatus');
+    const liveTranscript = document.getElementById('liveTranscript');
+    const hintBtn = document.getElementById('hintBtn');
+    const repeatBtn = document.getElementById('repeatBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const transitionOverlay = document.getElementById('transitionOverlay');
+    const transitionCard = document.getElementById('transitionCard');
+    const transitionEmoji = document.getElementById('transitionEmoji');
+    const transitionText = document.getElementById('transitionText');
+    const transitionSub = document.getElementById('transitionSub');
+
+    // ---------- VOICES ----------
+    const CLEAR_FEMALE_VOICES = [
+        'Google US English', 'Samantha', 'Karen', 'Zira', 'Microsoft Zira',
+        'Microsoft Aria', 'Serena', 'Victoria', 'Microsoft Michelle'
+    ];
+    const CLEAR_MALE_VOICES = [
+        'Google UK English Male', 'Daniel', 'Microsoft George', 'Microsoft Ryan',
+        'Oliver', 'Arthur'
+    ];
+
+    function getVoiceForType(voiceType) {
+        if (voiceType === 'woman') return { lang: 'en-US', keywords: CLEAR_FEMALE_VOICES, fallback: ['female', 'zira', 'samantha', 'karen', 'serena', 'victoria', 'aria', 'michelle'] };
+        else return { lang: 'en-GB', keywords: CLEAR_MALE_VOICES, fallback: ['male', 'daniel', 'george', 'oliver', 'arthur', 'ryan', 'uk english'] };
+    }
+
+    function findBestVoice(voiceType) {
+        const voices = window.speechSynthesis.getVoices();
+        const cfg = getVoiceForType(voiceType);
+        const targetLang = cfg.lang;
+        let candidates = voices.filter(v => v.lang === targetLang);
+        if (candidates.length === 0) candidates = voices.filter(v => v.lang.startsWith(targetLang.split('-')[0]));
+        if (candidates.length === 0) candidates = voices;
+
+        for (const name of cfg.keywords) {
+            const match = candidates.find(v => v.name.toLowerCase().includes(name.toLowerCase()));
+            if (match) return match;
+        }
+        for (const kw of cfg.fallback) {
+            const match = candidates.find(v => v.name.toLowerCase().includes(kw));
+            if (match) return match;
+        }
+        return candidates[0] || null;
+    }
+
+    function speak(text, voiceType = 'woman', rate = 0.78, onEnd) {
+        if (!window.speechSynthesis) { onEnd && onEnd(); return; }
+        window.speechSynthesis.cancel();
+
+        const cfg = getVoiceForType(voiceType);
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = rate;
+        utterance.volume = 1;
+        utterance.pitch = voiceType === 'woman' ? 1.1 : 0.95;
+        utterance.lang = cfg.lang;
+
+        const voice = findBestVoice(voiceType);
+        if (voice) utterance.voice = voice;
+
+        let called = false;
+        const done = () => { if (called) return; called = true; if (onEnd) onEnd(); };
+        utterance.onend = done;
+        utterance.onerror = done;
+        setTimeout(done, 15000);
+        setTimeout(() => window.speechSynthesis.speak(utterance), 80);
+    }
+
+    // ---------- AMBIENT MUSIC ----------
+    function startAmbientMusic() {
+        if (audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.05;
+            masterGain.connect(audioCtx.destination);
+
+            const chordFreqs = [
+                [261.63, 329.63, 392.00],
+                [220.00, 261.63, 329.63],
+                [196.00, 246.94, 293.66],
+                [174.61, 220.00, 261.63]
+            ];
+            let chordIndex = 0;
+
+            function playChord() {
+                const now = audioCtx.currentTime;
+                const chord = chordFreqs[chordIndex % chordFreqs.length];
+                chord.forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.25, now + 0.5);
+                    gain.gain.linearRampToValueAtTime(0, now + 2.5);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start(now);
+                    osc.stop(now + 2.6);
+                });
+                chordIndex++;
+            }
+            playChord();
+            const musicInterval = setInterval(playChord, 2600);
+            musicNodes.push({ musicInterval, masterGain });
+        } catch (e) { console.warn('Audio not available', e); }
+    }
+
+    // ---------- AVATARS ----------
+    const TEACHER_AVATAR_W = '👩‍🏫';
+    const TEACHER_AVATAR_M = '👨‍🏫';
+    const USER_AVATAR = '🧑‍🎓';
+    const ANIMALS_OK = ['🦊','🐼','🐨','🦁','🐸','🐧','🦉','🐝','🦄','🐶','🐱'];
+
+    function randomTeacherAvatar() {
+        return Math.random() > 0.5 ? TEACHER_AVATAR_W : TEACHER_AVATAR_M;
+    }
+
+    // ---------- CHAT RENDERING ----------
+    function addTeacherMessage(text, translation) {
+        const msg = document.createElement('div');
+        msg.className = 'msg teacher';
+        msg.innerHTML = `
+            <div class="msg-avatar">${randomTeacherAvatar()}</div>
+            <div class="msg-bubble">
+                ${escapeHtml(text)}
+                ${translation ? `<div class="msg-translation">${escapeHtml(translation)}</div>` : ''}
+            </div>
+        `;
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function addUserMessage(text, feedbackType, feedbackText) {
+        const msg = document.createElement('div');
+        msg.className = 'msg user';
+        let feedbackHtml = '';
+        if (feedbackType) {
+            feedbackHtml = `<div class="feedback-tag ${feedbackType}">${escapeHtml(feedbackText)}</div>`;
+        }
+        msg.innerHTML = `
+            <div class="msg-avatar">${USER_AVATAR}</div>
+            <div class="msg-bubble">
+                ${escapeHtml(text)}
+                ${feedbackHtml}
+            </div>
+        `;
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function addTypingIndicator() {
+        const msg = document.createElement('div');
+        msg.className = 'msg teacher';
+        msg.id = 'typingMsg';
+        msg.innerHTML = `
+            <div class="msg-avatar">${randomTeacherAvatar()}</div>
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        `;
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const el = document.getElementById('typingMsg');
+        if (el) el.remove();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ---------- SUGGESTIONS ----------
+    function showSuggestions(choices) {
+        suggestionsList.innerHTML = '';
+        if (!choices || choices.length === 0) {
+            suggestionsArea.style.display = 'none';
+            return;
+        }
+        suggestionsArea.style.display = 'block';
+        // Shuffle to mix correct and incorrect
+        const shuffled = [...choices].sort(() => Math.random() - 0.5);
+        shuffled.forEach(choice => {
+            const chip = document.createElement('button');
+            chip.className = 'suggestion-chip';
+            chip.type = 'button';
+            chip.textContent = choice.text;
+            chip.addEventListener('click', () => {
+                if (isEvaluating) return;
+                answerInput.value = choice.text;
+                setTimeout(() => { if (!isEvaluating) handleSubmit(); }, 250);
+            });
+            suggestionsList.appendChild(chip);
+        });
+    }
+
+    function hideSuggestions() {
+        suggestionsArea.style.display = 'none';
+    }
+
+    function disableSuggestions(disabled) {
+        const chips = suggestionsList.querySelectorAll('.suggestion-chip');
+        chips.forEach(c => c.disabled = disabled);
+    }
+
+    // ---------- GAME FLOW ----------
+    function getScenario() { return SCENARIOS[sceneIndex]; }
+
+    function updateHeader() {
+        const s = getScenario();
+        levelBadge.textContent = `${s.emoji} ${s.name}`;
+        userBadge.textContent = `👤 ${username}`;
+        scoreBadge.textContent = `⭐ ${score} pts`;
+        comboBadge.textContent = `🔥 ${combo}`;
+    }
+
+    function updateProgress() {
+        const s = getScenario();
+        const totalSteps = Object.keys(s.steps).length;
+        // Find current step's order index
+        const stepKeys = Object.keys(s.steps).map(k => isNaN(k) ? k : parseInt(k)).filter(k => typeof k === 'number').sort((a,b) => a - b);
+        const idx = stepKeys.indexOf(currentStepKey);
+        const pct = idx >= 0 ? ((idx + 1) / totalSteps) * 100 : 0;
+        progressFill.style.width = Math.min(pct, 100) + '%';
+    }
+
+    function askCurrentStep() {
+        const s = getScenario();
+        const step = s.steps[currentStepKey];
+        if (!step) {
+            finishScenario();
+            return;
+        }
+
+        answerInput.value = '';
+        answerInput.disabled = false;
+        sendBtn.disabled = false;
+        micBtn.disabled = false;
+
+        showSuggestions(step.choices);
+        disableSuggestions(false);
+        updateProgress();
+
+        addTypingIndicator();
+        setTimeout(() => {
+            removeTypingIndicator();
+            addTeacherMessage(step.bot, step.translation);
+            const voiceType = Math.random() > 0.5 ? 'woman' : 'man';
+            speak(step.bot, voiceType, 0.78, () => {
+                answerInput.focus();
+            });
+        }, 800);
+    }
+
+    // ---------- EVALUATION ----------
+    function normalize(text) {
+        return text.toLowerCase().trim().replace(/[.,!?;:'"]/g, '').replace(/\s+/g, ' ');
+    }
+
+    function findMatchingChoice(userText) {
+        const step = getScenario().steps[currentStepKey];
+        if (!step) return null;
+        const clean = normalize(userText);
+        if (!clean) return null;
+
+        // Exact match
+        for (const choice of step.choices) {
+            if (normalize(choice.text) === clean) return choice;
+        }
+        // Partial match
+        for (const choice of step.choices) {
+            if (clean.includes(normalize(choice.text)) || normalize(choice.text).includes(clean)) return choice;
+        }
+        // Keyword match
+        const words = clean.split(' ');
+        for (const choice of step.choices) {
+            const choiceWords = normalize(choice.text).split(' ');
+            const matches = choiceWords.filter(w => w.length > 3 && words.includes(w));
+            if (matches.length >= 2) return choice;
+        }
+        return null;
+    }
+
+    function handleSubmit() {
+        if (isEvaluating) return;
+        const text = answerInput.value.trim();
+        if (!text) return;
+
+        isEvaluating = true;
+        answerInput.disabled = true;
+        sendBtn.disabled = true;
+        micBtn.disabled = true;
+        disableSuggestions(true);
+        totalAttempts++;
+
+        const matched = findMatchingChoice(text);
+        let feedbackType, feedbackMsg, nextStep, isCorrect;
+
+        if (matched) {
+            if (matched.correct) {
+                feedbackType = 'correct';
+                feedbackMsg = matched.feedback || '✓ Correct!';
+                nextStep = matched.next;
+                isCorrect = true;
+            } else {
+                feedbackType = 'wrong';
+                feedbackMsg = matched.feedback || '✗ Try again.';
+                nextStep = null;
+                isCorrect = false;
+            }
+        } else {
+            feedbackType = 'wrong';
+            feedbackMsg = '✗ Not a valid answer. Try one of the suggestions or rephrase.';
+            nextStep = null;
+            isCorrect = false;
+        }
+
+        addUserMessage(text, feedbackType, feedbackMsg);
+        hideSuggestions();
+
+        if (isCorrect) {
+            score += 10 + combo * 2;
+            combo++;
+            correctCount++;
+            if (combo > maxCombo) maxCombo = combo;
+            updateHeader();
+
+            const praise = ['Excellent!', 'Great job!', 'Perfect!', 'Well done!', 'Awesome!'][Math.floor(Math.random() * 5)];
+            const emoji = ANIMALS_OK[Math.floor(Math.random() * ANIMALS_OK.length)];
+            showTransition(true, praise, emoji);
+            speak(praise, Math.random() > 0.5 ? 'woman' : 'man', 0.85);
+
+            setTimeout(() => {
+                isEvaluating = false;
+                if (nextStep === 'end' || nextStep === null || nextStep === undefined || !getScenario().steps[nextStep]) {
+                    finishScenario();
+                } else {
+                    currentStepKey = nextStep;
+                    askCurrentStep();
+                }
+            }, 1600);
+
+        } else {
+            combo = 0;
+            updateHeader();
+            showTransition(false, 'Try again!', '🐢', true);
+            speak('Try again!', 'man', 0.85);
+
+            setTimeout(() => {
+                isEvaluating = false;
+                answerInput.disabled = false;
+                sendBtn.disabled = false;
+                micBtn.disabled = false;
+                answerInput.value = '';
+                answerInput.focus();
+                showSuggestions(getScenario().steps[currentStepKey].choices);
+                disableSuggestions(false);
+            }, 1600);
+        }
+    }
+
+
+    async function saveScoreToSupabase() {
+        try {
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                const { error } = await supabaseClient.from('puntajes').insert([{
+                    nombre: username,
+                    escuela: school,
+                    grado: 'No especificado',
+                    materia: 'Inglés',
+                    juego: 'English Conversation',
+                    puntaje: Number(score)
+                }]);
+                if (error) console.error('Error guardando puntaje en Supabase:', error);
+                else console.log('Puntaje de English Conversation guardado en Supabase.');
+            } else {
+                console.error('No se encontró supabaseClient. Verifica supabase-config.js.');
+            }
+        } catch (error) {
+            console.error('Error conectando con Supabase:', error);
+        }
+    }
+
+
+    // ---------- FINISH ----------
+    function finishScenario() {
+        sendBtn.disabled = true;
+        micBtn.disabled = true;
+        answerInput.disabled = true;
+        hideSuggestions();
+
+        const percentage = totalAttempts > 0 ? Math.round((correctCount / totalAttempts) * 100) : 0;
+
+        let title, emoji, message;
+        if (percentage >= 80) {
+            title = 'CONVERSATION COMPLETE!';
+            emoji = '🏆';
+            message = `Amazing, ${username}! You scored ${score} points!`;
+        } else if (percentage >= 50) {
+            title = 'GOOD JOB!';
+            emoji = '🎉';
+            message = `Nice work, ${username}! You scored ${score} points.`;
+        } else {
+            title = 'KEEP PRACTICING!';
+            emoji = '💪';
+            message = `Good try, ${username}! You scored ${score} points.`;
+        }
+
+        saveScoreToSupabase();
+        showTransition(true, title, emoji, false, true);
+        transitionSub.textContent = message + ` · Max combo: ${maxCombo}`;
+        speak(`Great job ${username}! You scored ${score} points!`, 'woman', 0.8);
+
+        addTeacherMessage(
+            `🎉 You completed the "${getScenario().name}" scenario!\nFinal score: ${score} points · Correct: ${correctCount}/${totalAttempts}`,
+            `¡Completaste el escenario "${getScenario().name}"!`
+        );
+
+        createConfetti(40);
+    }
+
+    // ---------- TRANSITIONS ----------
+    function showTransition(isCorrect, mainText, emoji, small = false, big = false) {
+        transitionCard.classList.remove('correct', 'wrong', 'completed');
+        transitionCard.classList.add(isCorrect ? 'correct' : (big ? 'completed' : 'wrong'));
+        transitionEmoji.textContent = emoji;
+        transitionText.textContent = mainText;
+        transitionSub.textContent = '';
+        transitionOverlay.classList.add('show');
+
+        if (isCorrect) createConfetti(20);
+
+        const duration = small ? 900 : (big ? 3200 : 1200);
+        setTimeout(() => {
+            transitionOverlay.classList.remove('show');
+        }, duration);
+    }
+
+    function createConfetti(count) {
+        const colors = ['#ffb347', '#ffd93d', '#7ed957', '#4a9eff', '#ff6b9d', '#c084fc'];
+        for (let i = 0; i < count; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.background = colors[Math.floor(Math.random() * colors.length)];
+            c.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+            c.style.animationDelay = (Math.random() * 0.4) + 's';
+            c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            c.style.width = c.style.height = (6 + Math.random() * 8) + 'px';
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3500);
+        }
+    }
+
+    // ---------- SPEECH RECOGNITION ----------
+    function initSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            micBtn.title = 'Speech recognition not supported';
+            micBtn.style.opacity = '0.5';
+            return null;
+        }
+
+        const rec = new SpeechRecognition();
+        rec.lang = 'en-US';
+        rec.continuous = false;
+        rec.interimResults = true;
+        rec.maxAlternatives = 1;
+
+        rec.onstart = () => {
+            isRecording = true;
+            micBtn.classList.add('recording');
+            micStatus.classList.add('active');
+            liveTranscript.textContent = '';
+        };
+
+        rec.onresult = (event) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+            liveTranscript.textContent = `"${transcript}"`;
+            if (event.results[event.results.length - 1].isFinal) {
+                answerInput.value = transcript.trim();
+            }
+        };
+
+        rec.onerror = (event) => { console.warn('Speech error:', event.error); liveTranscript.textContent = ''; };
+
+        rec.onend = () => {
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            micStatus.classList.remove('active');
+            setTimeout(() => { liveTranscript.textContent = ''; }, 1200);
+
+            if (answerInput.value.trim().length > 0 && !isEvaluating) {
+                setTimeout(() => {
+                    if (answerInput.value.trim().length > 0 && !isEvaluating) {
+                        handleSubmit();
+                    }
+                }, 400);
+            }
+        };
+
+        return rec;
+    }
+
+    function toggleMic() {
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            if (!recognition) {
+                recognition = initSpeechRecognition();
+                if (!recognition) return;
+            }
+            try { recognition.start(); } catch (e) { console.warn(e); }
+        }
+    }
+
+    // ---------- HELPERS ----------
+    function showHint() {
+        const step = getScenario().steps[currentStepKey];
+        if (!step) return;
+        const hintText = step.hint || 'Try to answer in English!';
+        addTeacherMessage(`💡 Hint: ${hintText}`);
+        const v = Math.random() > 0.5 ? 'woman' : 'man';
+        speak(hintText, v, 0.8);
+    }
+
+    function repeatQuestion() {
+        const step = getScenario().steps[currentStepKey];
+        if (!step) return;
+        const v = Math.random() > 0.5 ? 'woman' : 'man';
+        speak(step.bot, v, 0.78);
+    }
+
+    function backToMenu() {
+        if (!confirm('Go back to the main menu? Your progress will be lost.')) return;
+        window.speechSynthesis && window.speechSynthesis.cancel();
+        gameContainer.style.display = 'none';
+        startScreen.classList.remove('hidden');
+    }
+
+    // ---------- INIT ----------
+    function initGame() {
+        const s = getScenario();
+        document.body.className = s.bgClass;
+        updateHeader();
+        progressFill.style.width = '0%';
+
+        chatArea.innerHTML = '';
+        suggestionsList.innerHTML = '';
+        currentStepKey = s.startStep;
+        score = 0;
+        combo = 0;
+        maxCombo = 0;
+        correctCount = 0;
+        totalAttempts = 0;
+        isEvaluating = false;
+
+        setTimeout(() => {
+            addTeacherMessage(
+                `Hi ${username}! Welcome to the "${s.name}" scenario. Let's practice English together!`,
+                `¡Hola ${username}! Bienvenido al escenario "${s.name}". ¡Practiquemos inglés juntos!`
+            );
+            speak(`Hi ${username}! Welcome! Let's practice English together!`, 'woman', 0.78, () => {
+                setTimeout(() => askCurrentStep(), 500);
+            });
+        }, 400);
+    }
+
+    // ---------- LISTENERS ----------
+    function setupListeners() {
+        sendBtn.addEventListener('click', handleSubmit);
+
+        answerInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit();
+            }
+        });
+
+        answerInput.addEventListener('input', () => {
+            answerInput.style.height = 'auto';
+            answerInput.style.height = Math.min(answerInput.scrollHeight, 80) + 'px';
+        });
+
+        micBtn.addEventListener('click', toggleMic);
+        hintBtn.addEventListener('click', showHint);
+        repeatBtn.addEventListener('click', repeatQuestion);
+        backBtn.addEventListener('click', backToMenu);
+
+        restartBtn.addEventListener('click', () => {
+            if (confirm('Do you want to restart this conversation?')) {
+                initGame();
+            }
+        });
+    }
+
+    // ---------- START ----------
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const nameInput = document.getElementById('username').value.trim();
+        const schoolInput = document.getElementById('schoolInput').value.trim();
+        if (!nameInput) {
+            alert('Please enter your name / Por favor escribe tu nombre');
+            document.getElementById('username').focus();
+            return;
+        }
+        if (!schoolInput) {
+            alert('Please enter your school / Por favor escribe tu escuela');
+            document.getElementById('schoolInput').focus();
+            return;
+        }
+        username = nameInput;
+        school = schoolInput;
+        sceneIndex = parseInt(document.getElementById('scene').value, 10);
+
+        startAmbientMusic();
+        if (window.speechSynthesis) window.speechSynthesis.getVoices();
+
+        startScreen.classList.add('hidden');
+        gameContainer.style.display = 'block';
+
+        initGame();
+        setupListeners();
+    });
+
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {};
+    }
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-config.js"></script>
+</body>
+</html>
