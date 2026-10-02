@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Card Game - English Vocabulary</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .home-btn {
+    position: fixed; top: 18px; left: 18px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 16px; border-radius: 999px;
+    background: rgba(255,255,255,.94); color: #23445b;
+    border: 2px solid rgba(255,255,255,.75);
+    box-shadow: 0 5px 18px rgba(0,0,0,.2);
+    font-weight: 700; font-size: 14px; text-decoration: none;
+    transition: transform .2s, background .2s;
+  }
+  .home-btn:hover { background: #eaf6ff; transform: translateY(-2px); }
+  @media (max-width: 520px) { .home-btn { top: 10px; left: 10px; padding: 9px 12px; font-size: 12px; } }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.8s ease;
+    background: #1a2a3a;
+    position: relative;
+  }
+  
+  .landscape-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  
+  .landscape-bg svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* ===== CHARACTER POPUP ===== */
+  #characterPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 999;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
+    opacity: 0;
+    text-align: center;
+  }
+  
+  #characterPopup.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    animation: charPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  @keyframes charPop {
+    0% { transform: translate(-50%, -50%) scale(0.3) rotate(-10deg); }
+    60% { transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  }
+  
+  .char-bubble {
+    background: white;
+    border-radius: 24px;
+    padding: 14px 26px;
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #2c3e50;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+    margin-bottom: 12px;
+    position: relative;
+    white-space: nowrap;
+    border: 4px solid;
+  }
+  
+  .char-bubble.ok { border-color: #28a745; color: #155724; background: #d4edda; }
+  .char-bubble.no { border-color: #dc3545; color: #721c24; background: #f8d7da; }
+  
+  .char-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid;
+  }
+  
+  .char-bubble.ok::after { border-top-color: #28a745; }
+  .char-bubble.no::after { border-top-color: #dc3545; }
+  
+  .char-avatar {
+    font-size: 5.5em;
+    line-height: 1;
+    animation: charBounce 0.7s ease-in-out infinite alternate;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+  }
+  
+  @keyframes charBounce {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(-12px) scale(1.05); }
+  }
+  
+  /* ===== GAME CONTAINER ===== */
+  .game-container {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(6px);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px;
+    overflow: hidden;
+  }
+  
+  .screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+  }
+  
+  .screen.active {
+    display: flex;
+    animation: fadeIn 0.4s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  #screenWelcome.active,
+  #screenCountdown.active,
+  #screenResults.active {
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .welcome-card {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: 24px 28px;
+  }
+  
+  .welcome-icon { text-align: center; font-size: 3em; margin-bottom: 4px; }
+  
+  .welcome-title {
+    text-align: center;
+    font-size: 1.6em;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  
+  .welcome-sub {
+    text-align: center;
+    color: #666;
+    margin-bottom: 16px;
+    font-size: 0.88em;
+  }
+  
+  .form-group { margin-bottom: 14px; }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 0.88em;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid #d0d8e0;
+    border-radius: 10px;
+    font-size: 0.95em;
+    color: #2c3e50;
+    transition: all 0.25s;
+    background: white;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #4a90d9;
+    box-shadow: 0 0 0 3px rgba(74,144,217,0.15);
+  }
+  
+  .rules-box {
+    background: #f0f4f8;
+    border-left: 5px solid #4a90d9;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 13px;
+    font-size: 0.82em;
+    line-height: 1.6;
+    color: #34495e;
+  }
+  
+  .rules-box h3 {
+    color: #2c5f8a;
+    margin-bottom: 5px;
+    font-size: 1em;
+  }
+  
+  .rules-box ul { padding-left: 18px; }
+  
+  .motivation {
+    text-align: center;
+    font-style: italic;
+    color: #7a5a3d;
+    font-size: 0.88em;
+    margin-bottom: 14px;
+    padding: 8px;
+    background: #fdf6e3;
+    border-radius: 8px;
+  }
+  
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #4a90d9, #2c5f8a);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(44,95,138,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  
+  .countdown-display {
+    text-align: center;
+    font-size: 6em;
+    font-weight: 900;
+    color: #2c5f8a;
+    text-shadow: 3px 3px 0 rgba(74,144,217,0.2);
+    animation: pulse 1s infinite;
+    line-height: 1.2;
+    background: white;
+    border-radius: 18px;
+    padding: 20px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  
+  .countdown-msg {
+    text-align: center;
+    font-size: 1.1em;
+    color: #fff;
+    margin-top: 12px;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  
+  #screenGame {
+    padding: 0;
+    gap: 8px;
+  }
+  
+  .level-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 6px 0;
+    flex-shrink: 0;
+  }
+  
+  .level-badge {
+    background: #2c5f8a;
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.82em;
+    font-weight: 600;
+  }
+  
+  .theme-badge {
+    background: #e8f0fe;
+    color: #2c5f8a;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 600;
+  }
+  
+  .timer-box {
+    background: #fff3cd;
+    color: #856404;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.88em;
+    font-weight: 700;
+    border: 1px solid #ffc107;
+  }
+  
+  .timer-box.warning {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #dc3545;
+    animation: blink 0.8s infinite;
+  }
+  
+  @keyframes blink { 50% { opacity: 0.6; } }
+  
+  .pairs-box {
+    background: #d4edda;
+    color: #155724;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.88em;
+    font-weight: 700;
+    border: 1px solid #28a745;
+  }
+  
+  .attempts-box {
+    background: #e8f0fe;
+    color: #2c5f8a;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.88em;
+    font-weight: 700;
+    border: 1px solid #4a90d9;
+  }
+  
+  .preview-banner {
+    text-align: center;
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    color: #4a2a00;
+    padding: 8px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 0.95em;
+    box-shadow: 0 4px 15px rgba(255,152,0,0.4);
+    animation: previewPulse 0.8s infinite;
+    flex-shrink: 0;
+  }
+  
+  @keyframes previewPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  
+  /* ===== BOARD - DYNAMIC GRID ===== */
+  .board-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 4px;
+  }
+  
+  .board {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  /* Dynamic column layouts based on card count */
+  .board.cols-3 { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .board.cols-4 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .board.cols-5 { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .board.cols-6 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
+  
+  .card {
+    perspective: 1000px;
+    cursor: pointer;
+    position: relative;
+    min-height: 0;
+    min-width: 0;
+  }
+  
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    border-radius: 14px;
+  }
+  
+  .card.flipped .card-inner,
+  .card.matched .card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+  
+  .card-front {
+    background: linear-gradient(135deg, #4a90d9, #2c5f8a);
+    color: white;
+    border: 3px solid rgba(255,255,255,0.3);
+    position: relative;
+  }
+  
+  .card-front::before {
+    content: '?';
+    font-weight: 900;
+    font-size: clamp(1.5em, 4vw, 3em);
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  }
+  
+  .card-front::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 2px dashed rgba(255,255,255,0.25);
+    border-radius: 10px;
+  }
+  
+  .card-back {
+    background: white;
+    transform: rotateY(180deg);
+    border: 3px solid #4a90d9;
+    color: #2c3e50;
+    font-weight: 700;
+  }
+  
+  .card-back.word {
+    background: linear-gradient(135deg, #ffffff, #e8f0fe);
+    font-size: clamp(0.85em, 2vw, 1.5em);
+    padding: 8px 6px;
+    word-break: break-word;
+    line-height: 1.15;
+    color: #2c5f8a;
+  }
+  
+  .card-back.image {
+    background: linear-gradient(135deg, #ffffff, #fdf6e3);
+    font-size: clamp(2.2em, 7vw, 4.5em);
+    padding: 0;
+    line-height: 1;
+  }
+  
+  /* Adjust sizes for larger boards */
+  .board.cols-5 .card-back.word { font-size: clamp(0.7em, 1.6vw, 1.2em); }
+  .board.cols-5 .card-back.image { font-size: clamp(1.8em, 5.5vw, 3.5em); }
+  .board.cols-6 .card-back.word { font-size: clamp(0.7em, 1.7vw, 1.3em); }
+  .board.cols-6 .card-back.image { font-size: clamp(1.8em, 5.8vw, 3.8em); }
+  
+  .card.matched .card-back {
+    background: linear-gradient(135deg, #d4edda, #a8e6b8);
+    border-color: #28a745;
+    animation: matchPop 0.5s;
+  }
+  
+  @keyframes matchPop {
+    0% { transform: rotateY(180deg) scale(1); }
+    50% { transform: rotateY(180deg) scale(1.08); }
+    100% { transform: rotateY(180deg) scale(1); }
+  }
+  
+  .card.wrong .card-back {
+    background: linear-gradient(135deg, #f8d7da, #f5b7b1);
+    border-color: #dc3545;
+  }
+  
+  .card.wrong .card-inner {
+    animation: wrongShake 0.5s;
+  }
+  
+  @keyframes wrongShake {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    25% { transform: rotateY(180deg) translateX(-6px); }
+    75% { transform: rotateY(180deg) translateX(6px); }
+  }
+  
+  .card.disabled { pointer-events: none; }
+  .card.matched { pointer-events: none; }
+  
+  /* ===== RESULTS ===== */
+  .results-card {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: 24px 28px;
+  }
+  
+  .results-icon { text-align: center; font-size: 3.5em; margin-bottom: 6px; }
+  
+  .results-title {
+    text-align: center;
+    font-size: 1.4em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  .student-name {
+    text-align: center;
+    color: #2c5f8a;
+    font-size: 0.92em;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+  }
+  
+  .stat-card {
+    background: #f0f4f8;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .stat-value { font-size: 1.4em; font-weight: 800; color: #2c5f8a; }
+  .stat-label { font-size: 0.72em; color: #777; margin-top: 4px; }
+  
+  .level-results { max-height: 180px; overflow-y: auto; margin-bottom: 12px; }
+  
+  .level-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    background: #f8f9fa;
+    font-size: 0.82em;
+  }
+  
+  .level-row .lv-name { font-weight: 600; color: #2c3e50; }
+  .level-row .lv-score { font-weight: 700; }
+  .level-row .lv-score.good { color: #28a745; }
+  .level-row .lv-score.mid { color: #ffc107; }
+  .level-row .lv-score.bad { color: #dc3545; }
+  
+  .data-actions { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  
+  .data-actions button {
+    flex: 1;
+    min-width: 85px;
+    padding: 8px;
+    font-size: 0.78em;
+    border-radius: 8px;
+    border: 1px solid #d0d8e0;
+    background: #f8f9fa;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  
+  .data-actions button:hover {
+    background: #e8f0fe;
+    border-color: #4a90d9;
+    color: #2c5f8a;
+  }
+  
+  .mute-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(255,255,255,0.85);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.05em;
+    transition: all 0.25s;
+    z-index: 20;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  }
+  
+  .mute-btn:hover { background: white; transform: scale(1.05); }
+  
+  .level-complete-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    animation: fadeIn 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  
+  .level-complete-box {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 40px;
+    text-align: center;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+    animation: levelPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 90vw;
+  }
+  
+  @keyframes levelPop {
+    0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  
+  .level-complete-box h3 {
+    color: #28a745;
+    font-size: 1.6em;
+    margin-bottom: 10px;
+  }
+  
+  .level-complete-box p {
+    color: #2c5f8a;
+    font-size: 1em;
+  }
+  
+  @media (max-width: 600px) {
+    .game-container { padding: 8px 10px; }
+    .board { gap: 6px; }
+    .card-back.word { font-size: clamp(0.65em, 2.2vw, 1.1em); }
+    .card-back.image { font-size: clamp(1.6em, 8vw, 3.2em); }
+    .board.cols-5 .card-back.word, .board.cols-6 .card-back.word { font-size: clamp(0.55em, 2vw, 0.9em); }
+    .board.cols-5 .card-back.image, .board.cols-6 .card-back.image { font-size: clamp(1.4em, 7vw, 2.8em); }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-card:last-child { grid-column: span 2; }
+    .char-avatar { font-size: 4em; }
+    .char-bubble { font-size: 1.2em; padding: 10px 18px; }
+    .level-bar { font-size: 0.85em; gap: 4px; }
+  }
+  
+  @media (max-height: 620px) {
+    .welcome-card { padding: 16px 20px; }
+    .welcome-icon { font-size: 2.2em; }
+    .welcome-title { font-size: 1.3em; }
+    .rules-box { font-size: 0.75em; padding: 8px 12px; }
+    .motivation { font-size: 0.8em; padding: 5px; }
+  }
+</style>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5PM3VJ7X');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5PM3VJ7X"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<a href="../../ingles/" class="home-btn" aria-label="Volver a la pantalla de inicio">
+  <span aria-hidden="true">←</span>
+  <span>Volver</span>
+</a>
+
+<div class="landscape-bg" id="landscapeBg"></div>
+
+<div id="characterPopup">
+  <div class="char-bubble" id="charBubble">Great!</div>
+  <div class="char-avatar" id="charAvatar">🐶</div>
+</div>
+
+<div class="game-container">
+  <button class="mute-btn" id="muteBtn" title="Mute">🔊</button>
+
+  <div class="screen active" id="screenWelcome">
+    <div class="welcome-card">
+      <div class="welcome-icon">🧠</div>
+      <h1 class="welcome-title">Memory Card Game</h1>
+      <p class="welcome-sub">6 Levels · Match word & picture · English Vocabulary</p>
+
+      <div class="form-group">
+        <label for="studentName">👤 Student Name / Nombre del estudiante</label>
+        <input type="text" id="studentName" placeholder="Escribe tu nombre..." maxlength="40" autocomplete="name" required>
+      </div>
+      <div class="form-group">
+        <label for="schoolInput">🏫 School / Escuela</label>
+        <input type="text" id="schoolInput" placeholder="Escribe el nombre de tu escuela..." maxlength="80" autocomplete="organization" required>
+      </div>
+
+      <div class="rules-box">
+        <h3>📋 Rules / Reglas</h3>
+        <ul>
+          <li>Encuentra los pares: <strong>una carta tiene la palabra en inglés</strong> y otra la <strong>imagen</strong>.</li>
+          <li>Al inicio de cada nivel verás las cartas durante <strong>3 segundos</strong>.</li>
+          <li>Si fallas, las cartas quedan visibles <strong>2 segundos</strong> antes de voltearse solas.</li>
+          <li>El número de cartas <strong>aumenta</strong> con cada nivel.</li>
+          <li>Tienes <strong>1 minuto 30 segundos</strong> por nivel.</li>
+        </ul>
+      </div>
+
+      <div class="motivation">🌟 "A good memory is a treasure. Let's find the pairs!"</div>
+
+      <button class="btn-primary" id="startBtn">▶ Start Game</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screenCountdown">
+    <div class="countdown-display" id="countdownNum">3</div>
+    <p class="countdown-msg" id="cdMsg">Get ready...</p>
+  </div>
+
+  <div class="screen" id="screenGame">
+    <div class="level-bar">
+      <span class="level-badge" id="levelBadge">Level 1</span>
+      <span class="theme-badge" id="themeBadge">🍎 Fruits & Vegetables</span>
+      <span class="pairs-box" id="pairsBox">✅ 0/3</span>
+      <span class="attempts-box" id="attemptsBox">🎯 0</span>
+      <span class="timer-box" id="timerBox">⏱ 1:30</span>
+    </div>
+
+    <div class="preview-banner" id="previewBanner">
+      👀 Memorize the cards! You have 3 seconds...
+    </div>
+
+    <div class="board-wrapper">
+      <div class="board" id="board"></div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResults">
+    <div class="results-card">
+      <div class="results-icon" id="resultsIcon">🏆</div>
+      <h2 class="results-title" id="resultsTitle">Game Complete!</h2>
+      <p class="student-name" id="resultStudentName"></p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="statPairs">0</div>
+          <div class="stat-label">Pairs Found</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statLevels">0</div>
+          <div class="stat-label">Levels Done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statAccuracy">0%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+
+      <div class="level-results" id="levelResults"></div>
+
+      <button class="btn-primary" id="playAgainBtn">🔄 Play Again</button>
+      <div class="data-actions">
+        <button id="exportJsonBtn">⬇ JSON</button>
+        <button id="exportCsvBtn">⬇ CSV</button>
+        <button id="viewDataBtn">📊 View</button>
+        <button id="clearDataBtn">🗑 Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   LEVEL DATA - Progressive difficulty (3, 4, 4, 5, 5, 6 pairs)
+   All vocabulary is unique across levels
+   ============================================================ */
+const LEVELS = [
+  {
+    theme: '🍎 Fruits & Vegetables',
+    pairs: [
+      { word: 'Apple',    image: '🍎' },
+      { word: 'Banana',   image: '🍌' },
+      { word: 'Carrot',   image: '🥕' }
+    ]
+  },
+  {
+    theme: '🐶 Animals',
+    pairs: [
+      { word: 'Dog',      image: '🐶' },
+      { word: 'Cat',      image: '🐱' },
+      { word: 'Elephant', image: '🐘' },
+      { word: 'Lion',     image: '🦁' }
+    ]
+  },
+  {
+    theme: '🌳 Nature',
+    pairs: [
+      { word: 'Tree',     image: '🌳' },
+      { word: 'Flower',   image: '🌻' },
+      { word: 'Mountain', image: '⛰️' },
+      { word: 'Rainbow',  image: '🌈' }
+    ]
+  },
+  {
+    theme: '🏘️ Community Places',
+    pairs: [
+      { word: 'School',   image: '🏫' },
+      { word: 'Hospital', image: '🏥' },
+      { word: 'Library',  image: '📚' },
+      { word: 'Bank',     image: '🏦' },
+      { word: 'Park',     image: '🏞️' }
+    ]
+  },
+  {
+    theme: '👨‍🍳 Professions',
+    pairs: [
+      { word: 'Doctor',  image: '👨‍⚕️' },
+      { word: 'Teacher', image: '👩‍🏫' },
+      { word: 'Chef',    image: '👨‍🍳' },
+      { word: 'Police',  image: '👮' },
+      { word: 'Pilot',   image: '👨‍✈️' }
+    ]
+  },
+  {
+    theme: '🚗 Transportation',
+    pairs: [
+      { word: 'Car',      image: '🚗' },
+      { word: 'Bus',      image: '🚌' },
+      { word: 'Airplane', image: '✈️' },
+      { word: 'Bicycle',  image: '🚲' },
+      { word: 'Train',    image: '🚆' },
+      { word: 'Boat',     image: '⛵' }
+    ]
+  }
+];
+
+/* ============================================================
+   LANDSCAPE BACKGROUNDS
+   ============================================================ */
+const LANDSCAPES = {
+  1: `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#87ceeb"/>
+        <stop offset="60%" stop-color="#c5e8f7"/>
+        <stop offset="100%" stop-color="#f7e6b5"/>
+      </linearGradient>
+      <radialGradient id="sun1" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#fff8b0"/>
+        <stop offset="70%" stop-color="#ffd54f"/>
+        <stop offset="100%" stop-color="#ffb30000"/>
+      </radialGradient>
+      <linearGradient id="hill1a" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7cb342"/>
+        <stop offset="100%" stop-color="#558b2f"/>
+      </linearGradient>
+      <linearGradient id="hill1b" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#8bc34a"/>
+        <stop offset="100%" stop-color="#689f38"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#sky1)"/>
+    <circle cx="950" cy="140" r="90" fill="url(#sun1)"/>
+    <circle cx="950" cy="140" r="55" fill="#fff59d" opacity="0.9"/>
+    <ellipse cx="300" cy="180" rx="120" ry="45" fill="#ffffff" opacity="0.8"/>
+    <ellipse cx="380" cy="190" rx="90" ry="35" fill="#ffffff" opacity="0.75"/>
+    <ellipse cx="220" cy="195" rx="80" ry="30" fill="#ffffff" opacity="0.7"/>
+    <ellipse cx="750" cy="130" rx="100" ry="38" fill="#ffffff" opacity="0.7"/>
+    <path d="M0,520 Q200,450 400,500 T800,480 T1200,510 L1200,800 L0,800 Z" fill="url(#hill1a)"/>
+    <path d="M0,600 Q300,540 600,590 T1200,570 L1200,800 L0,800 Z" fill="url(#hill1b)"/>
+    <g transform="translate(120,540)">
+      <rect x="-6" y="0" width="12" height="60" fill="#6d4c41"/>
+      <circle cx="0" cy="-15" r="45" fill="#4caf50"/>
+      <circle cx="-25" cy="0" r="30" fill="#66bb6a"/>
+      <circle cx="25" cy="0" r="30" fill="#66bb6a"/>
+      <circle cx="-8" cy="-8" r="6" fill="#f44336"/>
+      <circle cx="15" cy="5" r="6" fill="#f44336"/>
+    </g>
+    <g transform="translate(1050,560) scale(1.2)">
+      <rect x="-6" y="0" width="12" height="60" fill="#6d4c41"/>
+      <circle cx="0" cy="-15" r="45" fill="#4caf50"/>
+      <circle cx="-25" cy="0" r="30" fill="#66bb6a"/>
+      <circle cx="25" cy="0" r="30" fill="#66bb6a"/>
+      <circle cx="-8" cy="-8" r="6" fill="#ff9800"/>
+    </g>
+    <g stroke="#8d6e63" stroke-width="4" fill="none" opacity="0.7">
+      <line x1="500" y1="640" x2="500" y2="700"/>
+      <line x1="540" y1="640" x2="540" y2="700"/>
+      <line x1="580" y1="640" x2="580" y2="700"/>
+      <line x1="495" y1="660" x2="585" y2="660"/>
+    </g>
+  </svg>`,
+  2: `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff9a56"/>
+        <stop offset="45%" stop-color="#ffd07a"/>
+        <stop offset="75%" stop-color="#ffe4a8"/>
+        <stop offset="100%" stop-color="#f4b060"/>
+      </linearGradient>
+      <radialGradient id="sun2" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#fff3b0"/>
+        <stop offset="60%" stop-color="#ffcc33"/>
+        <stop offset="100%" stop-color="#ff880000"/>
+      </radialGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#sky2)"/>
+    <circle cx="600" cy="380" r="130" fill="url(#sun2)"/>
+    <circle cx="600" cy="380" r="75" fill="#fff3b0" opacity="0.85"/>
+    <path d="M0,560 Q250,500 500,550 T1000,540 T1200,560 L1200,800 L0,800 Z" fill="#c68a4a"/>
+    <path d="M0,650 Q300,610 600,650 T1200,640 L1200,800 L0,800 Z" fill="#a56a34"/>
+    <g fill="#3d2a17">
+      <rect x="165" y="480" width="14" height="120"/>
+      <ellipse cx="172" cy="475" rx="110" ry="22"/>
+      <ellipse cx="120" cy="470" rx="55" ry="16"/>
+      <ellipse cx="225" cy="470" rx="55" ry="16"/>
+    </g>
+    <g fill="#3d2a17" opacity="0.75">
+      <rect x="980" y="520" width="10" height="90"/>
+      <ellipse cx="985" cy="515" rx="75" ry="16"/>
+    </g>
+  </svg>`,
+  3: `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5ca9d6"/>
+        <stop offset="50%" stop-color="#9dd3e8"/>
+        <stop offset="100%" stop-color="#d6ecf2"/>
+      </linearGradient>
+      <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7f8c8d"/>
+        <stop offset="40%" stop-color="#95a5a6"/>
+        <stop offset="100%" stop-color="#546e7a"/>
+      </linearGradient>
+      <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#546e7a"/>
+        <stop offset="100%" stop-color="#37474f"/>
+      </linearGradient>
+      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#4fc3f7"/>
+        <stop offset="100%" stop-color="#0277bd"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#sky3)"/>
+    <circle cx="200" cy="120" r="60" fill="#fff9c4" opacity="0.9"/>
+    <ellipse cx="800" cy="150" rx="140" ry="42" fill="#ffffff" opacity="0.7"/>
+    <path d="M0,450 L180,220 L340,400 L520,250 L700,430 L880,280 L1080,420 L1200,320 L1200,600 L0,600 Z" fill="url(#mtn)"/>
+    <path d="M0,520 L250,350 L450,480 L650,380 L900,520 L1200,430 L1200,700 L0,700 Z" fill="url(#mtn2)"/>
+    <path d="M180,220 L140,270 L220,270 Z" fill="#ffffff"/>
+    <path d="M520,250 L480,300 L560,300 Z" fill="#ffffff"/>
+    <path d="M880,280 L840,330 L920,330 Z" fill="#ffffff"/>
+    <g fill="#2e7d32">
+      <polygon points="100,600 130,540 160,600"/>
+      <polygon points="100,640 130,580 160,640"/>
+      <polygon points="280,610 315,540 350,610"/>
+      <polygon points="1050,600 1085,540 1120,600"/>
+    </g>
+    <path d="M0,700 Q300,660 600,690 T1200,680 L1200,800 L0,800 Z" fill="url(#lake)"/>
+    <g opacity="0.4" fill="#ffffff">
+      <ellipse cx="400" cy="740" rx="60" ry="4"/>
+      <ellipse cx="700" cy="760" rx="80" ry="5"/>
+    </g>
+  </svg>`,
+  4: `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1a237e"/>
+        <stop offset="40%" stop-color="#4527a0"/>
+        <stop offset="70%" stop-color="#c2185b"/>
+        <stop offset="100%" stop-color="#ff7043"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#sky4)"/>
+    <circle cx="950" cy="180" r="60" fill="#fff59d" opacity="0.85"/>
+    <g fill="#ffe082" opacity="0.6">
+      <circle cx="150" cy="90" r="2"/>
+      <circle cx="300" cy="140" r="2"/>
+      <circle cx="500" cy="70" r="2"/>
+      <circle cx="750" cy="120" r="2"/>
+      <circle cx="1100" cy="80" r="2"/>
+      <circle cx="400" cy="200" r="2"/>
+      <circle cx="1000" cy="240" r="2"/>
+    </g>
+    <g fill="#1a1a2e">
+      <rect x="0" y="500" width="80" height="300"/>
+      <rect x="80" y="440" width="70" height="360"/>
+      <rect x="150" y="520" width="90" height="280"/>
+      <rect x="240" y="380" width="80" height="420"/>
+      <rect x="320" y="480" width="60" height="320"/>
+      <rect x="380" y="320" width="100" height="480"/>
+      <rect x="480" y="430" width="70" height="370"/>
+      <rect x="550" y="260" width="90" height="540"/>
+      <rect x="640" y="400" width="80" height="400"/>
+      <rect x="720" y="460" width="70" height="340"/>
+      <rect x="790" y="340" width="100" height="460"/>
+      <rect x="890" y="450" width="70" height="350"/>
+      <rect x="960" y="380" width="90" height="420"/>
+      <rect x="1050" y="500" width="80" height="300"/>
+      <rect x="1130" y="440" width="70" height="360"/>
+    </g>
+    <g fill="#ffd54f" opacity="0.85">
+      <rect x="260" y="420" width="10" height="14"/>
+      <rect x="280" y="420" width="10" height="14"/>
+      <rect x="400" y="360" width="12" height="16"/>
+      <rect x="430" y="360" width="12" height="16"/>
+      <rect x="570" y="300" width="12" height="16"/>
+      <rect x="600" y="300" width="12" height="16"/>
+      <rect x="810" y="380" width="12" height="16"/>
+      <rect x="840" y="380" width="12" height="16"/>
+      <rect x="980" y="420" width="12" height="16"/>
+      <rect x="1010" y="420" width="12" height="16"/>
+    </g>
+    <rect x="0" y="780" width="1200" height="20" fill="#0d0d1a"/>
+  </svg>`,
+  5: `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky5" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffe0b2"/>
+        <stop offset="50%" stop-color="#ffcc80"/>
+        <stop offset="100%" stop-color="#ffb74d"/>
+      </linearGradient>
+      <linearGradient id="hill5" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#a5d6a7"/>
+        <stop offset="100%" stop-color="#66bb6a"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#sky5)"/>
+    <circle cx="250" cy="180" r="90" fill="#fff176" opacity="0.7"/>
+    <circle cx="250" cy="180" r="55" fill="#ffee58" opacity="0.9"/>
+    <path d="M0,500 Q300,440 600,490 T1200,470 L1200,800 L0,800 Z" fill="url(#hill5)"/>
+    <path d="M0,620 Q400,580 800,620 T1200,600 L1200,800 L0,800 Z" fill="#4caf50" opacity="0.85"/>
+    <g transform="translate(150,520)">
+      <rect x="0" y="40" width="110" height="80" fill="#efebe9"/>
+      <polygon points="-10,40 55,-10 120,40" fill="#c62828"/>
+      <rect x="45" y="80" width="22" height="40" fill="#5d4037"/>
+      <rect x="18" y="65" width="18" height="18" fill="#90caf9"/>
+      <rect x="75" y="65" width="18" height="18" fill="#90caf9"/>
+    </g>
+    <g transform="translate(950,540)">
+      <rect x="0" y="40" width="100" height="70" fill="#efebe9"/>
+      <polygon points="-10,40 50,-10 110,40" fill="#1565c0"/>
+      <rect x="40" y="75" width="20" height="35" fill="#5d4037"/>
+      <rect x="15" y="60" width="16" height="16" fill="#90caf9"/>
+      <rect x="68" y="60" width="16" height="16" fill="#90caf9"/>
+    </g>
+    <g transform="translate(560,590)">
+      <rect x="0" y="30" width="90" height="60" fill="#efebe9"/>
+      <polygon points="-8,30 45,-10 98,30" fill="#2e7d32"/>
+      <rect x="36" y="60" width="18" height="30" fill="#5d4037"/>
+    </g>
+    <path d="M0,780 Q400,740 800,760 T1200,750 L1200,800 L0,800 Z" fill="#8d6e63"/>
+    <g stroke="#fff9c4" stroke-width="4" stroke-dasharray="25 20" fill="none">
+      <line x1="0" y1="785" x2="1200" y2="775"/>
+    </g>
+    <g transform="translate(430,540)">
+      <rect x="-5" y="0" width="10" height="40" fill="#6d4c41"/>
+      <circle cx="0" cy="-15" r="35" fill="#4caf50"/>
+    </g>
+  </svg>`,
+  6: `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky6" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#4fc3f7"/>
+        <stop offset="60%" stop-color="#b3e5fc"/>
+        <stop offset="100%" stop-color="#e1f5fe"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#sky6)"/>
+    <circle cx="900" cy="140" r="70" fill="#fff9c4"/>
+    <circle cx="900" cy="140" r="45" fill="#fff59d"/>
+    <g fill="#ffffff" opacity="0.85">
+      <ellipse cx="200" cy="160" rx="100" ry="38"/>
+      <ellipse cx="280" cy="170" rx="70" ry="28"/>
+      <ellipse cx="130" cy="175" rx="60" ry="24"/>
+      <ellipse cx="600" cy="120" rx="90" ry="32"/>
+      <ellipse cx="680" cy="130" rx="60" ry="24"/>
+    </g>
+    <path d="M0,500 Q200,440 400,480 T800,460 T1200,490 L1200,800 L0,800 Z" fill="#aed581"/>
+    <path d="M0,580 Q300,540 600,570 T1200,560 L1200,800 L0,800 Z" fill="#8bc34a"/>
+    <path d="M-50,800 L500,600 L700,600 L1250,800 Z" fill="#616161"/>
+    <path d="M-50,800 L500,600 L700,600 L1250,800 Z" fill="none" stroke="#424242" stroke-width="6"/>
+    <g stroke="#fff9c4" stroke-width="6" stroke-dasharray="35 30" fill="none">
+      <line x1="520" y1="620" x2="200" y2="800"/>
+      <line x1="700" y1="620" x2="1000" y2="800"/>
+    </g>
+    <g fill="#90a4ae" opacity="0.75">
+      <rect x="30" y="500" width="60" height="100"/>
+      <rect x="100" y="470" width="50" height="130"/>
+      <rect x="1050" y="490" width="60" height="110"/>
+      <rect x="1120" y="520" width="60" height="80"/>
+    </g>
+  </svg>`
+};
+
+/* ============================================================
+   AUDIO ENGINE
+   ============================================================ */
+let audioCtx = null;
+let musicInterval = null;
+let musicPlaying = false;
+let muted = false;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function startMusic() {
+  if (musicPlaying || muted) return;
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.05;
+    masterGain.connect(ctx.destination);
+    const chords = [
+      [261.63, 329.63, 392.00],
+      [293.66, 349.23, 440.00],
+      [329.63, 392.00, 493.88],
+      [349.23, 440.00, 523.25]
+    ];
+    let chordIndex = 0;
+    function playChord() {
+      if (!musicPlaying || muted) return;
+      const now = ctx.currentTime;
+      const freqs = chords[chordIndex % chords.length];
+      freqs.forEach((freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.3, now + 1.0);
+        gain.gain.linearRampToValueAtTime(0, now + 3.8);
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start(now);
+        osc.stop(now + 3.9);
+      });
+      const melodyNotes = [523.25, 587.33, 659.25, 783.99];
+      const melOsc = ctx.createOscillator();
+      const melGain = ctx.createGain();
+      melOsc.type = 'sine';
+      melOsc.frequency.value = melodyNotes[chordIndex % melodyNotes.length];
+      melGain.gain.setValueAtTime(0, now);
+      melGain.gain.linearRampToValueAtTime(0.1, now + 0.5);
+      melGain.gain.linearRampToValueAtTime(0, now + 2.5);
+      melOsc.connect(melGain);
+      melGain.connect(masterGain);
+      melOsc.start(now);
+      melOsc.stop(now + 2.6);
+      chordIndex++;
+    }
+    musicPlaying = true;
+    playChord();
+    musicInterval = setInterval(playChord, 3400);
+  } catch(e) { console.log('Music error:', e); }
+}
+
+function stopMusic() {
+  musicPlaying = false;
+  if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
+}
+
+/* ============================================================
+   SPEECH SYNTHESIS
+   ============================================================ */
+let voiceToggle = 0;
+
+const MALE_VOICE_PREFS = ['google us english male', 'google uk english male','microsoft david','microsoft mark','microsoft george','daniel','alex','fred','james','oliver','thomas','male'];
+const FEMALE_VOICE_PREFS = ['google us english','google uk english female','microsoft zira','microsoft hazel','microsoft susan','samantha','victoria','karen','moira','tessa','fiona','serena','female'];
+
+function pickVoice(voices, profile) {
+  if (!voices || voices.length === 0) return null;
+  const langVoices = voices.filter(v => v.lang.replace('_','-').toLowerCase().startsWith(profile.lang.toLowerCase()));
+  const pool = langVoices.length > 0 ? langVoices : voices;
+  const prefs = profile.gender === 'female' ? FEMALE_VOICE_PREFS : MALE_VOICE_PREFS;
+  for (const pref of prefs) {
+    const found = pool.find(v => v.name.toLowerCase().includes(pref));
+    if (found) return found;
+  }
+  return pool[0];
+}
+
+function speak(text, callback) {
+  if (muted) { if (callback) setTimeout(callback, 200); return; }
+  try { window.speechSynthesis.cancel(); } catch(e) {}
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  const profiles = [
+    { gender: 'male',   lang: 'en-US' },
+    { gender: 'female', lang: 'en-GB' },
+    { gender: 'male',   lang: 'en-GB' },
+    { gender: 'female', lang: 'en-US' }
+  ];
+  const profile = profiles[voiceToggle % profiles.length];
+  voiceToggle++;
+  utterance.lang = profile.lang;
+  utterance.rate = profile.gender === 'male' ? 0.82 : 0.9;
+  utterance.pitch = profile.gender === 'male' ? 0.98 : 1.15;
+  utterance.volume = 1.0;
+  const selectedVoice = pickVoice(voices, profile);
+  if (selectedVoice) utterance.voice = selectedVoice;
+  let finished = false;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    if (callback) callback();
+  };
+  utterance.onend = done;
+  utterance.onerror = done;
+  setTimeout(done, Math.max(3000, text.length * 120));
+  window.speechSynthesis.speak(utterance);
+}
+
+/* ============================================================
+   PHRASE POOLS
+   ============================================================ */
+const MATCH_PHRASES = [
+  "Great match!", "Excellent!", "Well done!", "Perfect pair!",
+  "Awesome!", "Nice!", "You got it!", "Brilliant!", "Fantastic!", "Super!",
+  "Awesome job!", "That's right!", "Amazing!", "Way to go!", "Beautiful!"
+];
+
+const WRONG_PHRASES = [
+  "Try again!", "Not a match!", "Oops!", "Almost!", "Keep looking!",
+  "Close!", "Better luck!", "Try once more!", "Not this time!", "Keep trying!",
+  "Not quite!", "So close!", "Give it another shot!", "Focus!", "You'll get it!"
+];
+
+let lastMatchIdx = -1;
+let lastWrongIdx = -1;
+
+function getRandomMatchPhrase() {
+  let idx;
+  do { idx = Math.floor(Math.random() * MATCH_PHRASES.length); }
+  while (idx === lastMatchIdx && MATCH_PHRASES.length > 1);
+  lastMatchIdx = idx;
+  return MATCH_PHRASES[idx];
+}
+
+function getRandomWrongPhrase() {
+  let idx;
+  do { idx = Math.floor(Math.random() * WRONG_PHRASES.length); }
+  while (idx === lastWrongIdx && WRONG_PHRASES.length > 1);
+  lastWrongIdx = idx;
+  return WRONG_PHRASES[idx];
+}
+
+/* ============================================================
+   CHARACTER POPUP
+   ============================================================ */
+const HAPPY_CHARS = ['🐶','🐱','🐰','🦊','🐼','🐨','🐯','🦁','🐸','🐵','🧒','👦','👧'];
+const SAD_CHARS   = ['🐶','🐱','🐰','🦊','🐼','🐨','🐯','🦁','🐸','🐵','🧒','👦','👧'];
+let lastHappyIdx = -1;
+let lastSadIdx = -1;
+
+function showCharacter(isGood, phrase) {
+  const popup = document.getElementById('characterPopup');
+  const bubble = document.getElementById('charBubble');
+  const avatar = document.getElementById('charAvatar');
+  if (isGood) {
+    bubble.textContent = phrase + ' 🎉';
+    bubble.className = 'char-bubble ok';
+    let idx;
+    do { idx = Math.floor(Math.random() * HAPPY_CHARS.length); } while (idx === lastHappyIdx && HAPPY_CHARS.length > 1);
+    lastHappyIdx = idx;
+    avatar.textContent = HAPPY_CHARS[idx];
+  } else {
+    bubble.textContent = phrase + ' 😢';
+    bubble.className = 'char-bubble no';
+    let idx;
+    do { idx = Math.floor(Math.random() * SAD_CHARS.length); } while (idx === lastSadIdx && SAD_CHARS.length > 1);
+    lastSadIdx = idx;
+    avatar.textContent = SAD_CHARS[idx];
+  }
+  popup.classList.remove('show');
+  void popup.offsetWidth;
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1200);
+}
+
+/* ============================================================
+   LANDSCAPE
+   ============================================================ */
+function renderLandscape(levelNumber) {
+  const container = document.getElementById('landscapeBg');
+  container.innerHTML = LANDSCAPES[levelNumber] || '';
+}
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+const TIME_LIMIT = 90;
+const PREVIEW_TIME = 3;
+const WRONG_VIEW_TIME = 2; // FAST flip back after wrong
+
+let state = {
+  studentName: '',
+  school: '',
+  currentLevel: 0,
+  totalPairs: 0,
+  totalAttempts: 0,
+  levelScores: [],
+  levelPairs: 0,
+  levelAttempts: 0,
+  timeLeft: TIME_LIMIT,
+  timerInterval: null,
+  firstCard: null,
+  secondCard: null,
+  boardLocked: true,
+  startTime: null
+};
+
+const screens = {
+  welcome: document.getElementById('screenWelcome'),
+  countdown: document.getElementById('screenCountdown'),
+  game: document.getElementById('screenGame'),
+  results: document.getElementById('screenResults')
+};
+
+const el = {
+  levelBadge: document.getElementById('levelBadge'),
+  themeBadge: document.getElementById('themeBadge'),
+  pairsBox: document.getElementById('pairsBox'),
+  attemptsBox: document.getElementById('attemptsBox'),
+  timerBox: document.getElementById('timerBox'),
+  previewBanner: document.getElementById('previewBanner'),
+  board: document.getElementById('board'),
+  countdownNum: document.getElementById('countdownNum'),
+  cdMsg: document.getElementById('cdMsg'),
+  muteBtn: document.getElementById('muteBtn'),
+  studentName: document.getElementById('studentName'),
+  schoolInput: document.getElementById('schoolInput'),
+  resultStudentName: document.getElementById('resultStudentName'),
+  resultsIcon: document.getElementById('resultsIcon'),
+  resultsTitle: document.getElementById('resultsTitle'),
+  statPairs: document.getElementById('statPairs'),
+  statLevels: document.getElementById('statLevels'),
+  statAccuracy: document.getElementById('statAccuracy'),
+  levelResults: document.getElementById('levelResults'),
+  playAgainBtn: document.getElementById('playAgainBtn')
+};
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  const name = el.studentName.value.trim();
+  const school = el.schoolInput.value.trim();
+  if (!name) {
+    alert('Please enter your name / Por favor escribe tu nombre');
+    el.studentName.focus();
+    return;
+  }
+  if (!school) {
+    alert('Please enter your school / Por favor escribe tu escuela');
+    el.schoolInput.focus();
+    return;
+  }
+  state.studentName = name;
+  state.school = school;
+  state.currentLevel = 0;
+  state.totalPairs = 0;
+  state.totalAttempts = 0;
+  state.levelScores = [];
+  state.startTime = Date.now();
+  state._answerLog = [];
+  lastMatchIdx = -1;
+  lastWrongIdx = -1;
+  voiceToggle = 0;
+  getAudioCtx();
+  startMusic();
+  startCountdown();
+});
+
+function startCountdown() {
+  showScreen('countdown');
+  let countdownValue = 3;
+  el.countdownNum.textContent = countdownValue;
+  el.cdMsg.textContent = `Welcome, ${state.studentName}! Get ready...`;
+  renderLandscape(1);
+  speak(`Welcome ${state.studentName}. Good luck!`, () => {
+    const timer = setInterval(() => {
+      countdownValue--;
+      if (countdownValue > 0) {
+        el.countdownNum.textContent = countdownValue;
+      } else if (countdownValue === 0) {
+        el.countdownNum.textContent = 'GO!';
+        el.cdMsg.textContent = "Let's go!";
+        clearInterval(timer);
+        setTimeout(() => startLevel(), 700);
+      }
+    }, 1100);
+  });
+}
+
+function startLevel() {
+  state.levelPairs = 0;
+  state.levelAttempts = 0;
+  state.timeLeft = TIME_LIMIT;
+  state.firstCard = null;
+  state.secondCard = null;
+  state.boardLocked = true;
+  
+  renderLandscape(state.currentLevel + 1);
+  
+  const levelData = LEVELS[state.currentLevel];
+  el.levelBadge.textContent = 'Level ' + (state.currentLevel + 1);
+  el.themeBadge.textContent = levelData.theme;
+  el.pairsBox.textContent = `✅ 0/${levelData.pairs.length}`;
+  el.attemptsBox.textContent = `🎯 0`;
+  el.timerBox.textContent = '⏱ 1:30';
+  el.timerBox.classList.remove('warning');
+  
+  el.previewBanner.style.display = 'block';
+  el.previewBanner.textContent = '👀 Memorize the cards! 3 seconds...';
+  
+  showScreen('game');
+  buildBoard(levelData);
+  
+  setTimeout(() => {
+    el.board.querySelectorAll('.card').forEach(card => {
+      card.classList.remove('flipped');
+    });
+    state.boardLocked = false;
+    el.previewBanner.style.display = 'none';
+    state.timerInterval = setInterval(() => {
+      state.timeLeft--;
+      updateTimerDisplay();
+      if (state.timeLeft <= 0) {
+        clearInterval(state.timerInterval);
+        timeUp();
+      }
+    }, 1000);
+  }, PREVIEW_TIME * 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(state.timeLeft / 60);
+  const secs = state.timeLeft % 60;
+  el.timerBox.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
+  if (state.timeLeft <= 15) el.timerBox.classList.add('warning');
+  else el.timerBox.classList.remove('warning');
+}
+
+function buildBoard(levelData) {
+  el.board.innerHTML = '';
+  const pairCount = levelData.pairs.length;
+  
+  // Adjust columns based on pair count
+  el.board.className = 'board';
+  if (pairCount === 3) el.board.classList.add('cols-3'); // 6 cards, 3x2
+  else if (pairCount === 4) el.board.classList.add('cols-4'); // 8 cards, 4x2
+  else if (pairCount === 5) el.board.classList.add('cols-5'); // 10 cards, 5x2
+  else if (pairCount === 6) el.board.classList.add('cols-6'); // 12 cards, 4x3
+  
+  const deck = [];
+  levelData.pairs.forEach((pair, pairId) => {
+    deck.push({ type: 'word',  value: pair.word, pairId, content: pair.word });
+    deck.push({ type: 'image', value: pair.word, pairId, content: pair.image });
+  });
+  
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  
+  deck.forEach((cardData, index) => {
+    const card = document.createElement('div');
+    card.className = 'card flipped';
+    card.dataset.index = index;
+    card.dataset.pairId = cardData.pairId;
+    card.dataset.type = cardData.type;
+    
+    const cardInner = document.createElement('div');
+    cardInner.className = 'card-inner';
+    
+    const front = document.createElement('div');
+    front.className = 'card-face card-front';
+    
+    const back = document.createElement('div');
+    back.className = 'card-face card-back ' + (cardData.type === 'word' ? 'word' : 'image');
+    back.textContent = cardData.content;
+    
+    cardInner.appendChild(front);
+    cardInner.appendChild(back);
+    card.appendChild(cardInner);
+    
+    card.addEventListener('click', () => handleCardClick(card));
+    el.board.appendChild(card);
+  });
+}
+
+function handleCardClick(card) {
+  if (state.boardLocked) return;
+  if (card.classList.contains('matched')) return;
+  if (card.classList.contains('flipped')) return;
+  if (state.firstCard === card) return;
+  
+  card.classList.add('flipped');
+  
+  if (!state.firstCard) {
+    state.firstCard = card;
+    return;
+  }
+  
+  state.secondCard = card;
+  state.boardLocked = true;
+  state.levelAttempts++;
+  state.totalAttempts++;
+  el.attemptsBox.textContent = `🎯 ${state.levelAttempts}`;
+  
+  const first = state.firstCard;
+  const second = state.secondCard;
+  const samePair = first.dataset.pairId === second.dataset.pairId;
+  const diffType = first.dataset.type !== second.dataset.type;
+  
+  if (samePair && diffType) {
+    setTimeout(() => {
+      first.classList.add('matched');
+      second.classList.add('matched');
+      state.levelPairs++;
+      state.totalPairs++;
+      const levelData = LEVELS[state.currentLevel];
+      el.pairsBox.textContent = `✅ ${state.levelPairs}/${levelData.pairs.length}`;
+      
+      const phrase = getRandomMatchPhrase();
+      showCharacter(true, phrase);
+      if (!muted) speak(phrase);
+      
+      state._answerLog.push({
+        level: state.currentLevel + 1,
+        theme: levelData.theme,
+        pair: first.dataset.pairId,
+        correct: true,
+        timestamp: Date.now()
+      });
+      
+      resetTurn();
+      if (state.levelPairs === levelData.pairs.length) {
+        setTimeout(() => levelComplete(), 500);
+      }
+    }, 350);
+  } else {
+    // WRONG - quick flip back
+    setTimeout(() => {
+      first.classList.add('wrong');
+      second.classList.add('wrong');
+      
+      const phrase = getRandomWrongPhrase();
+      showCharacter(false, phrase);
+      if (!muted) speak(phrase);
+      
+      state._answerLog.push({
+        level: state.currentLevel + 1,
+        theme: LEVELS[state.currentLevel].theme,
+        pair: first.dataset.pairId + '-' + second.dataset.pairId,
+        correct: false,
+        timestamp: Date.now()
+      });
+      
+      // Quick 2-second view before flip back
+      setTimeout(() => {
+        first.classList.remove('flipped', 'wrong');
+        second.classList.remove('flipped', 'wrong');
+        resetTurn();
+      }, WRONG_VIEW_TIME * 1000);
+    }, 250);
+  }
+}
+
+function resetTurn() {
+  state.firstCard = null;
+  state.secondCard = null;
+  state.boardLocked = false;
+}
+
+function timeUp() {
+  state.boardLocked = true;
+  el.timerBox.textContent = "⏰ 0:00";
+  showCharacter(false, "Time is up!");
+  if (!muted) speak("Time is up!");
+  setTimeout(() => {
+    state.levelScores.push({
+      level: state.currentLevel + 1,
+      theme: LEVELS[state.currentLevel].theme,
+      pairs: state.levelPairs,
+      total: LEVELS[state.currentLevel].pairs.length,
+      attempts: state.levelAttempts,
+      timeUp: true
+    });
+    nextLevelOrFinish();
+  }, 1800);
+}
+
+function levelComplete() {
+  state.boardLocked = true;
+  clearInterval(state.timerInterval);
+  state.levelScores.push({
+    level: state.currentLevel + 1,
+    theme: LEVELS[state.currentLevel].theme,
+    pairs: state.levelPairs,
+    total: LEVELS[state.currentLevel].pairs.length,
+    attempts: state.levelAttempts,
+    timeUp: false
+  });
+  
+  const timeUsed = TIME_LIMIT - state.timeLeft;
+  const mins = Math.floor(timeUsed / 60);
+  const secs = timeUsed % 60;
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'level-complete-overlay';
+  overlay.innerHTML = `
+    <div class="level-complete-box">
+      <h3>🎉 Level ${state.currentLevel + 1} Complete!</h3>
+      <p>All pairs found in ${mins}:${secs.toString().padStart(2,'0')}<br>with ${state.levelAttempts} attempts</p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  if (!muted) speak("Level complete! Well done!");
+  setTimeout(() => {
+    overlay.remove();
+    nextLevelOrFinish();
+  }, 2000);
+}
+
+function nextLevelOrFinish() {
+  if (state.currentLevel < LEVELS.length - 1) {
+    state.currentLevel++;
+    startLevel();
+  } else {
+    finishGame();
+  }
+}
+
+function finishGame() {
+  clearInterval(state.timerInterval);
+  stopMusic();
+  saveSession();
+  showResults();
+}
+
+function showResults() {
+  showScreen('results');
+  const totalPairsPossible = LEVELS.reduce((s, l) => s + l.pairs.length, 0);
+  const completedLevels = state.levelScores.filter(ls => !ls.timeUp && ls.pairs === ls.total).length;
+  const accuracy = state.totalAttempts > 0 ? Math.round((state.totalPairs / state.totalAttempts) * 100) : 0;
+  
+  el.resultStudentName.textContent = `👤 ${state.studentName} · 🏫 ${state.school}`;
+  el.statPairs.textContent = `${state.totalPairs}/${totalPairsPossible}`;
+  el.statLevels.textContent = `${completedLevels}/${LEVELS.length}`;
+  el.statAccuracy.textContent = accuracy + '%';
+  
+  if (completedLevels === LEVELS.length && accuracy >= 70) {
+    el.resultsIcon.textContent = '🏆';
+    el.resultsTitle.textContent = 'Memory Master!';
+  } else if (completedLevels >= 4) {
+    el.resultsIcon.textContent = '🎉';
+    el.resultsTitle.textContent = 'Great Job!';
+  } else if (completedLevels >= 2) {
+    el.resultsIcon.textContent = '👍';
+    el.resultsTitle.textContent = 'Good Effort!';
+  } else {
+    el.resultsIcon.textContent = '📚';
+    el.resultsTitle.textContent = 'Keep Practicing!';
+  }
+  
+  el.levelResults.innerHTML = '';
+  state.levelScores.forEach(ls => {
+    const row = document.createElement('div');
+    row.className = 'level-row';
+    const pct = Math.round((ls.pairs / ls.total) * 100);
+    let scoreClass = 'bad';
+    if (pct === 100) scoreClass = 'good';
+    else if (pct >= 50) scoreClass = 'mid';
+    const status = ls.timeUp ? '⏰' : '✅';
+    row.innerHTML = `
+      <span class="lv-name">${status} Level ${ls.level} · ${ls.theme}</span>
+      <span class="lv-score ${scoreClass}">${ls.pairs}/${ls.total}</span>
+    `;
+    el.levelResults.appendChild(row);
+  });
+  
+  if (!muted) {
+    setTimeout(() => {
+      speak(`Game complete! You found ${state.totalPairs} pairs. ${completedLevels >= 4 ? 'Excellent work!' : 'Keep practicing!'}`);
+    }, 500);
+  }
+}
+
+/* ============================================================
+   DATA COLLECTION
+   ============================================================ */
+const STORAGE_KEY = 'memory_card_sessions_v1';
+
+async function saveSession() {
+  try {
+    const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const session = {
+      id: 'mem_' + Date.now(),
+      studentName: state.studentName,
+      school: state.school,
+      startTime: state.startTime,
+      endTime: Date.now(),
+      totalPairs: state.totalPairs,
+      totalPossible: LEVELS.reduce((s, l) => s + l.pairs.length, 0),
+      totalAttempts: state.totalAttempts,
+      accuracy: state.totalAttempts > 0 ? Math.round((state.totalPairs / state.totalAttempts) * 100) : 0,
+      levelScores: state.levelScores,
+      answerLog: state._answerLog || []
+    };
+    sessions.push(session);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+
+    // Guardar también en la tabla compartida de Supabase.
+    // Puntaje: 10 puntos por cada pareja encontrada.
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      const { error } = await supabaseClient.from('puntajes').insert([{
+        nombre: state.studentName,
+        escuela: state.school,
+        grado: 'No especificado',
+        materia: 'Inglés',
+        juego: 'Memory Card Game',
+        puntaje: Number(state.totalPairs * 10)
+      }]);
+      if (error) console.error('Error guardando puntaje en Supabase:', error);
+      else console.log('Puntaje de Memory Card Game guardado en Supabase.');
+    } else {
+      console.error('No se encontró supabaseClient. Verifica supabase-config.js.');
+    }
+  } catch(e) { console.error('Save error:', e); }
+}
+
+function exportJSON() {
+  const data = localStorage.getItem(STORAGE_KEY) || '[]';
+  downloadFile('memory_card_data.json', data, 'application/json');
+}
+
+function exportCSV() {
+  try {
+    const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const rows = [
+      ['session_id','student_name','start_time','end_time','total_pairs','total_possible','total_attempts','accuracy','level','theme','level_pairs','level_total','level_attempts','time_up']
+    ];
+    sessions.forEach(s => {
+      if (s.levelScores && s.levelScores.length > 0) {
+        s.levelScores.forEach(ls => {
+          rows.push([s.id, s.studentName, s.startTime, s.endTime, s.totalPairs, s.totalPossible, s.totalAttempts, s.accuracy, ls.level, ls.theme, ls.pairs, ls.total, ls.attempts, ls.timeUp]);
+        });
+      } else {
+        rows.push([s.id, s.studentName, s.startTime, s.endTime, s.totalPairs, s.totalPossible, s.totalAttempts, s.accuracy, '','','','','','']);
+      }
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    downloadFile('memory_card_data.csv', csv, 'text/csv');
+  } catch(e) { console.error('CSV error:', e); }
+}
+
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function viewData() {
+  const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  if (sessions.length === 0) { alert('No data collected yet.'); return; }
+  let summary = `📊 SESSIONS: ${sessions.length}\n\n`;
+  sessions.slice(-10).forEach(s => {
+    summary += `👤 ${s.studentName}\n`;
+    summary += `   Pairs: ${s.totalPairs}/${s.totalPossible} (${s.accuracy}% accuracy)\n`;
+    summary += `   Attempts: ${s.totalAttempts}\n`;
+    summary += `   Date: ${new Date(s.startTime).toLocaleString()}\n\n`;
+  });
+  if (sessions.length > 10) summary += `... and ${sessions.length - 10} more sessions.`;
+  alert(summary);
+}
+
+function clearData() {
+  if (confirm('⚠️ Delete ALL collected data? This cannot be undone.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    alert('Data cleared.');
+  }
+}
+
+/* ============================================================
+   EVENT LISTENERS
+   ============================================================ */
+el.muteBtn.addEventListener('click', () => {
+  muted = !muted;
+  el.muteBtn.textContent = muted ? '🔇' : '🔊';
+  if (muted) {
+    try { window.speechSynthesis.cancel(); } catch(e){}
+    stopMusic();
+  } else {
+    startMusic();
+  }
+});
+
+el.playAgainBtn.addEventListener('click', () => {
+  state.currentLevel = 0;
+  state.totalPairs = 0;
+  state.totalAttempts = 0;
+  state.levelScores = [];
+  state._answerLog = [];
+  lastMatchIdx = -1;
+  lastWrongIdx = -1;
+  document.getElementById('landscapeBg').innerHTML = '';
+  showScreen('welcome');
+});
+
+document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
+document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
+document.getElementById('viewDataBtn').addEventListener('click', viewData);
+document.getElementById('clearDataBtn').addEventListener('click', clearData);
+
+if (typeof speechSynthesis !== 'undefined') {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  speechSynthesis.getVoices();
+}
+
+document.addEventListener('click', () => {
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}, { once: true });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-config.js"></script>
+</body>
+</html>

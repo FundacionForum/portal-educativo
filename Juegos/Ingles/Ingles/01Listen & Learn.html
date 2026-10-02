@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎧 Listen & Learn · Compact + Varied Voices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Poppins', 'Comic Sans MS', cursive, sans-serif; }
+
+        html, body { height: 100%; }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0b2b4b 0%, #1c5a7a 100%);
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: 12px; overflow-x: hidden;
+        }
+        
+
+        .game-container {
+            max-width: 1250px; width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 40px 40px 30px 30px;
+            padding: 16px 20px 20px;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.3);
+            border: 3px solid #ffe484;
+            position: relative;
+        }
+
+        /* ===== LOGIN SCREEN ===== */
+        .login-screen {
+            position: fixed; inset: 0; z-index: 2000;
+            background: linear-gradient(145deg, #0b2b4b 0%, #1c5a7a 100%);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; overflow-y: auto;
+        }
+        .login-screen.hidden { display: none; }
+
+        .login-card {
+            background: #fef9e3;
+            border-radius: 40px;
+            padding: 30px 28px;
+            max-width: 500px; width: 100%;
+            box-shadow: 0 20px 0 #7a4f1a, 0 30px 60px rgba(0,0,0,0.8);
+            border: 4px solid #ffd966;
+            text-align: center;
+            animation: pop 0.5s ease;
+            margin: 20px 0;
+        }
+
+        .login-card h1 {
+            font-size: 1.8rem; color: #38240e; margin-bottom: 6px;
+            text-shadow: 2px 2px 0 #fbbf24;
+        }
+
+        .login-card p { color: #78350f; font-weight: 700; margin-bottom: 16px; font-size: 0.9rem; }
+
+        .login-card input {
+            width: 100%; padding: 12px 18px;
+            border-radius: 40px; border: 3px solid #ffb062;
+            font-size: 1rem; font-weight: 700; color: #38240e;
+            outline: none; text-align: center;
+            background: #fff; margin-bottom: 12px;
+        }
+        .login-card input:focus { border-color: #fbbf24; box-shadow: 0 0 0 4px rgba(251,191,36,0.4); }
+
+        .grade-section { text-align: left; margin-bottom: 14px; }
+        .grade-section label {
+            display: block; font-weight: 800; color: #78350f;
+            margin-bottom: 6px; font-size: 0.9rem;
+        }
+
+        .grade-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 6px; margin-bottom: 8px;
+        }
+
+        .grade-btn {
+            background: #fff; border: 2px solid #ffb062;
+            border-radius: 12px; padding: 8px 4px;
+            font-weight: 800; color: #78350f;
+            cursor: pointer; font-size: 0.85rem;
+            transition: all 0.15s;
+        }
+        .grade-btn:hover { background: #fef3c7; transform: translateY(-2px); }
+        .grade-btn.selected {
+            background: linear-gradient(180deg, #ffd700 0%, #ffb700 100%);
+            border-color: #a7671a; color: #2a1700;
+            box-shadow: 0 0 0 3px #fff9b0;
+        }
+
+        .time-info {
+            background: #fef3c7; border-radius: 16px;
+            padding: 8px; font-size: 0.8rem;
+            font-weight: 700; color: #78350f;
+            margin-bottom: 12px; border: 2px dashed #fbbf24;
+        }
+
+        .login-card button.main {
+            width: 100%; padding: 13px 26px;
+            background: linear-gradient(180deg, #ffd700 0%, #ffb700 100%);
+            border: none; border-radius: 40px;
+            font-size: 1.1rem; font-weight: 900; color: #2a1700;
+            cursor: pointer; box-shadow: 0 7px 0 #a7671a, 0 6px 12px black;
+            transition: 0.08s linear; letter-spacing: 1px;
+            border: 3px solid #fff9b0;
+        }
+        .login-card button.main:active { transform: translateY(5px); box-shadow: 0 2px 0 #a7671a; }
+        .login-card button.main:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(5px); }
+
+        .login-card .play-as-guest {
+            background: none; border: none; color: #78350f;
+            font-size: 0.85rem; margin-top: 10px;
+            text-decoration: underline; cursor: pointer; font-weight: 700;
+        }
+
+        /* ===== COMPACT HEADER ===== */
+        .compact-header {
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+            background: #ffde6b; padding: 8px 16px; border-radius: 100px;
+            box-shadow: 0 6px 0 #b38f1f, 0 8px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid #fff3c9; margin-bottom: 12px;
+        }
+
+        .player-chip {
+            display: flex; align-items: center; gap: 8px;
+            background: #f97316; padding: 6px 14px; border-radius: 30px;
+            box-shadow: inset 0 -3px 0 #9a3412; color: white;
+            font-weight: 900; font-size: 0.9rem;
+            white-space: nowrap; max-width: 40%;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .player-chip .pname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .player-chip .pgrado {
+            font-size: 0.7rem; background: rgba(255,255,255,0.25);
+            padding: 2px 7px; border-radius: 20px;
+        }
+
+        .level-chip {
+            background: #ff9248; padding: 6px 14px; border-radius: 50px;
+            font-weight: 900; font-size: 0.9rem; color: #2f1b0c;
+            text-shadow: 0 2px 0 #ffe28c;
+            box-shadow: inset 0 -3px 0 #b45f1b; white-space: nowrap;
+        }
+
+        .lives-compact {
+            display: flex; gap: 2px; font-size: 1.1rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.4));
+            white-space: nowrap;
+        }
+
+        .score-chip {
+            background: #16a34a; padding: 6px 12px; border-radius: 30px;
+            color: white; font-weight: 900; font-size: 0.85rem;
+            box-shadow: inset 0 -3px 0 #14532d; white-space: nowrap;
+        }
+
+        .header-btn {
+            background: #a855f7; border: none; border-radius: 50%;
+            width: 34px; height: 34px; font-size: 1rem; color: #fff;
+            cursor: pointer; box-shadow: 0 4px 0 #6b21a8, 0 3px 8px black;
+            transition: 0.08s linear; border: 2px solid #e9d5ff;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .header-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #6b21a8; }
+        .header-btn.leaderboard { background: #0ea5e9; box-shadow: 0 4px 0 #0369a1, 0 3px 8px black; border-color: #bae6fd; }
+        .header-btn.music { background: #16a34a; box-shadow: 0 4px 0 #14532d, 0 3px 8px black; border-color: #86efac; }
+        .header-btn.music.muted { background: #71717a; box-shadow: 0 4px 0 #3f3f46, 0 3px 8px black; border-color: #d4d4d8; }
+
+        /* ===== TIME BAR (compacta) ===== */
+        .time-bar-container {
+            background: #fef9e3; border-radius: 40px;
+            padding: 8px 18px; margin-bottom: 12px;
+            box-shadow: inset 0 0 0 3px #fff3c9, 0 5px 0 #7a4f1a;
+            border: 2px solid #ffd966;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .time-icon { font-size: 1.3rem; }
+        .time-bar {
+            flex: 1; height: 20px; background: #654321;
+            border-radius: 30px; border: 2px solid #ffd966;
+            overflow: hidden;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.6);
+        }
+        .time-fill {
+            height: 100%; width: 100%;
+            background: linear-gradient(90deg, #22c55e, #84cc16, #fbbf24);
+            border-radius: 30px; transition: width 1s linear, background 0.5s;
+        }
+        .time-fill.warning { background: linear-gradient(90deg, #f59e0b, #f97316); }
+        .time-fill.danger {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            animation: pulse-danger 0.8s infinite;
+        }
+        @keyframes pulse-danger { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .time-text {
+            font-weight: 900; font-size: 1rem; color: #38240e;
+            min-width: 55px; text-align: right;
+        }
+
+        /* ===== CATEGORÍAS ===== */
+        .categories {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 14px; justify-content: center;
+        }
+
+        .cat-btn {
+            position: relative;
+            background: linear-gradient(180deg, #ffcf9a 0%, #ffb062 100%);
+            border: none; border-radius: 24px; padding: 8px 14px;
+            font-weight: 800; font-size: 0.9rem; color: #2e1b0e;
+            cursor: pointer; box-shadow: 0 5px 0 #b47c4b, 0 5px 10px rgba(0,0,0,0.6);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #fff2d7;
+            display: flex; align-items: center; gap: 6px;
+            flex-direction: column; min-width: 90px;
+        }
+        .cat-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #b47c4b; }
+        .cat-btn.active {
+            background: linear-gradient(180deg, #ffd700 0%, #ffb700 100%);
+            box-shadow: 0 0 0 3px #fff9b0, 0 5px 0 #a7671a;
+            transform: scale(1.05);
+        }
+        .cat-btn.locked { filter: grayscale(0.7) brightness(0.8); cursor: not-allowed; opacity: 0.7; }
+        .cat-btn .cat-icon { font-size: 1.2rem; }
+        .cat-btn .cat-name { font-size: 0.72rem; font-weight: 900; }
+        .cat-btn .cat-age {
+            font-size: 0.58rem; font-weight: 800; background: #e11d48;
+            color: white; padding: 1px 6px; border-radius: 20px;
+        }
+        .cat-btn.completed::after {
+            content: '✓'; position: absolute; top: -7px; right: -7px;
+            background: #22c55e; color: white; border-radius: 50%;
+            width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: bold; border: 2px solid white;
+        }
+        .cat-btn.locked::after { content: '🔒'; position: absolute; top: -7px; right: -7px; font-size: 0.9rem; }
+
+        /* ===== PLAY AREA ===== */
+        .play-area {
+            display: flex; flex-direction: row; flex-wrap: wrap; gap: 15px;
+            background: #fef9e3; border-radius: 40px; padding: 18px 16px;
+            box-shadow: inset 0 0 0 4px #fff3c9, 0 10px 0 #7a4f1a, 0 18px 24px black;
+            border: 2px solid #ffd966; margin-bottom: 12px;
+        }
+
+        .audio-zone {
+            flex: 1; min-width: 200px; background: #d9e6f2;
+            border-radius: 40px; padding: 16px 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: inset 0 -6px 0 #a1b7cc, 0 4px 0 #6a7f94;
+            border: 2px solid #f0f7ff;
+        }
+
+        .speaker-icon {
+            font-size: 3.2rem; filter: drop-shadow(0 6px 0 #5a6b7c);
+            margin-bottom: 6px; animation: bounce 1.8s infinite ease-in-out;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+        .audio-controls {
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+            margin: 8px 0 4px; width: 100%;
+        }
+
+        .audio-btn {
+            background: #fddc9a; border: none; border-radius: 40px;
+            padding: 9px 14px; font-weight: bold; display: flex; align-items: center;
+            gap: 6px; cursor: pointer; box-shadow: 0 4px 0 #b17f3a, 0 3px 8px black;
+            transition: 0.08s linear; font-size: 0.85rem;
+            border: 2px solid #fff9e6; color: #2b1d0b;
+        }
+        .audio-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #b17f3a; }
+
+        .audio-status {
+            font-size: 0.7rem; background: #b1c9e0; padding: 5px 10px;
+            border-radius: 30px; font-weight: 600; color: #0e1c2b;
+            margin-top: 5px; border: 1px solid #e5efff;
+            max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        .voice-badge {
+            font-size: 0.65rem; background: #a855f7; color: white;
+            padding: 3px 10px; border-radius: 20px; font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .question-zone {
+            flex: 2; min-width: 280px; background: #fff6d5;
+            border-radius: 40px; padding: 18px 16px;
+            box-shadow: inset 0 -6px 0 #dbb87c, 0 4px 0 #a47e48;
+            border: 2px solid #ffecb3;
+        }
+
+        .question-zone-header { text-align: center; margin-bottom: 8px; }
+
+        .difficulty-indicator {
+            display: inline-block; font-size: 0.7rem; font-weight: 800;
+            color: #78350f; background: #fde68a; padding: 3px 12px;
+            border-radius: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem; font-weight: 900; color: #38240e;
+            text-align: center; margin-bottom: 14px;
+            text-shadow: 2px 2px 0 #ffeaa6; line-height: 1.3;
+        }
+        .question-text .highlight {
+            background: #fbbf24; padding: 2px 8px;
+            border-radius: 12px; color: #78350f;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+
+        .option-btn {
+            background: #d4edc9; border: none; padding: 12px 18px;
+            border-radius: 100px; font-size: 1rem; font-weight: 800;
+            color: #1e3a1e; text-align: left; cursor: pointer;
+            box-shadow: 0 6px 0 #7a9e6b, 0 5px 10px black;
+            transition: 0.08s linear; border: 2px solid #f0ffe7;
+            display: flex; align-items: center; gap: 10px;
+            line-height: 1.3;
+        }
+        .option-btn .opt-letter {
+            background: #7a9e6b; color: white; width: 26px; height: 26px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 0.85rem;
+        }
+        .option-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #7a9e6b; }
+        .option-btn.correct { background: #7ed957; box-shadow: 0 0 0 3px #c6ffb0, 0 6px 0 #3d7a2b; color: #0a2e00; }
+        .option-btn.correct .opt-letter { background: #3d7a2b; }
+        .option-btn.incorrect { background: #f18f8f; box-shadow: 0 0 0 3px #ffc9c9, 0 6px 0 #a13d3d; color: #3a0000; }
+        .option-btn.incorrect .opt-letter { background: #a13d3d; }
+        .option-btn:disabled { cursor: not-allowed; transform: translateY(4px); box-shadow: 0 2px 0 #7a9e6b; }
+
+        .feedback-message {
+            text-align: center; font-size: 1rem; font-weight: 700;
+            margin-top: 8px; min-height: 2rem; color: #3b2b0f;
+        }
+
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .celebrate { animation: pop 0.4s ease-in-out; }
+
+        .footer-note {
+            text-align: center; color: #ffefc0; font-weight: 600;
+            margin-top: 10px; text-shadow: 2px 2px 0 #0a1e2b;
+            font-size: 0.8rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            z-index: 1500; display: none; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+
+        .modal-card {
+            background: #fef9e3; border-radius: 40px; padding: 28px 24px;
+            max-width: 500px; width: 100%;
+            box-shadow: 0 15px 0 #7a4f1a, 0 30px 60px black;
+            border: 4px solid #ffd966;
+            max-height: 85vh; overflow-y: auto;
+        }
+        .modal-card h2 {
+            text-align: center; color: #38240e; font-size: 1.5rem;
+            margin-bottom: 16px; text-shadow: 2px 2px 0 #fbbf24;
+        }
+
+        .leaderboard-table {
+            width: 100%; border-collapse: collapse;
+            background: white; border-radius: 20px; overflow: hidden;
+        }
+        .leaderboard-table th {
+            background: #fbbf24; color: #38240e;
+            padding: 10px 6px; font-weight: 900; text-align: left; font-size: 0.8rem;
+        }
+        .leaderboard-table td {
+            padding: 8px 6px; border-bottom: 2px solid #fef3c7;
+            font-weight: 700; color: #38240e; font-size: 0.85rem;
+        }
+        .leaderboard-table tr:last-child td { border-bottom: none; }
+        .leaderboard-table tr:nth-child(1) td { background: #fef3c7; }
+        .leaderboard-table .rank { font-weight: 900; color: #d97706; }
+        .leaderboard-table .empty-row td { text-align: center; color: #a1a1aa; padding: 20px; }
+
+        .modal-close {
+            margin-top: 16px; width: 100%;
+            background: linear-gradient(180deg, #ffd700 0%, #ffb700 100%);
+            border: 3px solid #fff9b0; border-radius: 40px;
+            padding: 12px; font-size: 1rem; font-weight: 900;
+            color: #2a1700; cursor: pointer;
+            box-shadow: 0 5px 0 #a7671a;
+        }
+        .modal-close:active { transform: translateY(4px); box-shadow: 0 1px 0 #a7671a; }
+
+        .gameover-card {
+            background: #fef9e3; border-radius: 40px; padding: 30px 24px;
+            max-width: 460px; width: 100%; text-align: center;
+            box-shadow: 0 15px 0 #7a4f1a, 0 30px 60px black;
+            border: 4px solid #ffd966;
+        }
+        .gameover-card h2 {
+            font-size: 1.8rem; color: #dc2626; margin-bottom: 12px;
+            text-shadow: 2px 2px 0 #fbbf24;
+        }
+        .gameover-card .final-score {
+            font-size: 2.8rem; font-weight: 900; color: #f59e0b;
+            margin: 10px 0; text-shadow: 3px 3px 0 #78350f;
+        }
+        .gameover-card p { color: #78350f; font-weight: 700; margin-bottom: 12px; font-size: 0.95rem; }
+        .gameover-card button {
+            width: 100%; padding: 12px; margin-top: 8px;
+            border: 3px solid #fff9b0; border-radius: 40px;
+            font-size: 1rem; font-weight: 900; cursor: pointer;
+        }
+        .gameover-card button.primary {
+            background: linear-gradient(180deg, #ffd700 0%, #ffb700 100%);
+            color: #2a1700; box-shadow: 0 5px 0 #a7671a;
+        }
+        .gameover-card button.secondary {
+            background: linear-gradient(180deg, #a855f7 0%, #7c3aed 100%);
+            color: white; box-shadow: 0 5px 0 #4c1d95;
+        }
+        .gameover-card button:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+
+        /* ===== EDITOR PANEL ===== */
+        .editor-panel {
+            display: none; background: #1a1a2e; border-radius: 30px;
+            padding: 20px; margin-top: 15px; border: 3px solid #a855f7;
+            color: #e9d5ff; max-height: 60vh; overflow-y: auto;
+        }
+        .editor-panel.open { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .editor-panel h2 {
+            color: #fbbf24; margin-bottom: 12px; font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .editor-actions {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 15px; justify-content: center;
+        }
+        .editor-actions button {
+            background: #7c3aed; border: none; border-radius: 30px;
+            padding: 8px 16px; color: white; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 0 #4c1d95; border: 2px solid #c4b5fd; font-size: 0.85rem;
+        }
+        .editor-actions button:active { transform: translateY(3px); box-shadow: 0 1px 0 #4c1d95; }
+        .editor-actions button.danger { background: #dc2626; box-shadow: 0 4px 0 #7f1d1d; }
+        .editor-actions button.success { background: #16a34a; box-shadow: 0 4px 0 #14532d; }
+
+        .editor-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px;
+        }
+
+        .level-card {
+            background: #2d1b4e; border-radius: 16px; padding: 12px;
+            border: 2px solid #a855f7;
+        }
+        .level-card h3 {
+            color: #fbbf24; font-size: 0.9rem; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .level-card .delete-level {
+            background: #dc2626; border: none; border-radius: 50%;
+            width: 22px; height: 22px; color: white; font-weight: bold;
+            cursor: pointer; font-size: 0.8rem;
+        }
+        .level-card label {
+            display: block; font-size: 0.72rem; color: #c4b5fd;
+            margin-bottom: 3px; margin-top: 6px; font-weight: bold;
+        }
+        .level-card input[type="text"] {
+            width: 100%; padding: 6px 10px; border-radius: 12px;
+            border: 2px solid #7c3aed; background: #1a1a2e; color: #fff;
+            font-size: 0.85rem; font-weight: bold; outline: none;
+        }
+        .level-card input[type="text"]:focus { border-color: #fbbf24; }
+        .level-card .audio-file-row {
+            margin-top: 8px; display: flex; gap: 6px;
+            align-items: center; flex-wrap: wrap;
+        }
+        .level-card .audio-file-btn {
+            background: #f59e0b; border: none; border-radius: 20px;
+            padding: 5px 12px; color: #1f0f00; font-weight: bold;
+            cursor: pointer; font-size: 0.72rem;
+            box-shadow: 0 2px 0 #92400e; border: 2px solid #fde68a;
+            position: relative; overflow: hidden;
+        }
+        .level-card .audio-file-btn input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer;
+        }
+        .level-card .audio-file-name {
+            font-size: 0.68rem; color: #86efac; flex: 1; min-width: 80px;
+        }
+        .level-card .audio-file-name.empty { color: #71717a; }
+
+        .editor-category-tabs {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+            padding: 8px; background: #2d1b4e; border-radius: 16px;
+            justify-content: center;
+        }
+        .editor-cat-tab {
+            background: #4c1d95; border: 2px solid #7c3aed;
+            border-radius: 20px; padding: 5px 12px; color: #e9d5ff;
+            font-weight: bold; cursor: pointer; font-size: 0.78rem;
+        }
+        .editor-cat-tab.active { background: #fbbf24; color: #1f0f00; border-color: #fff; }
+
+        .toast {
+            position: fixed; top: 20px; left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #22c55e; color: white; padding: 12px 24px;
+            border-radius: 50px; font-weight: bold;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 3000; transition: transform 0.4s ease;
+            border: 3px solid white; font-size: 0.9rem;
+            max-width: 90vw; text-align: center;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 700px) {
+            .game-container { padding: 10px 12px 14px; }
+            .player-chip { font-size: 0.8rem; padding: 5px 10px; }
+            .level-chip { font-size: 0.8rem; padding: 5px 10px; }
+            .question-text { font-size: 1rem; }
+            .option-btn { font-size: 0.9rem; padding: 10px; }
+            .cat-btn { padding: 6px 10px; min-width: 75px; }
+            .cat-btn .cat-name { font-size: 0.65rem; }
+            .grade-grid { grid-template-columns: repeat(3, 1fr); }
+            .header-btn { width: 30px; height: 30px; font-size: 0.85rem; }
+        }
+    
+/* ===== ACADEMIA FORUM VISUAL THEME ===== */
+:root{
+  --af-navy:#0B3155;
+  --af-navy2:#123F68;
+  --af-blue:#0F3876;
+  --af-red:#EF4444;
+  --af-red-dark:#DC2626;
+  --af-gold:#F4A21D;
+  --af-gold-dark:#D8890A;
+  --af-bg:#f4f8fc;
+  --af-ink:#27354a;
+}
+body{
+  font-family:'Outfit','Segoe UI',sans-serif;
+  background:
+    radial-gradient(900px 500px at 0% -10%, rgba(18,63,104,.12), transparent 60%),
+    radial-gradient(700px 450px at 110% 10%, rgba(239,68,68,.12), transparent 55%),
+    linear-gradient(180deg,#f4f8fc 0%,#eaf2fa 48%,#f6faff 100%);
+  color:var(--af-ink);
+  padding:18px;
+}
+
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Espacio entre la flecha y el texto */
+  color: #0b4f6c; /* Color azul oscuro similar a la imagen */
+  font-size: 1.1rem;
+  font-weight: 700; /* Texto en negrita */
+  text-decoration: none; /* Elimina la línea subrayada de enlace */
+  font-family: system-ui, -apple-system, sans-serif;
+  transition: opacity 0.2s ease;
+}
+
+.breadcrumb:hover {
+  opacity: 0.8; /* Efecto sutil al pasar el mouse */
+}
+
+/* Si deseas centrarlo completamente en el contenedor superior */
+section.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.game-container{
+  max-width:1200px;
+  background:rgba(255,255,255,.96);
+  border:0;
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 18px 45px rgba(11,49,85,.15);
+}
+.login-screen{
+  background:
+    radial-gradient(800px 500px at 10% 0%,rgba(244,162,29,.12),transparent 55%),
+    linear-gradient(135deg,var(--af-navy),var(--af-navy2),var(--af-blue));
+}
+.login-card{
+  background:#fff;
+  border-radius:24px;
+  border:1px solid #dbe5ef;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
+  padding:34px 30px;
+}
+.login-card h1{
+  font-family:'Fredoka','Outfit',sans-serif;
+  color:var(--af-navy2);
+  text-shadow:none;
+  font-size:2rem;
+}
+.login-card h1::after{
+  content:'';
+  display:block;
+  width:54px;
+  height:4px;
+  margin:10px auto 0;
+  border-radius:10px;
+  background:var(--af-red);
+}
+.login-card p{color:#5b6b80;}
+.login-card input{
+  border:2px solid #d7e1eb;
+  border-radius:12px;
+  background:#f8fbfe;
+  color:var(--af-ink);
+  font-family:'Outfit',sans-serif;
+  margin-bottom:10px;
+  text-align:left;
+}
+.login-card input:focus{
+  border-color:var(--af-navy2);
+  box-shadow:0 0 0 4px rgba(18,63,104,.10);
+}
+.grade-section label{color:var(--af-navy2);}
+.grade-btn{
+  border:2px solid #d7e1eb;
+  border-radius:12px;
+  color:var(--af-navy2);
+  background:#fff;
+}
+.grade-btn:hover{background:#f2f7fb;}
+.grade-btn.selected{
+  background:linear-gradient(180deg,var(--af-gold),#f7b83f);
+  border-color:var(--af-gold-dark);
+  color:#fff;
+  box-shadow:0 0 0 3px rgba(244,162,29,.18);
+}
+.time-info{
+  background:#f7fafc;
+  border:1px solid #dbe5ef;
+  color:#5b6b80;
+}
+.login-card button.main{
+  background:var(--af-red);
+  color:#fff;
+  border:0;
+  box-shadow:0 5px 0 var(--af-red-dark),0 8px 18px rgba(239,68,68,.25);
+}
+.login-card button.main:active{box-shadow:0 2px 0 var(--af-red-dark);}
+.login-card .play-as-guest{color:var(--af-navy2);}
+
+.compact-header{
+  background:linear-gradient(90deg,var(--af-navy),var(--af-navy2));
+  border:0;
+  box-shadow:0 7px 18px rgba(11,49,85,.18);
+}
+.player-chip{background:var(--af-red);box-shadow:inset 0 -3px 0 #b91c1c;}
+.player-chip .pschool{
+  font-size:.68rem;
+  background:rgba(255,255,255,.16);
+  padding:2px 7px;
+  border-radius:20px;
+  max-width:180px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.level-chip{background:var(--af-gold);box-shadow:inset 0 -3px 0 var(--af-gold-dark);color:#fff;text-shadow:none;}
+.score-chip{background:#1E8A4C;box-shadow:inset 0 -3px 0 #166534;}
+.header-btn{background:var(--af-red);box-shadow:0 4px 0 #b91c1c,0 3px 8px rgba(0,0,0,.2);}
+.header-btn.leaderboard{background:var(--af-navy2);box-shadow:0 4px 0 #082844,0 3px 8px rgba(0,0,0,.2);}
+.header-btn.music{background:#1E8A4C;box-shadow:0 4px 0 #166534,0 3px 8px rgba(0,0,0,.2);}
+.time-bar-container{
+  background:#fff;
+  border:1px solid #dbe5ef;
+  box-shadow:inset 0 0 0 2px #f2f6fa,0 5px 0 #c9d4e0;
+}
+.time-bar{background:#d9e3ec;border-color:#c4d2df;}
+.time-fill{background:linear-gradient(90deg,#1E8A4C,#84cc16,var(--af-gold));}
+.categories{gap:10px;}
+.cat-btn{
+  background:#fff;
+  border:2px solid #d7e1eb;
+  color:var(--af-navy2);
+  box-shadow:0 5px 0 #c5d1dd,0 5px 10px rgba(11,49,85,.10);
+}
+.cat-btn.active{
+  background:#FDECEC;
+  color:var(--af-red);
+  box-shadow:0 0 0 3px rgba(239,68,68,.10),0 5px 0 #d9a0a0;
+}
+.play-area{
+  background:#fff;
+  border:1px solid #dbe5ef;
+  box-shadow:inset 0 0 0 3px #f5f8fb,0 10px 25px rgba(11,49,85,.10);
+}
+.audio-zone{background:#eef5fb;border-color:#dbe8f3;box-shadow:inset 0 -6px 0 #d3e1ed,0 4px 0 #b8cad9;}
+.audio-btn{background:#fff;border-color:#dbe5ef;color:var(--af-navy2);box-shadow:0 4px 0 #b8cad9,0 3px 8px rgba(11,49,85,.12);}
+.question-zone{background:#fff8eb;border-color:#f4dfb6;box-shadow:inset 0 -6px 0 #efd39a,0 4px 0 #d8bb82;}
+.question-text{color:var(--af-navy2);text-shadow:none;}
+.question-text .highlight{background:#fff0cf;color:var(--af-red);}
+.option-btn{background:#eef8f1;color:#28533a;box-shadow:0 6px 0 #9ac5a8,0 5px 10px rgba(11,49,85,.10);border-color:#fff;}
+.option-btn .opt-letter{background:#1E8A4C;}
+.feedback-message{color:var(--af-ink);}
+.footer-note{color:#6b7c90;text-shadow:none;}
+.modal-card,.gameover-card{background:#fff;border:1px solid #dbe5ef;box-shadow:0 15px 0 #c7d3df,0 30px 60px rgba(11,49,85,.25);}
+.modal-card h2{color:var(--af-navy2);text-shadow:none;}
+.modal-close,.gameover-card button.primary{background:var(--af-red);color:#fff;border:0;box-shadow:0 5px 0 var(--af-red-dark);}
+.gameover-card .final-score{color:var(--af-gold-dark);text-shadow:none;}
+.gameover-card button.secondary{background:var(--af-navy2);box-shadow:0 5px 0 #082844;}
+.leaderboard-table th{background:var(--af-navy2);color:#fff;}
+.leaderboard-table td{color:var(--af-ink);border-bottom-color:#edf2f7;}
+
+    </style>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5PM3VJ7X');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5PM3VJ7X"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<main class="container"><section class="hero">
+<a href="../../ingles/" class="breadcrumb">
+    <i class="fas fa-arrow-left"></i>
+    <span data-es="Volver al inicio" data-en="Back to home">Regresar</span>
+</a>
+  </section>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <h1>🎧 Listen & Learn</h1>
+        <p>Enter your name, school and grade to start!</p>
+
+        <input type="text" id="playerNameInput" placeholder="Your name..." maxlength="40" autocomplete="name" />
+        <input type="text" id="schoolInput" placeholder="Your school..." maxlength="80" autocomplete="organization" />
+
+        <div class="grade-section">
+            <label>📚 Select your grade:</label>
+            <div class="grade-grid" id="gradeGrid">
+                <button class="grade-btn" data-grade="1">1°</button>
+                <button class="grade-btn" data-grade="2">2°</button>
+                <button class="grade-btn" data-grade="3">3°</button>
+                <button class="grade-btn" data-grade="4">4°</button>
+                <button class="grade-btn" data-grade="5">5°</button>
+                <button class="grade-btn" data-grade="6">6°</button>
+                <button class="grade-btn" data-grade="7">7°</button>
+                <button class="grade-btn" data-grade="8">8°</button>
+                <button class="grade-btn" data-grade="9">9°</button>
+                <button class="grade-btn" data-grade="10">10°</button>
+                <button class="grade-btn" data-grade="11">11°</button>
+                <button class="grade-btn" data-grade="12">12°</button>
+            </div>
+        </div>
+
+        <div class="time-info" id="timeInfo">
+            ⏱️ Select a grade to see your time per level
+        </div>
+
+        <button class="main" id="startGameBtn" disabled>🚀 Start Game</button>
+        <button class="play-as-guest" id="guestBtn">Play as Guest (Grade 6)</button>
+    </div>
+</div>
+
+<!-- ============ MAIN GAME ============ -->
+<div class="game-container">
+    <!-- COMPACT HEADER: only name + level + essentials -->
+    <div class="compact-header">
+        <div class="player-chip">
+            <span class="pname" id="playerNameDisplay">Player</span>
+            <span class="pschool" id="playerSchoolDisplay">School</span>
+            <span class="pgrado" id="playerGradeDisplay">G6</span>
+        </div>
+        <div class="level-chip" id="levelDisplay">L1/10</div>
+        <div class="lives-compact" id="livesDisplay">❤️❤️❤️❤️❤️</div>
+        <div class="score-chip" id="playerScoreDisplay">⭐ 0</div>
+        <button class="header-btn leaderboard" id="leaderboardBtn" title="Leaderboard">🏆</button>
+        <button class="header-btn music" id="musicBtn" title="Music">🎵</button>
+        <button class="header-btn" id="editToggleBtn" title="Edit">✏️</button>
+    </div>
+
+    <!-- TIME BAR -->
+    <div class="time-bar-container">
+        <div class="time-icon">⏱️</div>
+        <div class="time-bar">
+            <div class="time-fill" id="timeFill"></div>
+        </div>
+        <div class="time-text" id="timeText">2:30</div>
+    </div>
+
+    <div class="categories" id="categoriesContainer"></div>
+
+    <div class="play-area">
+        <div class="audio-zone">
+            <div class="speaker-icon">🔊</div>
+            <div class="audio-controls">
+                <button class="audio-btn" id="playAudioBtn">▶️ Play</button>
+                <button class="audio-btn" id="replayBtn">🔁 Replay</button>
+            </div>
+            <div class="audio-status" id="audioStatus">✅ Audio ready</div>
+            <div class="voice-badge" id="voiceBadge">🎤 Voice 1</div>
+        </div>
+
+        <div class="question-zone">
+            <div class="question-zone-header">
+                <span class="difficulty-indicator" id="difficultyIndicator">🟢 Beginner</span>
+            </div>
+            <div class="question-text" id="questionText">
+                What <span class="highlight">word</span> do you hear?
+            </div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="feedback-message" id="feedbackMessage"></div>
+        </div>
+    </div>
+    <div class="footer-note">⏱️ Beat the clock · ❤️ 5 lives · 🎵 Music on · 🏆 Leaderboard</div>
+
+    <div class="editor-panel" id="editorPanel">
+        <h2>🛠️ Editor · Customize</h2>
+        <div class="editor-actions">
+            <button class="success" id="saveEditorBtn">💾 Save</button>
+            <button id="addLevelBtn">➕ Level</button>
+            <button id="addCategoryBtn">📁 Category</button>
+            <button id="exportBtn">⬇️ Export</button>
+            <button id="importBtn">⬆️ Import</button>
+            <button class="danger" id="resetBtn">🔄 Reset</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;">
+        </div>
+        <div class="editor-category-tabs" id="editorCategoryTabs"></div>
+        <div class="editor-grid" id="editorGrid"></div>
+    </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="leaderboardModal">
+    <div class="modal-card">
+        <h2>🏆 Leaderboard</h2>
+        <table class="leaderboard-table">
+            <thead><tr><th>#</th><th>Player</th><th>School</th><th>Score</th><th>Grade</th></tr></thead>
+            <tbody id="leaderboardBody"></tbody>
+        </table>
+        <button class="modal-close" id="closeLeaderboard">Close</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="gameoverModal">
+    <div class="gameover-card">
+        <h2 id="gameoverTitle">💀 Game Over</h2>
+        <p id="gameoverName">Well played!</p>
+        <div class="final-score" id="finalScoreDisplay">0</div>
+        <p>points</p>
+        <button class="primary" id="playAgainBtn">🔄 Play Again</button>
+        <button class="secondary" id="changeUserBtn">👤 Change Player</button>
+        
+        <!-- CORREGIDO: Se usa <a> para enlaces con la flecha y el texto adentro -->
+        <a href="../../inicio.html" class="breadcrumb">
+            <i class="fas fa-arrow-left"></i>
+            <h1></h1>
+            <span data-es="Volver al inicio" data-en="Back to home">Volver al inicio</span>
+        </a> 
+    </div>
+</div>
+
+<div class="toast" id="toast">✅ Done!</div>
+
+<script>
+(function () {
+    // ============================================================
+    //  TIME CONFIG BY GRADE
+    // ============================================================
+    function getTimeForGrade(grade) {
+        const g = parseInt(grade, 10);
+        if (g >= 1 && g <= 6) return 150;   // 2:30
+        if (g >= 7 && g <= 9) return 120;   // 2:00
+        if (g >= 10 && g <= 12) return 90;  // 1:30
+        return 150;
+    }
+
+    // ============================================================
+    //  VOICE CONFIG — Rotate voices by level
+    // ============================================================
+    const VOICE_STYLES = [
+        { name: 'Voice 1', rate: 0.85, pitch: 1.0, gender: 'any' },
+        { name: 'Voice 2', rate: 0.95, pitch: 1.15, gender: 'female' },
+        { name: 'Voice 3', rate: 0.80, pitch: 0.85, gender: 'male' },
+        { name: 'Voice 4', rate: 1.0, pitch: 1.25, gender: 'female' },
+        { name: 'Voice 5', rate: 0.90, pitch: 0.95, gender: 'male' }
+    ];
+
+    // Cache available voices
+    let availableVoices = [];
+
+    function loadVoices() {
+        if ('speechSynthesis' in window) {
+            availableVoices = window.speechSynthesis.getVoices() || [];
+        }
+    }
+    if ('speechSynthesis' in window) {
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function pickVoice(styleIndex, gender) {
+        if (!availableVoices.length) return null;
+        const english = availableVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+        const pool = english.length ? english : availableVoices;
+        if (!pool.length) return null;
+
+        // Try gender match
+        if (gender === 'female') {
+            const f = pool.filter(v => /female|woman|samantha|karen|victoria|zira|susan/i.test(v.name));
+            if (f.length) return f[styleIndex % f.length];
+        } else if (gender === 'male') {
+            const m = pool.filter(v => /male|man|daniel|alex|david|mark|fred/i.test(v.name));
+            if (m.length) return m[styleIndex % m.length];
+        }
+        // fallback: rotate
+        return pool[styleIndex % pool.length];
+    }
+
+    // ============================================================
+    //  DEFAULT DATA
+    // ============================================================
+    const DEFAULT_DATA = {
+        animals: { name: 'Animals', icon: '🐾', ageRange: '7-8', difficulty: 'Beginner', difficultyColor: '#22c55e',
+            levels: [
+                { palabra: 'Dog', opciones: ['Dog', 'Cat', 'Bird'] },
+                { palabra: 'Cat', opciones: ['Dog', 'Cat', 'Fish'] },
+                { palabra: 'Bird', opciones: ['Fish', 'Bird', 'Cow'] },
+                { palabra: 'Fish', opciones: ['Fish', 'Rabbit', 'Horse'] },
+                { palabra: 'Rabbit', opciones: ['Rabbit', 'Lion', 'Bear'] },
+                { palabra: 'The dog is big.', opciones: ['The dog is big.', 'The cat is big.', 'The dog is small.'] },
+                { palabra: 'The cat is sleeping.', opciones: ['The cat is sleeping.', 'The cat is eating.', 'The cat is running.'] },
+                { palabra: 'I have a pet fish.', opciones: ['I have a pet fish.', 'I have a pet bird.', 'I have a pet dog.'] },
+                { palabra: 'The bird can fly.', opciones: ['The bird can fly.', 'The bird can swim.', 'The fish can fly.'] },
+                { palabra: 'The rabbit likes carrots.', opciones: ['The rabbit likes carrots.', 'The rabbit likes fish.', 'The dog likes carrots.'] }
+            ]
+        },
+        colors: { name: 'Colors', icon: '🎨', ageRange: '8-9', difficulty: 'Beginner', difficultyColor: '#22c55e',
+            levels: [
+                { palabra: 'Red', opciones: ['Red', 'Blue', 'Green'] },
+                { palabra: 'Blue', opciones: ['Yellow', 'Blue', 'Black'] },
+                { palabra: 'Green', opciones: ['Green', 'Orange', 'Pink'] },
+                { palabra: 'Yellow', opciones: ['Purple', 'Yellow', 'Brown'] },
+                { palabra: 'Black', opciones: ['White', 'Black', 'Gray'] },
+                { palabra: 'The apple is red.', opciones: ['The apple is red.', 'The apple is green.', 'The apple is blue.'] },
+                { palabra: 'The sun is yellow.', opciones: ['The sun is yellow.', 'The sun is orange.', 'The sun is white.'] },
+                { palabra: 'The sky is blue.', opciones: ['The sky is blue.', 'The sky is gray.', 'The sky is green.'] },
+                { palabra: 'My favorite color is purple.', opciones: ['My favorite color is purple.', 'My favorite color is pink.', 'My favorite color is brown.'] },
+                { palabra: 'The grass is green.', opciones: ['The grass is green.', 'The grass is yellow.', 'The grass is red.'] }
+            ]
+        },
+        fruits: { name: 'Fruits & Food', icon: '🍎', ageRange: '9-10', difficulty: 'Elementary', difficultyColor: '#84cc16',
+            levels: [
+                { palabra: 'Apple', opciones: ['Apple', 'Banana', 'Orange'] },
+                { palabra: 'Banana', opciones: ['Grape', 'Banana', 'Apple'] },
+                { palabra: 'Orange', opciones: ['Orange', 'Lemon', 'Peach'] },
+                { palabra: 'Water', opciones: ['Water', 'Milk', 'Juice'] },
+                { palabra: 'Bread', opciones: ['Bread', 'Cake', 'Rice'] },
+                { palabra: 'I eat an apple.', opciones: ['I eat an apple.', 'I eat a banana.', 'I eat an orange.'] },
+                { palabra: 'The banana is yellow.', opciones: ['The banana is yellow.', 'The banana is green.', 'The banana is red.'] },
+                { palabra: 'I drink water every day.', opciones: ['I drink water every day.', 'I drink milk every day.', 'I drink juice every day.'] },
+                { palabra: 'She likes strawberries.', opciones: ['She likes strawberries.', 'She likes blueberries.', 'She likes cherries.'] },
+                { palabra: 'The watermelon is big.', opciones: ['The watermelon is big.', 'The watermelon is small.', 'The melon is big.'] }
+            ]
+        },
+        numbers: { name: 'Numbers & Time', icon: '🔢', ageRange: '10-11', difficulty: 'Elementary', difficultyColor: '#84cc16',
+            levels: [
+                { palabra: 'One', opciones: ['One', 'Two', 'Three'] },
+                { palabra: 'Five', opciones: ['Four', 'Five', 'Six'] },
+                { palabra: 'Ten', opciones: ['Ten', 'Nine', 'Eleven'] },
+                { palabra: 'Monday', opciones: ['Monday', 'Sunday', 'Friday'] },
+                { palabra: 'Morning', opciones: ['Morning', 'Evening', 'Night'] },
+                { palabra: 'I have two cats.', opciones: ['I have two cats.', 'I have three cats.', 'I have two dogs.'] },
+                { palabra: 'There are five books.', opciones: ['There are five books.', 'There are four books.', 'There are five pens.'] },
+                { palabra: 'My birthday is in May.', opciones: ['My birthday is in May.', 'My birthday is in March.', 'My birthday is in June.'] },
+                { palabra: 'The movie starts at seven.', opciones: ['The movie starts at seven.', 'The movie starts at eight.', 'The show starts at seven.'] },
+                { palabra: 'I wake up at six o\'clock.', opciones: ['I wake up at six o\'clock.', 'I wake up at seven o\'clock.', 'I wake up at six thirty.'] }
+            ]
+        },
+        family: { name: 'Family & Home', icon: '👨‍👩‍👧', ageRange: '11-12', difficulty: 'Pre-Intermediate', difficultyColor: '#eab308',
+            levels: [
+                { palabra: 'Mother', opciones: ['Mother', 'Father', 'Sister'] },
+                { palabra: 'Father', opciones: ['Brother', 'Father', 'Uncle'] },
+                { palabra: 'Sister', opciones: ['Sister', 'Brother', 'Cousin'] },
+                { palabra: 'Grandmother', opciones: ['Grandmother', 'Grandfather', 'Aunt'] },
+                { palabra: 'Kitchen', opciones: ['Kitchen', 'Bedroom', 'Garden'] },
+                { palabra: 'My mom is kind.', opciones: ['My mom is kind.', 'My dad is kind.', 'My mom is tall.'] },
+                { palabra: 'My dad cooks dinner.', opciones: ['My dad cooks dinner.', 'My mom cooks dinner.', 'My dad eats dinner.'] },
+                { palabra: 'I love my sister.', opciones: ['I love my sister.', 'I love my brother.', 'I love my cousin.'] },
+                { palabra: 'My grandmother tells stories.', opciones: ['My grandmother tells stories.', 'My grandfather tells stories.', 'My grandmother sings songs.'] },
+                { palabra: 'The baby is sleeping.', opciones: ['The baby is sleeping.', 'The baby is playing.', 'The baby is crying.'] }
+            ]
+        },
+        travel: { name: 'Travel & Places', icon: '🌍', ageRange: '12-13', difficulty: 'Intermediate', difficultyColor: '#f59e0b',
+            levels: [
+                { palabra: 'Beach', opciones: ['Beach', 'Mountain', 'Forest'] },
+                { palabra: 'Airport', opciones: ['Airport', 'Station', 'Hotel'] },
+                { palabra: 'Passport', opciones: ['Passport', 'Ticket', 'Suitcase'] },
+                { palabra: 'Museum', opciones: ['Museum', 'Library', 'Theater'] },
+                { palabra: 'Restaurant', opciones: ['Restaurant', 'Café', 'Market'] },
+                { palabra: 'I go to school by bus.', opciones: ['I go to school by bus.', 'I go to school by car.', 'I go to the park by bus.'] },
+                { palabra: 'The beach is near our hotel.', opciones: ['The beach is near our hotel.', 'The beach is far from our hotel.', 'The pool is near our hotel.'] },
+                { palabra: 'We visited the Eiffel Tower.', opciones: ['We visited the Eiffel Tower.', 'We visited the Big Ben.', 'We visited the Statue of Liberty.'] },
+                { palabra: 'Paris is the capital of France.', opciones: ['Paris is the capital of France.', 'London is the capital of France.', 'Paris is the capital of Italy.'] },
+                { palabra: 'The flight to Tokyo takes twelve hours.', opciones: ['The flight to Tokyo takes twelve hours.', 'The flight to Tokyo takes twenty hours.', 'The flight to Kyoto takes twelve hours.'] }
+            ]
+        },
+        movies: { name: 'Movies & Pop', icon: '🎬', ageRange: '13-14', difficulty: 'Intermediate', difficultyColor: '#f59e0b',
+            levels: [
+                { palabra: 'Cinema', opciones: ['Cinema', 'Theater', 'Museum'] },
+                { palabra: 'Actor', opciones: ['Actor', 'Director', 'Writer'] },
+                { palabra: 'Wizard', opciones: ['Wizard', 'Knight', 'Dragon'] },
+                { palabra: 'Pirate', opciones: ['Pirate', 'Soldier', 'Cowboy'] },
+                { palabra: 'Superhero', opciones: ['Superhero', 'Villain', 'Sidekick'] },
+                { palabra: 'Harry Potter is a young wizard.', opciones: ['Harry Potter is a young wizard.', 'Harry Potter is an old wizard.', 'Ron Weasley is a young wizard.'] },
+                { palabra: 'May the Force be with you.', opciones: ['May the Force be with you.', 'May the Power be with you.', 'May the Force be with them.'] },
+                { palabra: 'Frozen tells the story of two sisters.', opciones: ['Frozen tells the story of two sisters.', 'Frozen tells the story of two brothers.', 'Moana tells the story of two sisters.'] },
+                { palabra: 'Iron Man is a hero in the Avengers.', opciones: ['Iron Man is a hero in the Avengers.', 'Iron Man is a villain in the Avengers.', 'Spider-Man is a hero in the Avengers.'] },
+                { palabra: 'The Lion King is about a young lion named Simba.', opciones: ['The Lion King is about a young lion named Simba.', 'The Lion King is about a young lion named Mufasa.', 'The Jungle Book is about a young lion named Simba.'] }
+            ]
+        },
+        music: { name: 'Music & Songs', icon: '🎵', ageRange: '14-15', difficulty: 'Upper-Intermediate', difficultyColor: '#ea580c',
+            levels: [
+                { palabra: 'Guitar', opciones: ['Guitar', 'Piano', 'Violin'] },
+                { palabra: 'Singer', opciones: ['Singer', 'Dancer', 'Painter'] },
+                { palabra: 'Concert', opciones: ['Concert', 'Festival', 'Party'] },
+                { palabra: 'Melody', opciones: ['Melody', 'Rhythm', 'Lyrics'] },
+                { palabra: 'Album', opciones: ['Album', 'Single', 'Record'] },
+                { palabra: 'The singer has a beautiful voice.', opciones: ['The singer has a beautiful voice.', 'The singer has a strong voice.', 'The dancer has a beautiful voice.'] },
+                { palabra: 'The Beatles were from Liverpool.', opciones: ['The Beatles were from Liverpool.', 'The Beatles were from London.', 'The Rolling Stones were from Liverpool.'] },
+                { palabra: 'Queen sang "We Will Rock You".', opciones: ['Queen sang "We Will Rock You".', 'Queen sang "We Are the Champions".', 'The Beatles sang "We Will Rock You".'] },
+                { palabra: 'Ed Sheeran wrote "Shape of You".', opciones: ['Ed Sheeran wrote "Shape of You".', 'Ed Sheeran wrote "Perfect".', 'Bruno Mars wrote "Shape of You".'] },
+                { palabra: 'Michael Jackson was the King of Pop.', opciones: ['Michael Jackson was the King of Pop.', 'Michael Jackson was the King of Rock.', 'Elvis Presley was the King of Pop.'] }
+            ]
+        },
+        science: { name: 'Science & Nature', icon: '🔬', ageRange: '15-16', difficulty: 'Advanced', difficultyColor: '#dc2626',
+            levels: [
+                { palabra: 'Planet', opciones: ['Planet', 'Star', 'Moon'] },
+                { palabra: 'Oxygen', opciones: ['Oxygen', 'Carbon', 'Hydrogen'] },
+                { palabra: 'Gravity', opciones: ['Gravity', 'Magnetism', 'Energy'] },
+                { palabra: 'Cell', opciones: ['Cell', 'Atom', 'Molecule'] },
+                { palabra: 'Photosynthesis', opciones: ['Photosynthesis', 'Respiration', 'Digestion'] },
+                { palabra: 'Water boils at one hundred degrees.', opciones: ['Water boils at one hundred degrees.', 'Water boils at fifty degrees.', 'Water freezes at one hundred degrees.'] },
+                { palabra: 'The Earth revolves around the Sun.', opciones: ['The Earth revolves around the Sun.', 'The Sun revolves around the Earth.', 'The Moon revolves around the Sun.'] },
+                { palabra: 'Plants produce oxygen.', opciones: ['Plants produce oxygen.', 'Plants produce carbon dioxide.', 'Animals produce oxygen.'] },
+                { palabra: 'Gravity keeps us on the ground.', opciones: ['Gravity keeps us on the ground.', 'Magnetism keeps us on the ground.', 'Gravity keeps us in the air.'] },
+                { palabra: 'DNA carries genetic information.', opciones: ['DNA carries genetic information.', 'RNA carries genetic information.', 'DNA carries only human information.'] }
+            ]
+        },
+        idioms: { name: 'Idioms & Advanced', icon: '🧠', ageRange: '16-18', difficulty: 'Expert', difficultyColor: '#991b1b',
+            levels: [
+                { palabra: 'Piece of cake', opciones: ['Piece of cake', 'Slice of bread', 'Cup of tea'] },
+                { palabra: 'Break a leg', opciones: ['Break a leg', 'Break an arm', 'Shake a leg'] },
+                { palabra: 'Under the weather', opciones: ['Under the weather', 'Over the moon', 'On cloud nine'] },
+                { palabra: 'Once in a blue moon', opciones: ['Once in a blue moon', 'Once in a full moon', 'Once in a red moon'] },
+                { palabra: 'Bite the bullet', opciones: ['Bite the bullet', 'Bite the apple', 'Kick the bucket'] },
+                { palabra: 'It\'s raining cats and dogs.', opciones: ['It\'s raining cats and dogs.', 'It\'s raining very lightly.', 'It\'s snowing cats and dogs.'] },
+                { palabra: 'That test was a piece of cake.', opciones: ['That test was a piece of cake.', 'That test was very difficult.', 'That cake was a piece of art.'] },
+                { palabra: 'She\'s feeling under the weather.', opciones: ['She\'s feeling under the weather.', 'She\'s feeling great today.', 'She\'s feeling on top of the world.'] },
+                { palabra: 'Don\'t beat around the bush.', opciones: ['Don\'t beat around the bush.', 'Don\'t hit the bush.', 'Don\'t beat around the tree.'] },
+                { palabra: 'The ball is in your court.', opciones: ['The ball is in your court.', 'The game is over now.', 'The ball is on your side.'] }
+            ]
+        }
+    };
+
+    const CATEGORY_ORDER = ['animals', 'colors', 'fruits', 'numbers', 'family', 'travel', 'movies', 'music', 'science', 'idioms'];
+    const MAX_LIVES = 5;
+    const POINTS_PER_CORRECT = 10;
+    const POINTS_PER_CATEGORY_COMPLETE = 50;
+    const AUTO_ADVANCE_DELAY = 1600;
+
+    // ============================================================
+    //  STATE
+    // ============================================================
+    let playerName = 'Player';
+    let playerSchool = '';
+    let playerGrade = 6;
+    let gradeTimeSeconds = getTimeForGrade(6);
+    let currentScore = 0;
+    let lives = MAX_LIVES;
+    let gameData = loadData();
+    let currentCategory = CATEGORY_ORDER[0];
+    let currentLevelIndex = 0;
+    let currentAudioText = '';
+    let answered = false;
+    let correctInCurrentCategory = 0;
+    let gameActive = false;
+
+    let timeLeft = 0;
+    let timerInterval = null;
+    let autoAdvanceTimeout = null;
+
+    let audioCtx = null;
+    let musicPlaying = false;
+    let musicMuted = false;
+    let musicInterval = null;
+    let currentMusicNote = 0;
+
+    let editMode = false;
+    let editorCategory = currentCategory;
+    let customAudios = loadAudios();
+    const completedCategories = new Set();
+
+    // DOM
+    const loginScreen = document.getElementById('loginScreen');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const schoolInput = document.getElementById('schoolInput');
+    const gradeGrid = document.getElementById('gradeGrid');
+    const timeInfo = document.getElementById('timeInfo');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const guestBtn = document.getElementById('guestBtn');
+
+    const playerNameDisplay = document.getElementById('playerNameDisplay');
+    const playerSchoolDisplay = document.getElementById('playerSchoolDisplay');
+    const playerGradeDisplay = document.getElementById('playerGradeDisplay');
+    const playerScoreDisplay = document.getElementById('playerScoreDisplay');
+    const levelDisplay = document.getElementById('levelDisplay');
+    const livesDisplay = document.getElementById('livesDisplay');
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const playAudioBtn = document.getElementById('playAudioBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    const audioStatus = document.getElementById('audioStatus');
+    const voiceBadge = document.getElementById('voiceBadge');
+    const editToggleBtn = document.getElementById('editToggleBtn');
+    const leaderboardBtn = document.getElementById('leaderboardBtn');
+    const musicBtn = document.getElementById('musicBtn');
+    const editorPanel = document.getElementById('editorPanel');
+    const editorGrid = document.getElementById('editorGrid');
+    const editorCategoryTabs = document.getElementById('editorCategoryTabs');
+    const saveEditorBtn = document.getElementById('saveEditorBtn');
+    const addLevelBtn = document.getElementById('addLevelBtn');
+    const addCategoryBtn = document.getElementById('addCategoryBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const resetBtn = document.getElementById('resetBtn');
+    const toast = document.getElementById('toast');
+    const difficultyIndicator = document.getElementById('difficultyIndicator');
+    const questionText = document.getElementById('questionText');
+
+    const timeFill = document.getElementById('timeFill');
+    const timeText = document.getElementById('timeText');
+
+    const leaderboardModal = document.getElementById('leaderboardModal');
+    const leaderboardBody = document.getElementById('leaderboardBody');
+    const closeLeaderboard = document.getElementById('closeLeaderboard');
+
+    const gameoverModal = document.getElementById('gameoverModal');
+    const gameoverTitle = document.getElementById('gameoverTitle');
+    const gameoverName = document.getElementById('gameoverName');
+    const finalScoreDisplay = document.getElementById('finalScoreDisplay');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const changeUserBtn = document.getElementById('changeUserBtn');
+
+    // ============================================================
+    //  PERSISTENCE
+    // ============================================================
+    function loadData() {
+        try {
+            const raw = localStorage.getItem('englishProgressive_v7');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+                    Object.keys(DEFAULT_DATA).forEach(k => {
+                        if (!parsed[k]) parsed[k] = JSON.parse(JSON.stringify(DEFAULT_DATA[k]));
+                    });
+                    return parsed;
+                }
+            }
+        } catch (e) {}
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+    function saveData() { try { localStorage.setItem('englishProgressive_v7', JSON.stringify(gameData)); } catch (e) {} }
+    function loadAudios() {
+        try { const raw = localStorage.getItem('englishProgressiveAudios_v7'); return raw ? JSON.parse(raw) : {}; }
+        catch (e) { return {}; }
+    }
+    function saveAudios() {
+        try { localStorage.setItem('englishProgressiveAudios_v7', JSON.stringify(customAudios)); }
+        catch (e) { alert('Storage full.'); }
+    }
+    function audioKey(cat, idx) { return `${cat}::${idx}`; }
+
+    function loadLeaderboard() {
+        try { const raw = localStorage.getItem('englishLeaderboard_v3'); return raw ? JSON.parse(raw) : []; }
+        catch (e) { return []; }
+    }
+    function saveLeaderboard(lb) {
+        try { localStorage.setItem('englishLeaderboard_v3', JSON.stringify(lb)); } catch (e) {}
+    }
+    async function addScoreToLeaderboard(name, school, grade, score, level) {
+
+    // Guardar localmente como hasta ahora
+    const lb = loadLeaderboard();
+    lb.push({
+        name,
+        school,
+        grade,
+        score,
+        level,
+        date: new Date().toISOString()
+    });
+
+    lb.sort((a, b) => b.score - a.score);
+    saveLeaderboard(lb.slice(0, 10));
+
+    // Guardar también en Supabase
+    try {
+
+        const { data, error } = await supabaseClient
+            .from('puntajes')
+            .insert([{
+                nombre: name,
+                escuela: school,
+                grado: String(grade),
+                materia: 'Inglés',
+                juego: 'Listen & Learn',
+                puntaje: Number(score)
+            }]);
+
+        if (error) {
+            console.error('❌ Error guardando puntaje en Supabase:', error);
+        } else {
+            console.log('✅ Puntaje guardado en Supabase:', data);
+        }
+
+    } catch (error) {
+        console.error('❌ Error de conexión con Supabase:', error);
+    }
+}
+
+    // ============================================================
+    //  MUSIC
+    // ============================================================
+    function initAudioContext() {
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    const MELODY = [
+        [523.25, 1], [659.25, 1], [783.99, 1], [659.25, 1],
+        [587.33, 1], [698.46, 1], [880.00, 1], [783.99, 1],
+        [523.25, 1], [659.25, 1], [783.99, 1], [1046.50, 1],
+        [880.00, 1], [783.99, 1], [659.25, 1], [587.33, 1]
+    ];
+
+    function playNote(freq, duration, time, gainVal = 0.04) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(gainVal, time + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(time);
+        osc.stop(time + duration + 0.05);
+    }
+
+    function startMusic() {
+        if (musicPlaying || musicMuted) return;
+        initAudioContext();
+        if (!audioCtx) return;
+        musicPlaying = true;
+        currentMusicNote = 0;
+        const loopMelody = () => {
+            if (!musicPlaying || musicMuted) return;
+            const now = audioCtx.currentTime;
+            let t = now;
+            for (let i = 0; i < 4; i++) {
+                const note = MELODY[(currentMusicNote + i) % MELODY.length];
+                playNote(note[0], 0.4, t, 0.03);
+                playNote(note[0] / 2, 0.5, t, 0.015);
+                t += 0.55;
+            }
+            currentMusicNote = (currentMusicNote + 4) % MELODY.length;
+            musicInterval = setTimeout(loopMelody, 4 * 550);
+        };
+        loopMelody();
+    }
+
+    function stopMusic() {
+        musicPlaying = false;
+        if (musicInterval) { clearTimeout(musicInterval); musicInterval = null; }
+    }
+
+    function playCorrectSound() {
+        if (!audioCtx || musicMuted) return;
+        const now = audioCtx.currentTime;
+        playNote(523.25, 0.15, now, 0.1);
+        playNote(659.25, 0.15, now + 0.12, 0.1);
+        playNote(783.99, 0.25, now + 0.24, 0.1);
+    }
+    function playWrongSound() {
+        if (!audioCtx || musicMuted) return;
+        const now = audioCtx.currentTime;
+        playNote(311.13, 0.2, now, 0.1);
+        playNote(233.08, 0.3, now + 0.15, 0.1);
+    }
+    function playTickSound() {
+        if (!audioCtx || musicMuted) return;
+        const now = audioCtx.currentTime;
+        playNote(880, 0.05, now, 0.05);
+    }
+
+    musicBtn.addEventListener('click', () => {
+        musicMuted = !musicMuted;
+        if (musicMuted) {
+            stopMusic();
+            musicBtn.classList.add('muted');
+            musicBtn.textContent = '🔇';
+        } else {
+            musicBtn.classList.remove('muted');
+            musicBtn.textContent = '🎵';
+            startMusic();
+        }
+    });
+
+    // ============================================================
+    //  HELPERS
+    // ============================================================
+    function showToast(msg, color = '#22c55e') {
+        toast.textContent = msg;
+        toast.style.background = color;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+    function escapeAttr(str) {
+        return String(str == null ? '' : str)
+            .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function getOrderedCategories() {
+        const ordered = [];
+        CATEGORY_ORDER.forEach(k => { if (gameData[k]) ordered.push(k); });
+        Object.keys(gameData).forEach(k => { if (!CATEGORY_ORDER.includes(k)) ordered.push(k); });
+        return ordered;
+    }
+    function formatTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // ============================================================
+    //  LOGIN
+    // ============================================================
+    let selectedGrade = null;
+
+    gradeGrid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.grade-btn');
+        if (!btn) return;
+        document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedGrade = parseInt(btn.dataset.grade, 10);
+        gradeTimeSeconds = getTimeForGrade(selectedGrade);
+        const range = selectedGrade <= 6 ? '1°-6° (2:30)' :
+                      selectedGrade <= 9 ? '7°-9° (2:00)' :
+                      '10°-12° (1:30)';
+        timeInfo.innerHTML = `⏱️ Grade ${selectedGrade} · ${formatTime(gradeTimeSeconds)} per level · ${range}`;
+        checkStartBtn();
+    });
+
+    playerNameInput.addEventListener('input', checkStartBtn);
+    schoolInput.addEventListener('input', checkStartBtn);
+
+    function checkStartBtn() {
+        const nameOk = playerNameInput.value.trim().length >= 2;
+        const schoolOk = schoolInput.value.trim().length >= 2;
+        const gradeOk = selectedGrade !== null;
+        startGameBtn.disabled = !(nameOk && schoolOk && gradeOk);
+    }
+
+    startGameBtn.addEventListener('click', () => {
+        const name = playerNameInput.value.trim();
+        const school = schoolInput.value.trim();
+        if (name.length < 2 || school.length < 2 || selectedGrade === null) return;
+        playerName = name;
+        playerSchool = school;
+        playerGrade = selectedGrade;
+        gradeTimeSeconds = getTimeForGrade(playerGrade);
+        startGame();
+    });
+    playerNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') startGameBtn.click(); });
+
+    guestBtn.addEventListener('click', () => {
+        playerName = 'Guest';
+        playerSchool = 'Guest';
+        playerGrade = 6;
+        gradeTimeSeconds = getTimeForGrade(6);
+        startGame();
+    });
+
+    function startGame() {
+        playerNameDisplay.textContent = playerName;
+        playerSchoolDisplay.textContent = playerSchool;
+        playerGradeDisplay.textContent = `G${playerGrade}`;
+        loginScreen.classList.add('hidden');
+        gameActive = true;
+        resetGameState();
+        renderCategories();
+        loadOptions();
+        initAudioContext();
+        if (!musicMuted) startMusic();
+        // Welcome message briefly, then audio will start automatically
+        setTimeout(() => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(`Welcome ${playerName}!`);
+                u.lang = 'en-US'; u.rate = 1;
+                speechSynthesis.speak(u);
+            }
+        }, 300);
+    }
+
+    function resetGameState() {
+        currentCategory = CATEGORY_ORDER[0];
+        currentLevelIndex = 0;
+        currentScore = 0;
+        lives = MAX_LIVES;
+        correctInCurrentCategory = 0;
+        completedCategories.clear();
+        updateHeaderUI();
+        updateLivesUI();
+        updateScoreUI();
+    }
+
+    // ============================================================
+    //  GAME LOGIC
+    // ============================================================
+    function getCurrentLevel() {
+        const cat = gameData[currentCategory];
+        if (!cat) return null;
+        return cat.levels[currentLevelIndex] || cat.levels[0] || null;
+    }
+
+    function updateScoreUI() {
+        playerScoreDisplay.textContent = `⭐ ${currentScore}`;
+    }
+    function updateLivesUI() {
+        livesDisplay.textContent = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, MAX_LIVES - lives));
+    }
+
+    function updateHeaderUI() {
+        const cat = gameData[currentCategory];
+        if (!cat) return;
+        const total = cat.levels.length;
+        levelDisplay.textContent = `L${currentLevelIndex + 1}/${total}`;
+        if (cat.difficulty) {
+            difficultyIndicator.textContent = `${getDifficultyEmoji(cat.difficulty)} ${cat.difficulty}`;
+            difficultyIndicator.style.background = cat.difficultyColor ? hexToLight(cat.difficultyColor) : '#fde68a';
+            difficultyIndicator.style.color = cat.difficultyColor || '#78350f';
+        }
+        const level = getCurrentLevel();
+        if (level) {
+            const isWord = level.palabra.split(' ').length === 1;
+            questionText.innerHTML = isWord
+                ? 'What <span class="highlight">word</span> do you hear?'
+                : 'What <span class="highlight">sentence</span> do you hear?';
+        }
+        // Update voice badge
+        const voiceIdx = getVoiceIndexForCurrentLevel();
+        voiceBadge.textContent = `🎤 ${VOICE_STYLES[voiceIdx].name}`;
+    }
+
+    function getVoiceIndexForCurrentLevel() {
+        // Rotate voices by (category index + level index)
+        const catIdx = CATEGORY_ORDER.indexOf(currentCategory);
+        return ((catIdx * 10) + currentLevelIndex) % VOICE_STYLES.length;
+    }
+
+    function getDifficultyEmoji(diff) {
+        const map = {
+            'Beginner': '🟢', 'Elementary': '🟢', 'Pre-Intermediate': '🟡',
+            'Intermediate': '🟠', 'Upper-Intermediate': '🟠',
+            'Advanced': '🔴', 'Expert': '🔴'
+        };
+        return map[diff] || '⚪';
+    }
+
+    function hexToLight(hex) {
+        try {
+            const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+            const mix = 0.85;
+            return `rgb(${Math.round(r + (255 - r) * mix)}, ${Math.round(g + (255 - g) * mix)}, ${Math.round(b + (255 - b) * mix)})`;
+        } catch (e) { return '#fde68a'; }
+    }
+
+    function renderCategories() {
+        categoriesContainer.innerHTML = '';
+        const ordered = getOrderedCategories();
+        ordered.forEach((key, index) => {
+            const cat = gameData[key];
+            if (!cat) return;
+            const btn = document.createElement('button');
+            const isCompleted = completedCategories.has(key);
+            const isUnlocked = index === 0 || completedCategories.has(ordered[index - 1]) || isCompleted;
+
+            btn.className = 'cat-btn'
+                + (key === currentCategory ? ' active' : '')
+                + (isCompleted ? ' completed' : '')
+                + (!isUnlocked ? ' locked' : '');
+            btn.dataset.category = key;
+            btn.innerHTML = `
+                <span class="cat-icon">${cat.icon || '📁'}</span>
+                <span class="cat-name">${cat.name}</span>
+                <span class="cat-age">${cat.ageRange || 'Ages'}</span>
+            `;
+            if (isUnlocked) {
+                btn.addEventListener('click', () => changeCategory(key));
+            } else {
+                btn.title = 'Complete previous category to unlock';
+                btn.addEventListener('click', () => showToast('🔒 Complete previous category first!', '#ef4444'));
+            }
+            categoriesContainer.appendChild(btn);
+        });
+    }
+
+    function loadOptions() {
+        const level = getCurrentLevel();
+        if (!level) return;
+        optionsContainer.innerHTML = '';
+        const shuffled = [...level.opciones].sort(() => Math.random() - 0.5);
+        const letters = ['A', 'B', 'C'];
+        shuffled.forEach((op, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.dataset.value = op;
+            btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${escapeAttr(op)}</span>`;
+            btn.addEventListener('click', () => handleOptionClick(op));
+            optionsContainer.appendChild(btn);
+        });
+
+        answered = false;
+        feedbackMessage.textContent = '';
+        document.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = false;
+            b.classList.remove('correct', 'incorrect');
+        });
+
+        currentAudioText = level.palabra;
+        const hasAudio = !!customAudios[audioKey(currentCategory, currentLevelIndex)];
+        audioStatus.textContent = hasAudio
+            ? `🎵 Custom audio (L${currentLevelIndex + 1})`
+            : `🔊 L${currentLevelIndex + 1} (TTS)`;
+        updateHeaderUI();
+
+        startLevelTimer();
+        // Auto-read audio immediately at level start
+        setTimeout(() => playCurrentAudio(), 250);
+    }
+
+    // ============================================================
+    //  TIMER
+    // ============================================================
+    function startLevelTimer() {
+        stopLevelTimer();
+        timeLeft = gradeTimeSeconds;
+        updateTimerUI();
+        timerInterval = setInterval(() => {
+            if (!gameActive) return;
+            timeLeft--;
+            updateTimerUI();
+            if (timeLeft <= 10 && timeLeft > 0) playTickSound();
+            if (timeLeft <= 0) {
+                stopLevelTimer();
+                timeUp();
+            }
+        }, 1000);
+    }
+    function stopLevelTimer() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }
+    function updateTimerUI() {
+        const pct = Math.max(0, (timeLeft / gradeTimeSeconds) * 100);
+        timeFill.style.width = pct + '%';
+        timeText.textContent = formatTime(Math.max(0, timeLeft));
+        timeFill.classList.remove('warning', 'danger');
+        if (pct <= 20) timeFill.classList.add('danger');
+        else if (pct <= 50) timeFill.classList.add('warning');
+    }
+
+    function timeUp() {
+        if (answered) return;
+        answered = true;
+        lives--;
+        updateLivesUI();
+        playWrongSound();
+        const level = getCurrentLevel();
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.disabled = true;
+            if (level && btn.dataset.value === level.palabra) btn.classList.add('correct');
+        });
+        feedbackMessage.textContent = '⏰ Time\'s up!';
+        feedbackMessage.style.color = '#dc2626';
+        showToast('⏰ Time up! -1 life', '#ef4444');
+        if (lives <= 0) { setTimeout(gameOver, 1500); return; }
+        scheduleAutoAdvance();
+    }
+
+    function scheduleAutoAdvance() {
+        if (autoAdvanceTimeout) clearTimeout(autoAdvanceTimeout);
+        autoAdvanceTimeout = setTimeout(() => {
+            autoAdvanceTimeout = null;
+            if (gameActive) goToNextLevel();
+        }, AUTO_ADVANCE_DELAY);
+    }
+
+    function playCurrentAudio() {
+        const key = audioKey(currentCategory, currentLevelIndex);
+        const custom = customAudios[key];
+        if (custom) {
+            try {
+                const audio = new Audio(custom);
+                audio.play().catch(() => speakText(currentAudioText));
+                return;
+            } catch (e) {}
+        }
+        speakText(currentAudioText);
+    }
+
+    function speakText(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+
+        // Pick a varied voice based on current level
+        const voiceIdx = getVoiceIndexForCurrentLevel();
+        const style = VOICE_STYLES[voiceIdx];
+
+        // Try to assign an actual browser voice
+        if (!availableVoices.length) loadVoices();
+        const picked = pickVoice(voiceIdx, style.gender);
+        if (picked) u.voice = picked;
+
+        // Adjust rate for advanced categories
+        const cat = gameData[currentCategory];
+        const isAdvanced = cat && ['Advanced', 'Expert', 'Upper-Intermediate'].includes(cat.difficulty);
+        u.rate = isAdvanced ? style.rate * 1.05 : style.rate;
+        u.pitch = style.pitch;
+
+        speechSynthesis.speak(u);
+    }
+
+    function handleOptionClick(opcion) {
+        if (answered || !gameActive) return;
+        const level = getCurrentLevel();
+        if (!level) return;
+        answered = true;
+        stopLevelTimer();
+        const correct = opcion === level.palabra;
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.disabled = true;
+            if (btn.dataset.value === level.palabra) btn.classList.add('correct');
+            else if (btn.dataset.value === opcion && !correct) btn.classList.add('incorrect');
+        });
+
+        if (correct) {
+            feedbackMessage.textContent = '✅ Correct!';
+            feedbackMessage.style.color = '#1f6d1f';
+            currentScore += POINTS_PER_CORRECT;
+            correctInCurrentCategory++;
+            updateScoreUI();
+            playCorrectSound();
+            const qz = document.querySelector('.question-zone');
+            qz.classList.add('celebrate');
+            setTimeout(() => qz.classList.remove('celebrate'), 500);
+        } else {
+            feedbackMessage.textContent = `❌ Answer: "${level.palabra}"`;
+            feedbackMessage.style.color = '#a13030';
+            lives--;
+            updateLivesUI();
+            playWrongSound();
+            if (lives <= 0) { setTimeout(gameOver, 1500); return; }
+        }
+        scheduleAutoAdvance();
+    }
+
+    function goToNextLevel() {
+        const cat = gameData[currentCategory];
+        if (!cat) return;
+        const maxLevels = cat.levels.length;
+
+        if (currentLevelIndex < maxLevels - 1) {
+            currentLevelIndex++;
+            loadOptions();
+        } else {
+            stopLevelTimer();
+            completedCategories.add(currentCategory);
+            currentScore += POINTS_PER_CATEGORY_COMPLETE;
+            updateScoreUI();
+            const catName = cat.name;
+            feedbackMessage.textContent = `🏆 ${catName} complete! +${POINTS_PER_CATEGORY_COMPLETE} bonus!`;
+            feedbackMessage.style.color = '#f59e0b';
+            showToast(`🎉 "${catName}" completed! +${POINTS_PER_CATEGORY_COMPLETE}`, '#f59e0b');
+            renderCategories();
+            setTimeout(autoAdvanceCategory, 2000);
+        }
+    }
+
+    function autoAdvanceCategory() {
+        const ordered = getOrderedCategories();
+        let nextIdx = ordered.indexOf(currentCategory) + 1;
+        while (nextIdx < ordered.length && completedCategories.has(ordered[nextIdx])) nextIdx++;
+
+        if (nextIdx >= ordered.length) {
+            feedbackMessage.textContent = '🌟 ALL CATEGORIES COMPLETED! 🌟';
+            feedbackMessage.style.color = '#fbbf24';
+            showToast('🏆 YOU WIN! All categories completed!', '#fbbf24');
+            addScoreToLeaderboard(playerName, playerSchool, playerGrade, currentScore, 'Complete');
+            gameActive = false;
+            stopLevelTimer();
+            stopMusic();
+            setTimeout(() => {
+                completedCategories.clear();
+                currentCategory = ordered[0];
+                currentLevelIndex = 0;
+                correctInCurrentCategory = 0;
+                renderCategories();
+                loadOptions();
+                feedbackMessage.textContent = '';
+            }, 5000);
+            return;
+        }
+
+        const nextKey = ordered[nextIdx];
+        currentCategory = nextKey;
+        currentLevelIndex = 0;
+        correctInCurrentCategory = 0;
+        renderCategories();
+        loadOptions();
+        const nextCat = gameData[nextKey];
+        feedbackMessage.textContent = `🎯 New: ${nextCat.name}!`;
+        feedbackMessage.style.color = '#3b82f6';
+        setTimeout(() => { feedbackMessage.textContent = ''; }, 1200);
+    }
+
+    function changeCategory(key) {
+        if (!gameData[key]) return;
+        stopLevelTimer();
+        currentCategory = key;
+        currentLevelIndex = 0;
+        correctInCurrentCategory = 0;
+        renderCategories();
+        loadOptions();
+        feedbackMessage.textContent = '';
+    }
+
+    // ============================================================
+    //  GAME OVER
+    // ============================================================
+    function gameOver() {
+        gameActive = false;
+        stopLevelTimer();
+        stopMusic();
+        gameoverTitle.textContent = '💀 Game Over';
+        gameoverName.textContent = `${playerName} · ${playerSchool} (G${playerGrade}) — out of lives!`;
+        finalScoreDisplay.textContent = currentScore;
+        gameoverModal.classList.add('show');
+        addScoreToLeaderboard(playerName, playerSchool, playerGrade, currentScore, `${currentCategory} L${currentLevelIndex + 1}`);
+        if ('speechSynthesis' in window) {
+            const u = new SpeechSynthesisUtterance(`Game over ${playerName}. Final score ${currentScore} points.`);
+            u.lang = 'en-US';
+            speechSynthesis.speak(u);
+        }
+    }
+
+    playAgainBtn.addEventListener('click', () => {
+        gameoverModal.classList.remove('show');
+        gameActive = true;
+        resetGameState();
+        renderCategories();
+        loadOptions();
+        if (!musicMuted) startMusic();
+    });
+
+    changeUserBtn.addEventListener('click', () => {
+        gameoverModal.classList.remove('show');
+        loginScreen.classList.remove('hidden');
+        playerNameInput.value = '';
+        playerNameInput.focus();
+        gameActive = false;
+        stopLevelTimer();
+        stopMusic();
+        selectedGrade = null;
+        document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+        startGameBtn.disabled = true;
+        timeInfo.textContent = '⏱️ Select a grade to see your time per level';
+    });
+
+    // ============================================================
+    //  LEADERBOARD
+    // ============================================================
+    function renderLeaderboard() {
+        const lb = loadLeaderboard();
+        leaderboardBody.innerHTML = '';
+        if (lb.length === 0) {
+            leaderboardBody.innerHTML = '<tr class="empty-row"><td colspan="5">No scores yet. Be the first! 🎯</td></tr>';
+            return;
+        }
+        lb.forEach((entry, i) => {
+            const tr = document.createElement('tr');
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+            tr.innerHTML = `
+                <td class="rank">${medal}</td>
+                <td>${escapeAttr(entry.name)}</td>
+                <td>${escapeAttr(entry.school || '—')}</td>
+                <td>${entry.score} pts</td>
+                <td style="font-size:0.75rem; color:#78350f;">G${entry.grade || '?'}</td>
+            `;
+            leaderboardBody.appendChild(tr);
+        });
+    }
+    leaderboardBtn.addEventListener('click', () => { renderLeaderboard(); leaderboardModal.classList.add('show'); });
+    closeLeaderboard.addEventListener('click', () => leaderboardModal.classList.remove('show'));
+    leaderboardModal.addEventListener('click', (e) => { if (e.target === leaderboardModal) leaderboardModal.classList.remove('show'); });
+
+    // ============================================================
+    //  EDITOR
+    // ============================================================
+    function toggleEditMode() {
+        editMode = !editMode;
+        editToggleBtn.textContent = editMode ? '✅' : '✏️';
+        editorPanel.classList.toggle('open', editMode);
+        if (editMode) { editorCategory = currentCategory; renderEditor(); }
+    }
+    function renderEditor() { renderEditorCategoryTabs(); renderEditorGrid(); }
+    function renderEditorCategoryTabs() {
+        editorCategoryTabs.innerHTML = '';
+        Object.entries(gameData).forEach(([key, cat]) => {
+            const tab = document.createElement('button');
+            tab.className = 'editor-cat-tab' + (key === editorCategory ? ' active' : '');
+            tab.innerHTML = `${cat.icon || '📁'} ${cat.name}`;
+            tab.addEventListener('click', () => { editorCategory = key; renderEditor(); });
+            editorCategoryTabs.appendChild(tab);
+        });
+    }
+    function renderEditorGrid() {
+        editorGrid.innerHTML = '';
+        const cat = gameData[editorCategory];
+        if (!cat) return;
+        const catCard = document.createElement('div');
+        catCard.className = 'level-card';
+        catCard.style.gridColumn = '1 / -1';
+        catCard.style.background = '#4c1d95';
+        catCard.innerHTML = `
+            <h3>📁 Category Settings</h3>
+            <label>Name</label>
+            <input type="text" id="catNameInput" value="${escapeAttr(cat.name)}" />
+            <label>Icon</label>
+            <input type="text" id="catIconInput" value="${escapeAttr(cat.icon || '📁')}" />
+            <label>Age Range</label>
+            <input type="text" id="catAgeInput" value="${escapeAttr(cat.ageRange || '')}" />
+            <label>Difficulty</label>
+            <input type="text" id="catDiffInput" value="${escapeAttr(cat.difficulty || '')}" />
+        `;
+        editorGrid.appendChild(catCard);
+        catCard.querySelector('#catNameInput').addEventListener('input', e => { cat.name = e.target.value; });
+        catCard.querySelector('#catIconInput').addEventListener('input', e => { cat.icon = e.target.value; });
+        catCard.querySelector('#catAgeInput').addEventListener('input', e => { cat.ageRange = e.target.value; });
+        catCard.querySelector('#catDiffInput').addEventListener('input', e => { cat.difficulty = e.target.value; });
+
+        cat.levels.forEach((level, idx) => {
+            const card = document.createElement('div');
+            card.className = 'level-card';
+            const key = audioKey(editorCategory, idx);
+            const hasAudio = !!customAudios[key];
+            card.innerHTML = `
+                <h3><span>Level ${idx + 1}</span><button class="delete-level" data-idx="${idx}">🗑️</button></h3>
+                <label>✅ Correct Answer</label>
+                <input type="text" class="word-input" data-idx="${idx}" data-field="palabra" value="${escapeAttr(level.palabra)}" />
+                <label>Option 1</label>
+                <input type="text" class="opt-input" data-idx="${idx}" data-field="0" value="${escapeAttr(level.opciones[0] || '')}" />
+                <label>Option 2</label>
+                <input type="text" class="opt-input" data-idx="${idx}" data-field="1" value="${escapeAttr(level.opciones[1] || '')}" />
+                <label>Option 3</label>
+                <input type="text" class="opt-input" data-idx="${idx}" data-field="2" value="${escapeAttr(level.opciones[2] || '')}" />
+                <label>🎵 Custom Audio</label>
+                <div class="audio-file-row">
+                    <button class="audio-file-btn">📂 Upload<input type="file" class="audio-upload" data-idx="${idx}" accept="audio/*" /></button>
+                    <span class="audio-file-name ${hasAudio ? '' : 'empty'}">${hasAudio ? '✅' : 'TTS'}</span>
+                    ${hasAudio ? `<button class="delete-audio" data-idx="${idx}" style="background:#dc2626;border:none;color:white;border-radius:50%;width:20px;height:20px;cursor:pointer;">×</button>` : ''}
+                </div>
+            `;
+            editorGrid.appendChild(card);
+            card.querySelectorAll('input.word-input, input.opt-input').forEach(input => {
+                input.addEventListener('input', e => {
+                    const i = parseInt(e.target.dataset.idx, 10);
+                    if (e.target.dataset.field === 'palabra') cat.levels[i].palabra = e.target.value;
+                    else cat.levels[i].opciones[parseInt(e.target.dataset.field, 10)] = e.target.value;
+                });
+            });
+            card.querySelector('.delete-level').addEventListener('click', e => {
+                const i = parseInt(e.target.dataset.idx, 10);
+                if (cat.levels.length <= 1) { alert('At least one level required.'); return; }
+                if (confirm(`Delete Level ${i + 1}?`)) {
+                    cat.levels.splice(i, 1);
+                    reindexAudiosAfterDelete(editorCategory, i);
+                    renderEditorGrid();
+                }
+            });
+            card.querySelector('.audio-upload').addEventListener('change', e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const i = parseInt(e.target.dataset.idx, 10);
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    customAudios[audioKey(editorCategory, i)] = ev.target.result;
+                    saveAudios();
+                    renderEditorGrid();
+                };
+                reader.readAsDataURL(file);
+            });
+            const delAudioBtn = card.querySelector('.delete-audio');
+            if (delAudioBtn) delAudioBtn.addEventListener('click', e => {
+                const i = parseInt(e.target.dataset.idx, 10);
+                delete customAudios[audioKey(editorCategory, i)];
+                saveAudios();
+                renderEditorGrid();
+            });
+        });
+    }
+    function reindexAudiosAfterDelete(catKey, deletedIdx) {
+        const newAudios = {};
+        Object.entries(customAudios).forEach(([k, v]) => {
+            const [c, i] = k.split('::');
+            if (c === catKey) {
+                const n = parseInt(i, 10);
+                if (n < deletedIdx) newAudios[k] = v;
+                else if (n > deletedIdx) newAudios[`${c}::${n - 1}`] = v;
+            } else newAudios[k] = v;
+        });
+        customAudios = newAudios;
+        saveAudios();
+    }
+
+    // ============================================================
+    //  EVENT LISTENERS
+    // ============================================================
+    editToggleBtn.addEventListener('click', toggleEditMode);
+    playAudioBtn.addEventListener('click', playCurrentAudio);
+    replayBtn.addEventListener('click', () => setTimeout(playCurrentAudio, 200));
+
+    saveEditorBtn.addEventListener('click', () => {
+        saveData(); saveAudios();
+        renderCategories();
+        loadOptions();
+        showToast('💾 Changes saved!', '#22c55e');
+    });
+    addLevelBtn.addEventListener('click', () => {
+        const cat = gameData[editorCategory];
+        if (!cat) return;
+        if (cat.levels.length >= 10) { showToast('⚠️ Maximum 10 levels', '#f59e0b'); return; }
+        cat.levels.push({ palabra: 'New word', opciones: ['New word', 'Option 2', 'Option 3'] });
+        renderEditorGrid();
+    });
+    addCategoryBtn.addEventListener('click', () => {
+        const name = prompt('New category name:', 'New Category');
+        if (!name) return;
+        const icon = prompt('Emoji icon:', '📁') || '📁';
+        let key = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        let i = 1; let uniqueKey = key;
+        while (gameData[uniqueKey]) { uniqueKey = key + '_' + i; i++; }
+        gameData[uniqueKey] = {
+            name, icon, ageRange: '7-18', difficulty: 'Custom', difficultyColor: '#a855f7',
+            levels: [{ palabra: 'First word', opciones: ['First word', 'Option 2', 'Option 3'] }]
+        };
+        editorCategory = uniqueKey;
+        renderEditor();
+        renderCategories();
+    });
+    exportBtn.addEventListener('click', () => {
+        const exportObj = { version: 7, gameData, audios: customAudios, order: CATEGORY_ORDER };
+        const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'english-game.json'; a.click();
+        URL.revokeObjectURL(url);
+    });
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const parsed = JSON.parse(ev.target.result);
+                if (parsed.gameData) { gameData = parsed.gameData; customAudios = parsed.audios || {}; }
+                else { gameData = parsed; customAudios = {}; }
+                saveData(); saveAudios();
+                currentCategory = CATEGORY_ORDER.find(k => gameData[k]) || Object.keys(gameData)[0];
+                currentLevelIndex = 0;
+                editorCategory = currentCategory;
+                completedCategories.clear();
+                renderCategories();
+                loadOptions();
+                renderEditor();
+                showToast('✅ Import successful!', '#22c55e');
+            } catch (err) { alert('Invalid JSON: ' + err.message); }
+        };
+        reader.readAsText(file);
+        importFile.value = '';
+    });
+    resetBtn.addEventListener('click', () => {
+        if (!confirm('Reset ALL data to default?')) return;
+        gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        customAudios = {};
+        saveData(); saveAudios();
+        currentCategory = CATEGORY_ORDER[0];
+        currentLevelIndex = 0;
+        editorCategory = currentCategory;
+        completedCategories.clear();
+        renderCategories();
+        loadOptions();
+        renderEditor();
+        showToast('🔄 Reset to default!', '#fbbf24');
+    });
+
+    // ============================================================
+    //  INIT
+    // ============================================================
+    setTimeout(() => playerNameInput.focus(), 300);
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</body>
+</html>
