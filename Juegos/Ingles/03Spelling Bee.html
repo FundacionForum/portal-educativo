@@ -598,7 +598,14 @@
             .transition-card { padding: 24px 28px; }
             .countdown-number { font-size: 4rem; }
         }
-    </style>
+    
+/* ===== SELECTOR DE ESCUELAS ===== */
+.school-search{position:relative;width:100%;}
+.school-options{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #d7e1eb;border-top:none;border-radius:0 0 12px 12px;max-height:200px;overflow-y:auto;z-index:10000;display:none;box-shadow:0 8px 16px rgba(11,49,85,.15);text-align:left;}
+.school-option{padding:10px 14px;cursor:pointer;font-size:.9rem;color:#27354a;border-bottom:1px solid #f0f4f8;}
+.school-option:hover{background:#f0f4f8;color:#123f68;font-weight:600;}
+.school-option.no-results{color:#777;cursor:default;}
+</style>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -1481,6 +1488,84 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             voicesLoaded = true;
         };
     }
+})();
+
+/* ===== LISTA DE ESCUELAS COMPARTIDA ===== */
+const escuelas = [
+  "C.E. Atré",
+  "C.E. Boca de las Minas",
+  "C.E. Boca de Tucué",
+  "C.E. Candelario Ovalle",
+  "C.E. Chiguirí Abajo",
+  "C.E. José de los Reyes Vásquez",
+  "C.E. Los Pilares",
+  "C.E. Mercedes Bustamante",
+  "C.E. Modesto Morán Herrera",
+  "C.E. Ojo de Agua",
+  "C.E. Pablo Alzamora Vargas",
+  "C.E. San Miguel Arriba",
+  "C.E.B.G. Asunción Chirú",
+  "C.E.B.G. Caño de San Miguel",
+  "C.E.B.G. Cristóbal Alabarca",
+  "C.E.B.G. Jorge Conte Porras",
+  "C.E.B.G. Pajonal Arriba",
+  "C.E.B.G. La Negrita",
+  "C.E. Boca de Chiguirí",
+  "C.E. Brazos de U",
+  "C.E. El Barrero",
+  "C.E. Las Marías",
+  "C.E. Paso Real",
+  "C.E. Rincón de Las Palmas",
+  "C.E. Santa Ana",
+  "C.E. Sonadora",
+  "C.E. Uracillo Centro",
+  "C.E. Valle de San Miguel",
+  "Escuela Altos de San Miguel",
+  "Escuela Altos del Coco",
+  "Escuela Bilingüe Membrillo",
+  "Escuela Bilingüe Víctor Pérez Flores",
+  "Escuela Celestino del Rosario",
+  "Escuela Churuquita Grande",
+  "Escuela de Miraflores",
+  "Escuela de Sabana Larga",
+  "Escuela de Tambo",
+  "Escuela de Vaquilla",
+  "Escuela El Águila",
+  "Escuela Francisco Figueroa Herrera",
+  "Escuela Loma Grande",
+  "Escuela Manuel Jaén Rodríguez",
+  "Escuela Oajaca",
+  "Escuela Pozo Azul",
+  "Escuela Simón Martínez Pérez"
+];
+
+(function initSchoolSelector(){
+  const schoolEl = document.getElementById('schoolInput') || document.getElementById('schoolName');
+  if(!schoolEl) return;
+  let wrap = schoolEl.closest('.school-search');
+  if(!wrap){
+    wrap=document.createElement('div'); wrap.className='school-search';
+    schoolEl.parentNode.insertBefore(wrap,schoolEl); wrap.appendChild(schoolEl);
+  }
+  let opts=wrap.querySelector('.school-options');
+  if(!opts){ opts=document.createElement('div'); opts.className='school-options'; opts.id='schoolOptions'; wrap.appendChild(opts); }
+  const normal=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  function showSchoolOptions(){
+    const q=normal(schoolEl.value);
+    const matches=escuelas.filter(e=>normal(e).includes(q));
+    opts.innerHTML='';
+    if(!matches.length){
+      const d=document.createElement('div'); d.className='school-option no-results'; d.textContent='No se encontraron escuelas'; opts.appendChild(d);
+    }else matches.forEach(e=>{
+      const d=document.createElement('div'); d.className='school-option'; d.textContent=e;
+      d.addEventListener('mousedown',ev=>{ev.preventDefault(); schoolEl.value=e; opts.style.display='none'; schoolEl.dispatchEvent(new Event('input',{bubbles:true})); schoolEl.dispatchEvent(new Event('change',{bubbles:true}));});
+      opts.appendChild(d);
+    });
+    opts.style.display='block';
+  }
+  schoolEl.addEventListener('focus',showSchoolOptions);
+  schoolEl.addEventListener('input',showSchoolOptions);
+  document.addEventListener('click',e=>{if(!wrap.contains(e.target)) opts.style.display='none';});
 })();
 </script>
 </body>

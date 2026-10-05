@@ -636,6 +636,49 @@ section.hero {
   border-color:var(--af-navy2);
   box-shadow:0 0 0 4px rgba(18,63,104,.10);
 }
+
+/* ESTILOS DEL DESPLEGABLE DE ESCUELAS */
+.school-search {
+  position: relative;
+  width: 100%;
+}
+
+.school-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #d7e1eb;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 8px 16px rgba(11,49,85,0.15);
+  text-align: left;
+}
+
+.school-option {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--af-ink);
+  border-bottom: 1px solid #f0f4f8;
+}
+
+.school-option:hover {
+  background: #f0f4f8;
+  color: var(--af-navy2);
+  font-weight: 600;
+}
+
+.school-option.no-results {
+  color: #777;
+  cursor: default;
+}
+
 .grade-section label{color:var(--af-navy2);}
 .grade-btn{
   border:2px solid #d7e1eb;
@@ -755,7 +798,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p>Enter your name, school and grade to start!</p>
 
         <input type="text" id="playerNameInput" placeholder="Your name..." maxlength="40" autocomplete="name" />
-        <input type="text" id="schoolInput" placeholder="Your school..." maxlength="80" autocomplete="organization" />
+        
+        <div class="school-search">
+          <input
+            type="text"
+            id="schoolInput"
+            name="escuela"
+            placeholder="Escribe o selecciona tu escuela..."
+            autocomplete="off"
+          >
+          <div id="schoolOptions" class="school-options"></div>
+        </div>
 
         <div class="grade-section">
             <label>📚 Select your grade:</label>
@@ -816,7 +869,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="audio-zone">
             <div class="speaker-icon">🔊</div>
             <div class="audio-controls">
-                <button class="audio-btn" id="playAudioBtn">▶️ Play</button>
+                <button class="audio-btn" id="playAudioBtn">▶️️ Play</button>
                 <button class="audio-btn" id="replayBtn">🔁 Replay</button>
             </div>
             <div class="audio-status" id="audioStatus">✅ Audio ready</div>
@@ -884,6 +937,172 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script>
 (function () {
+    // DOM Elements Declarations
+    const loginScreen = document.getElementById('loginScreen');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const schoolInput = document.getElementById('schoolInput');
+    const schoolOptionsEl = document.getElementById("schoolOptions");
+    const gradeGrid = document.getElementById('gradeGrid');
+    const timeInfo = document.getElementById('timeInfo');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const guestBtn = document.getElementById('guestBtn');
+
+    const playerNameDisplay = document.getElementById('playerNameDisplay');
+    const playerSchoolDisplay = document.getElementById('playerSchoolDisplay');
+    const playerGradeDisplay = document.getElementById('playerGradeDisplay');
+    const playerScoreDisplay = document.getElementById('playerScoreDisplay');
+    const levelDisplay = document.getElementById('levelDisplay');
+    const livesDisplay = document.getElementById('livesDisplay');
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const playAudioBtn = document.getElementById('playAudioBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    const audioStatus = document.getElementById('audioStatus');
+    const voiceBadge = document.getElementById('voiceBadge');
+    const editToggleBtn = document.getElementById('editToggleBtn');
+    const leaderboardBtn = document.getElementById('leaderboardBtn');
+    const musicBtn = document.getElementById('musicBtn');
+    const editorPanel = document.getElementById('editorPanel');
+    const editorGrid = document.getElementById('editorGrid');
+    const editorCategoryTabs = document.getElementById('editorCategoryTabs');
+    const saveEditorBtn = document.getElementById('saveEditorBtn');
+    const addLevelBtn = document.getElementById('addLevelBtn');
+    const addCategoryBtn = document.getElementById('addCategoryBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const resetBtn = document.getElementById('resetBtn');
+    const toast = document.getElementById('toast');
+    const difficultyIndicator = document.getElementById('difficultyIndicator');
+    const questionText = document.getElementById('questionText');
+
+    const timeFill = document.getElementById('timeFill');
+    const timeText = document.getElementById('timeText');
+
+    const leaderboardModal = document.getElementById('leaderboardModal');
+    const leaderboardBody = document.getElementById('leaderboardBody');
+    const closeLeaderboard = document.getElementById('closeLeaderboard');
+
+    const gameoverModal = document.getElementById('gameoverModal');
+    const gameoverTitle = document.getElementById('gameoverTitle');
+    const gameoverName = document.getElementById('gameoverName');
+    const finalScoreDisplay = document.getElementById('finalScoreDisplay');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const changeUserBtn = document.getElementById('changeUserBtn');
+
+    // ============================================================
+    //  LISTA DE ESCUELAS Y CONTROLADOR DE BÚSQUEDA
+    // ============================================================
+    const escuelas = [
+      "C.E. Atré",
+      "C.E. Boca de las Minas",
+      "C.E. Boca de Tucué",
+      "C.E. Candelario Ovalle",
+      "C.E. Chiguirí Abajo",
+      "C.E. José de los Reyes Vásquez",
+      "C.E. Los Pilares",
+      "C.E. Mercedes Bustamante",
+      "C.E. Modesto Morán Herrera",
+      "C.E. Ojo de Agua",
+      "C.E. Pablo Alzamora Vargas",
+      "C.E. San Miguel Arriba",
+
+      "C.E.B.G. Asunción Chirú",
+      "C.E.B.G. Caño de San Miguel",
+      "C.E.B.G. Cristóbal Alabarca",
+      "C.E.B.G. Jorge Conte Porras",
+      "C.E.B.G. Pajonal Arriba",
+      "C.E.B.G. La Negrita",
+
+      "C.E. Boca de Chiguirí",
+      "C.E. Brazos de U",
+      "C.E. El Barrero",
+      "C.E. Las Marías",
+      "C.E. Paso Real",
+      "C.E. Rincón de Las Palmas",
+      "C.E. Santa Ana",
+      "C.E. Sonadora",
+      "C.E. Uracillo Centro",
+      "C.E. Valle de San Miguel",
+
+      "Escuela Altos de San Miguel",
+      "Escuela Altos del Coco",
+      "Escuela Bilingüe Membrillo",
+      "Escuela Bilingüe Víctor Pérez Flores",
+      "Escuela Celestino del Rosario",
+      "Escuela Churuquita Grande",
+      "Escuela de Miraflores",
+      "Escuela de Sabana Larga",
+      "Escuela de Tambo",
+      "Escuela de Vaquilla",
+      "Escuela El Águila",
+      "Escuela Francisco Figueroa Herrera",
+      "Escuela Loma Grande",
+      "Escuela Manuel Jaén Rodríguez",
+      "Escuela Oajaca",
+      "Escuela Pozo Azul",
+      "Escuela Simón Martínez Pérez"
+    ];
+
+    function mostrarEscuelas(texto = "") {
+      const busqueda = texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+      const coincidencias = escuelas.filter(escuela =>
+        escuela
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .includes(busqueda)
+      );
+
+      schoolOptionsEl.innerHTML = "";
+
+      if (coincidencias.length === 0) {
+        schoolOptionsEl.innerHTML = `
+          <div class="school-option no-results">
+            No se encontraron escuelas
+          </div>
+        `;
+      } else {
+        coincidencias.forEach(escuela => {
+          const opcion = document.createElement("div");
+          opcion.className = "school-option";
+          opcion.textContent = escuela;
+
+          opcion.addEventListener("click", () => {
+            schoolInput.value = escuela;
+            schoolOptionsEl.style.display = "none";
+            checkStartBtn();
+          });
+
+          schoolOptionsEl.appendChild(opcion);
+        });
+      }
+
+      schoolOptionsEl.style.display = "block";
+    }
+
+    if (schoolInput && schoolOptionsEl) {
+      schoolInput.addEventListener("focus", () => {
+        mostrarEscuelas(schoolInput.value);
+      });
+
+      schoolInput.addEventListener("input", () => {
+        mostrarEscuelas(schoolInput.value);
+        checkStartBtn();
+      });
+
+      document.addEventListener("click", (evento) => {
+        if (!evento.target.closest(".school-search")) {
+          schoolOptionsEl.style.display = "none";
+        }
+      });
+    }
+
     // ============================================================
     //  TIME CONFIG BY GRADE
     // ============================================================
@@ -1121,59 +1340,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     let customAudios = loadAudios();
     const completedCategories = new Set();
 
-    // DOM
-    const loginScreen = document.getElementById('loginScreen');
-    const playerNameInput = document.getElementById('playerNameInput');
-    const schoolInput = document.getElementById('schoolInput');
-    const gradeGrid = document.getElementById('gradeGrid');
-    const timeInfo = document.getElementById('timeInfo');
-    const startGameBtn = document.getElementById('startGameBtn');
-    const guestBtn = document.getElementById('guestBtn');
-
-    const playerNameDisplay = document.getElementById('playerNameDisplay');
-    const playerSchoolDisplay = document.getElementById('playerSchoolDisplay');
-    const playerGradeDisplay = document.getElementById('playerGradeDisplay');
-    const playerScoreDisplay = document.getElementById('playerScoreDisplay');
-    const levelDisplay = document.getElementById('levelDisplay');
-    const livesDisplay = document.getElementById('livesDisplay');
-    const categoriesContainer = document.getElementById('categoriesContainer');
-    const optionsContainer = document.getElementById('optionsContainer');
-    const feedbackMessage = document.getElementById('feedbackMessage');
-    const playAudioBtn = document.getElementById('playAudioBtn');
-    const replayBtn = document.getElementById('replayBtn');
-    const audioStatus = document.getElementById('audioStatus');
-    const voiceBadge = document.getElementById('voiceBadge');
-    const editToggleBtn = document.getElementById('editToggleBtn');
-    const leaderboardBtn = document.getElementById('leaderboardBtn');
-    const musicBtn = document.getElementById('musicBtn');
-    const editorPanel = document.getElementById('editorPanel');
-    const editorGrid = document.getElementById('editorGrid');
-    const editorCategoryTabs = document.getElementById('editorCategoryTabs');
-    const saveEditorBtn = document.getElementById('saveEditorBtn');
-    const addLevelBtn = document.getElementById('addLevelBtn');
-    const addCategoryBtn = document.getElementById('addCategoryBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const importBtn = document.getElementById('importBtn');
-    const importFile = document.getElementById('importFile');
-    const resetBtn = document.getElementById('resetBtn');
-    const toast = document.getElementById('toast');
-    const difficultyIndicator = document.getElementById('difficultyIndicator');
-    const questionText = document.getElementById('questionText');
-
-    const timeFill = document.getElementById('timeFill');
-    const timeText = document.getElementById('timeText');
-
-    const leaderboardModal = document.getElementById('leaderboardModal');
-    const leaderboardBody = document.getElementById('leaderboardBody');
-    const closeLeaderboard = document.getElementById('closeLeaderboard');
-
-    const gameoverModal = document.getElementById('gameoverModal');
-    const gameoverTitle = document.getElementById('gameoverTitle');
-    const gameoverName = document.getElementById('gameoverName');
-    const finalScoreDisplay = document.getElementById('finalScoreDisplay');
-    const playAgainBtn = document.getElementById('playAgainBtn');
-    const changeUserBtn = document.getElementById('changeUserBtn');
-
     // ============================================================
     //  PERSISTENCE
     // ============================================================
@@ -1212,44 +1378,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     async function addScoreToLeaderboard(name, school, grade, score, level) {
 
-    // Guardar localmente como hasta ahora
-    const lb = loadLeaderboard();
-    lb.push({
-        name,
-        school,
-        grade,
-        score,
-        level,
-        date: new Date().toISOString()
-    });
+        // Guardar localmente como hasta ahora
+        const lb = loadLeaderboard();
+        lb.push({
+            name,
+            school,
+            grade,
+            score,
+            level,
+            date: new Date().toISOString()
+        });
 
-    lb.sort((a, b) => b.score - a.score);
-    saveLeaderboard(lb.slice(0, 10));
+        lb.sort((a, b) => b.score - a.score);
+        saveLeaderboard(lb.slice(0, 10));
 
-    // Guardar también en Supabase
-    try {
+        // Guardar también en Supabase
+        try {
+            if (typeof supabaseClient !== 'undefined') {
+                const { data, error } = await supabaseClient
+                    .from('puntajes')
+                    .insert([{
+                        nombre: name,
+                        escuela: school,
+                        grado: String(grade),
+                        materia: 'Inglés',
+                        juego: 'Listen & Learn',
+                        puntaje: Number(score)
+                    }]);
 
-        const { data, error } = await supabaseClient
-            .from('puntajes')
-            .insert([{
-                nombre: name,
-                escuela: school,
-                grado: String(grade),
-                materia: 'Inglés',
-                juego: 'Listen & Learn',
-                puntaje: Number(score)
-            }]);
+                if (error) {
+                    console.error('❌ Error guardando puntaje en Supabase:', error);
+                } else {
+                    console.log('✅ Puntaje guardado en Supabase:', data);
+                }
+            } else {
+                console.error('❌ Supabase Client no está inicializado.');
+            }
 
-        if (error) {
-            console.error('❌ Error guardando puntaje en Supabase:', error);
-        } else {
-            console.log('✅ Puntaje guardado en Supabase:', data);
+        } catch (error) {
+            console.error('❌ Error de conexión con Supabase:', error);
         }
-
-    } catch (error) {
-        console.error('❌ Error de conexión con Supabase:', error);
     }
-}
 
     // ============================================================
     //  MUSIC
@@ -1388,7 +1557,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
 
     playerNameInput.addEventListener('input', checkStartBtn);
-    schoolInput.addEventListener('input', checkStartBtn);
 
     function checkStartBtn() {
         const nameOk = playerNameInput.value.trim().length >= 2;
@@ -1806,6 +1974,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         gameoverModal.classList.remove('show');
         loginScreen.classList.remove('hidden');
         playerNameInput.value = '';
+        if (schoolInput) schoolInput.value = '';
         playerNameInput.focus();
         gameActive = false;
         stopLevelTimer();
