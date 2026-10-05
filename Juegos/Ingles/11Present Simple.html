@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pick the Right Picture - English Game</title>
+<title>Present Simple - English Practice</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
   
@@ -25,12 +25,12 @@
     100% { background-position: 0% 50%; }
   }
   
-  body.theme-1 { background: linear-gradient(135deg, #ff9a3c, #ffd93d, #ff6b9d); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
-  body.theme-2 { background: linear-gradient(135deg, #4d96ff, #6bcbff, #9b7bff); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
-  body.theme-3 { background: linear-gradient(135deg, #6bcb77, #7dffb3, #b4ff6b); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
-  body.theme-4 { background: linear-gradient(135deg, #ff6b9d, #ff4da6, #ff8ac4); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
-  body.theme-5 { background: linear-gradient(135deg, #b56bff, #9b7bff, #ff6bff); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
-  body.theme-6 { background: linear-gradient(135deg, #30cfd0, #5ee7df, #b490ca); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-1 { background: linear-gradient(135deg, #ff6b9d, #ff9a3c, #ffd93d); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-2 { background: linear-gradient(135deg, #43e97b, #38f9d7, #43e97b); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-3 { background: linear-gradient(135deg, #4facfe, #00f2fe, #4facfe); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-4 { background: linear-gradient(135deg, #fa709a, #fee140, #fa709a); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-5 { background: linear-gradient(135deg, #a18cd1, #fbc2eb, #a18cd1); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-6 { background: linear-gradient(135deg, #30cfd0, #330867, #30cfd0); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
   
   .bg-design {
     position: fixed;
@@ -40,17 +40,20 @@
     overflow: hidden;
   }
   
-  .bg-design .shape {
+  .bg-design .word {
     position: absolute;
-    font-size: 5em;
-    opacity: 0.08;
-    animation: floatShape 10s ease-in-out infinite;
+    font-size: 4em;
+    font-weight: 900;
+    color: rgba(255,255,255,0.1);
+    animation: floatWord 12s ease-in-out infinite;
     user-select: none;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
   }
   
-  @keyframes floatShape {
-    0%, 100% { transform: translateY(0) rotate(-10deg); }
-    50% { transform: translateY(-30px) rotate(10deg); }
+  @keyframes floatWord {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-30px) rotate(6deg); }
   }
   
   .deco-bg {
@@ -64,7 +67,7 @@
   .deco-bg .note {
     position: absolute;
     font-size: 1.8em;
-    opacity: 0.3;
+    opacity: 0.35;
     animation: floatNote 7s ease-in-out infinite;
     filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
     user-select: none;
@@ -182,7 +185,7 @@
   
   .welcome-card {
     width: 100%;
-    max-width: 560px;
+    max-width: 620px;
     background: white;
     border-radius: 18px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -231,28 +234,37 @@
   
   .form-group input:focus {
     outline: none;
-    border-color: #764ba2;
-    box-shadow: 0 0 0 3px rgba(118,75,162,0.15);
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79,172,254,0.15);
   }
   
   .rules-box {
-    background: #f3e8ff;
-    border-left: 5px solid #764ba2;
+    background: #e3f2fd;
+    border-left: 5px solid #2196f3;
     border-radius: 8px;
     padding: 10px 14px;
     margin-bottom: 12px;
     font-size: 0.8em;
     line-height: 1.55;
-    color: #4a2a6a;
+    color: #0d3c61;
   }
   
   .rules-box h3 {
-    color: #764ba2;
+    color: #1976d2;
     margin-bottom: 4px;
     font-size: 1em;
   }
   
   .rules-box ul { padding-left: 18px; }
+  
+  .rules-box code {
+    background: #fff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #d32f2f;
+    font-family: 'Courier New', monospace;
+  }
   
   .rules-box .penalty { color: #d32f2f; font-weight: 700; }
   
@@ -270,7 +282,7 @@
   .btn-primary {
     width: 100%;
     padding: 12px;
-    background: linear-gradient(135deg, #764ba2, #5a3a7a);
+    background: linear-gradient(135deg, #4facfe, #0066cc);
     color: white;
     border: none;
     border-radius: 12px;
@@ -281,14 +293,14 @@
     letter-spacing: 0.5px;
   }
   
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(118,75,162,0.5); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79,172,254,0.5); }
   
   .countdown-display {
     text-align: center;
     font-size: 5em;
     font-weight: 900;
-    color: #764ba2;
-    text-shadow: 3px 3px 0 rgba(118,75,162,0.25);
+    color: #2196f3;
+    text-shadow: 3px 3px 0 rgba(33,150,243,0.25);
     animation: pulse 1s infinite;
     line-height: 1.2;
     background: white;
@@ -335,7 +347,7 @@
   }
   
   .level-badge {
-    background: #764ba2;
+    background: #1976d2;
     color: white;
     padding: 4px 12px;
     border-radius: 20px;
@@ -345,13 +357,13 @@
   }
   
   .category-badge {
-    background: #e8f0fe;
-    color: #2c5f8a;
+    background: #e3f2fd;
+    color: #0d3c61;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.7em;
     font-weight: 700;
-    border: 1px solid #4a90d9;
+    border: 1px solid #2196f3;
     white-space: nowrap;
   }
   
@@ -392,13 +404,13 @@
   }
   
   .timer-box {
-    background: #e8f0fe;
-    color: #2c5f8a;
+    background: #e3f2fd;
+    color: #0d3c61;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.78em;
     font-weight: 700;
-    border: 1px solid #4a90d9;
+    border: 1px solid #2196f3;
     white-space: nowrap;
   }
   
@@ -416,99 +428,207 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 12px;
     min-height: 0;
     padding: 0 4px;
-    overflow: hidden;
+    overflow-y: auto;
   }
   
-  .word-card {
-    background: linear-gradient(135deg, #f3e8ff, #e8d5ff);
-    border: 3px solid #764ba2;
-    border-radius: 14px;
-    padding: 8px 22px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(118,75,162,0.25);
-    animation: wordPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
+  .game-avatar {
+    font-size: 2.5em;
+    animation: floatAvatar 2s ease-in-out infinite;
+    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.2));
     flex-shrink: 0;
-    width: 100%;
-    max-width: 640px;
-    position: relative;
   }
   
-  @keyframes wordPop {
+  @keyframes floatAvatar {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+  
+  .instruction {
+    text-align: center;
+    font-size: 0.95em;
+    color: #0d3c61;
+    font-weight: 600;
+    max-width: 90%;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  
+  .instruction .highlight { color: #1976d2; font-weight: 800; }
+  
+  .sentence-card {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 4px solid #2196f3;
+    border-radius: 20px;
+    padding: 20px 34px;
+    text-align: center;
+    box-shadow: 0 10px 35px rgba(33,150,243,0.3);
+    max-width: 640px;
+    width: 100%;
+    animation: sentencePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+  }
+  
+  @keyframes sentencePop {
     0% { transform: scale(0.9) rotate(-1deg); opacity: 0; }
     100% { transform: scale(1) rotate(0deg); opacity: 1; }
   }
   
-  .word-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .word-label {
-    font-size: 0.6em;
-    color: #7a5a9d;
+  .sentence-label {
+    font-size: 0.7em;
+    color: #1976d2;
     font-weight: 800;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    margin-bottom: 10px;
   }
   
-  .word-display {
-    font-size: clamp(1.3em, 3.5vw, 2.1em);
-    font-weight: 900;
-    color: #4a2a6a;
-    letter-spacing: 1.5px;
-    line-height: 1.15;
+  .sentence-text {
+    font-size: clamp(1.3em, 3.2vw, 2em);
+    font-weight: 800;
+    color: #0d3c61;
+    line-height: 1.5;
     word-break: break-word;
-    text-align: center;
+    letter-spacing: 0.5px;
   }
   
-  /* ===== HIDDEN CLUE (in Spanish) ===== */
-  .word-sub {
-    font-size: 0.82em;
-    color: #5a3a00;
-    font-style: italic;
-    margin-top: 4px;
-    background: #fff8e1;
-    padding: 5px 14px;
+  .sentence-text .blank {
+    display: inline-block;
+    min-width: 90px;
+    padding: 4px 12px;
+    background: white;
+    border: 3px dashed #1976d2;
     border-radius: 10px;
-    border: 1px dashed #d68812;
-    display: none;
-    max-width: 100%;
-    line-height: 1.35;
-    font-weight: 600;
+    color: #d32f2f;
+    font-weight: 900;
+    text-align: center;
+    margin: 0 4px;
+    transition: all 0.3s;
   }
   
-  .word-sub.show {
-    display: block;
-    animation: hintPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  .sentence-text .blank.answered {
+    border-style: solid;
+    background: #d4edda;
+    color: #155724;
+    border-color: #28a745;
   }
+  
+  .sentence-text .blank.wrong {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #dc3545;
+    border-style: solid;
+  }
+  
+  .hint-box {
+    background: #fff8e1;
+    border: 2px dashed #ffc107;
+    border-radius: 12px;
+    padding: 10px 18px;
+    max-width: 640px;
+    width: 100%;
+    font-size: 0.85em;
+    color: #5a4a2a;
+    line-height: 1.5;
+    display: none;
+    animation: hintPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+  }
+  
+  .hint-box.show { display: block; }
   
   @keyframes hintPop {
     0% { transform: scale(0.6); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
   }
   
-  .word-actions {
+  .hint-box .label {
+    font-weight: 800;
+    color: #d68812;
+    margin-bottom: 4px;
+    font-size: 0.9em;
+  }
+  
+  .hint-box .rule { color: #4a2a6a; }
+  .hint-box .rule strong { color: #d32f2f; }
+  
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 640px;
+    flex-shrink: 0;
+  }
+  
+  .option-btn {
+    padding: 20px 16px;
+    background: white;
+    border: 3px solid #d0d8e0;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 1.25em;
+    font-weight: 800;
+    color: #2c3e50;
+    transition: all 0.25s;
     display: flex;
-    gap: 8px;
     align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  }
+  
+  .option-btn:hover:not(:disabled) {
+    border-color: #2196f3;
+    background: #e3f2fd;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(33,150,243,0.3);
+  }
+  
+  .option-btn:disabled { cursor: not-allowed; }
+  
+  .option-btn.correct {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+    animation: correctPop 0.5s;
+  }
+  
+  .option-btn.incorrect {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+    animation: wrongShake 0.4s;
+  }
+  
+  @keyframes correctPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  
+  .input-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
     flex-shrink: 0;
   }
   
   .icon-btn {
     border: none;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     cursor: pointer;
     font-size: 1.15em;
     transition: all 0.25s;
@@ -519,20 +639,19 @@
     position: relative;
   }
   
-  .speak-word-btn {
-    background: linear-gradient(135deg, #4a90d9, #2c5f8a);
+  .speak-btn {
+    background: linear-gradient(135deg, #4facfe, #0066cc);
     color: white;
-    box-shadow: 0 5px 15px rgba(74,144,217,0.4);
+    box-shadow: 0 5px 15px rgba(79,172,254,0.4);
   }
   
-  .speak-word-btn:hover { transform: scale(1.08); box-shadow: 0 8px 20px rgba(74,144,217,0.6); }
-  .speak-word-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .speak-btn:hover { transform: scale(1.08); box-shadow: 0 8px 20px rgba(79,172,254,0.6); }
+  .speak-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   
   .hint-btn {
     background: linear-gradient(135deg, #ffc107, #d68812);
     color: white;
     box-shadow: 0 5px 15px rgba(255,193,7,0.4);
-    font-size: 1.05em;
   }
   
   .hint-btn:hover { transform: scale(1.08); box-shadow: 0 8px 20px rgba(255,193,7,0.6); }
@@ -554,105 +673,6 @@
     border-radius: 8px;
     border: 2px solid white;
     white-space: nowrap;
-  }
-  
-  .options-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 10px;
-    width: 100%;
-    max-width: 640px;
-    flex: 1;
-    min-height: 0;
-    padding: 0;
-  }
-  
-  .option-card {
-    background: white;
-    border: 3px solid #d0d8e0;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: all 0.25s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    position: relative;
-    overflow: hidden;
-    min-height: 0;
-  }
-  
-  .option-card:hover:not(.locked) {
-    border-color: #764ba2;
-    background: #f3e8ff;
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(118,75,162,0.3);
-  }
-  
-  .option-card.locked { cursor: not-allowed; }
-  
-  .option-emoji {
-    font-size: clamp(3em, 8vmin, 6em);
-    line-height: 1;
-    transition: all 0.25s;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-    user-select: none;
-  }
-  
-  .option-label {
-    position: absolute;
-    top: 6px;
-    left: 8px;
-    font-size: 0.7em;
-    font-weight: 800;
-    color: #999;
-    background: #f0f4f8;
-    padding: 2px 8px;
-    border-radius: 10px;
-  }
-  
-  .option-card.correct {
-    background: #d4edda;
-    border-color: #28a745;
-    animation: correctPop 0.5s;
-  }
-  
-  .option-card.correct .option-emoji { transform: scale(1.12); }
-  
-  .option-card.correct::after {
-    content: '✅';
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    font-size: 1.3em;
-    animation: correctPop 0.5s;
-  }
-  
-  .option-card.incorrect {
-    background: #f8d7da;
-    border-color: #dc3545;
-    animation: wrongShake 0.5s;
-  }
-  
-  .option-card.incorrect::after {
-    content: '❌';
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    font-size: 1.3em;
-  }
-  
-  @keyframes correctPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06); }
-    100% { transform: scale(1); }
-  }
-  
-  @keyframes wrongShake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
   }
   
   .feedback-banner {
@@ -685,7 +705,7 @@
   
   .results-icon { text-align: center; font-size: 3em; margin-bottom: 6px; }
   .results-title { text-align: center; font-size: 1.35em; color: #2c3e50; margin-bottom: 10px; }
-  .student-name { text-align: center; color: #764ba2; font-size: 0.9em; margin-bottom: 12px; font-weight: 600; }
+  .student-name { text-align: center; color: #1976d2; font-size: 0.9em; margin-bottom: 12px; font-weight: 600; }
   
   .stats-grid {
     display: grid;
@@ -695,7 +715,7 @@
   }
   
   .stat-card { background: #f0f4f8; border-radius: 12px; padding: 10px; text-align: center; }
-  .stat-value { font-size: 1.3em; font-weight: 800; color: #764ba2; }
+  .stat-value { font-size: 1.3em; font-weight: 800; color: #1976d2; }
   .stat-label { font-size: 0.7em; color: #777; margin-top: 4px; }
   
   .level-results { max-height: 180px; overflow-y: auto; margin-bottom: 12px; }
@@ -712,7 +732,7 @@
   }
   
   .level-row .lv-name { font-weight: 600; color: #2c3e50; }
-  .level-row .lv-score { font-weight: 700; color: #764ba2; }
+  .level-row .lv-score { font-weight: 700; color: #1976d2; }
   
   .data-actions { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
   
@@ -731,9 +751,9 @@
   }
   
   .data-actions button:hover {
-    background: #f3e8ff;
-    border-color: #764ba2;
-    color: #4a2a6a;
+    background: #e3f2fd;
+    border-color: #2196f3;
+    color: #0d3c61;
   }
   
   .mute-btn {
@@ -783,19 +803,15 @@
   }
   
   .level-complete-box h3 { color: #28a745; font-size: 1.3em; margin-bottom: 8px; }
-  .level-complete-box p { color: #764ba2; font-size: 0.92em; }
+  .level-complete-box p { color: #1976d2; font-size: 0.92em; }
   
   @media (max-width: 500px) {
     .game-container { padding: 6px 8px; }
-    .word-card { padding: 6px 12px; gap: 10px; }
-    .word-display { font-size: clamp(1.1em, 4.5vw, 1.5em); letter-spacing: 1px; }
-    .word-label { font-size: 0.55em; }
-    .word-sub { font-size: 0.72em; padding: 4px 10px; }
+    .sentence-card { padding: 14px 18px; }
+    .sentence-text { font-size: clamp(1.05em, 4.5vw, 1.4em); }
+    .option-btn { padding: 14px 10px; font-size: 1.05em; }
     .icon-btn { width: 40px; height: 40px; font-size: 1.05em; }
     .hint-cost { font-size: 0.55em; padding: 1px 4px; }
-    .options-grid { gap: 6px; }
-    .option-emoji { font-size: clamp(2.5em, 14vw, 4em); }
-    .option-label { font-size: 0.6em; padding: 2px 6px; }
     .level-bar { gap: 4px; font-size: 0.9em; }
     .level-badge, .category-badge, .progress-badge, .score-box, .lives-box, .timer-box {
       padding: 3px 8px;
@@ -808,35 +824,24 @@
   
   @media (max-height: 650px) {
     .game-container { padding: 6px 12px; }
-    .game-area { gap: 6px; }
-    .word-display { font-size: clamp(1.1em, 3vw, 1.7em); }
-    .word-card { padding: 6px 14px; }
-    .icon-btn { width: 40px; height: 40px; font-size: 1.05em; }
-    .options-grid { gap: 8px; }
+    .game-area { gap: 8px; }
+    .sentence-text { font-size: clamp(1em, 2.8vw, 1.6em); }
+    .sentence-card { padding: 14px 22px; }
+    .option-btn { padding: 14px 12px; font-size: 1.1em; }
+    .icon-btn { width: 42px; height: 42px; }
     .feedback-banner { padding: 6px 14px; font-size: 0.78em; }
   }
   
   @media (max-height: 520px) {
-    .word-card { padding: 4px 10px; gap: 8px; }
-    .word-display { font-size: clamp(0.95em, 2.8vw, 1.4em); }
-    .word-label { font-size: 0.5em; }
-    .word-sub { font-size: 0.68em; padding: 3px 8px; }
-    .icon-btn { width: 36px; height: 36px; font-size: 0.95em; }
-    .options-grid { gap: 5px; }
-    .option-emoji { font-size: clamp(2em, 10vmin, 3.2em); }
-    .option-label { font-size: 0.55em; }
+    .sentence-card { padding: 10px 16px; }
+    .sentence-text { font-size: clamp(0.95em, 2.5vw, 1.3em); }
+    .option-btn { padding: 10px 8px; font-size: 0.95em; }
+    .icon-btn { width: 38px; height: 38px; font-size: 0.95em; }
     .feedback-banner { font-size: 0.72em; padding: 5px 10px; }
     .level-badge, .category-badge, .progress-badge, .score-box, .lives-box, .timer-box {
       padding: 2px 7px;
       font-size: 0.72em;
     }
-  }
-  
-  @media (max-height: 420px) {
-    .word-label { display: none; }
-    .word-display { font-size: clamp(0.9em, 2.5vw, 1.2em); }
-    .word-card { padding: 4px 8px; }
-    .icon-btn { width: 32px; height: 32px; font-size: 0.9em; }
   }
 
 /* ===== SELECTOR DE ESCUELAS ===== */
@@ -869,9 +874,9 @@
   <!-- ===== WELCOME ===== -->
   <div class="screen active" id="screenWelcome">
     <div class="welcome-card">
-      <div class="welcome-icon">🖼️</div>
-      <h1 class="welcome-title">Pick the Right Picture</h1>
-      <p class="welcome-sub">6 Levels · Match word & image · English Practice</p>
+      <div class="welcome-icon">📝</div>
+      <h1 class="welcome-title">Present Simple</h1>
+      <p class="welcome-sub">6 Levels · Mixed Subjects · English Practice</p>
 
       <div class="form-group">
         <label for="studentName">👤 Student Name / Nombre del estudiante</label>
@@ -896,17 +901,27 @@
       <div class="rules-box">
         <h3>📋 Rules / Reglas</h3>
         <ul>
-          <li>Verás una <strong>palabra en inglés</strong> arriba.</li>
-          <li>Abajo aparecerán <strong>4 imágenes</strong>.</li>
-          <li>Toca la <strong>imagen correcta</strong>.</li>
-          <li>Si necesitas ayuda, pulsa 💡 para ver una <strong>pista descriptiva en español</strong>.</li>
+          <li>Verás una <strong>oración simple</strong> con un espacio en blanco.</li>
+          <li>Elige la forma correcta del verbo en <strong>presente simple</strong>.</li>
+          <li>Cada nivel <strong>mezcla diferentes sujetos</strong>: pronombres, nombres propios, sujetos comunes y compuestos.</li>
+          <li>El juego va <strong>de menos a más</strong>:
+            <ul>
+              <li>Nivel 1: verbos en forma base y con -s</li>
+              <li>Nivel 2: verbos con -s, -es</li>
+              <li>Nivel 3: verbos con -es, -ies</li>
+              <li>Nivel 4: mezcla con más vocabulario</li>
+              <li>Nivel 5: 3rd person avanzada</li>
+              <li>Nivel 6: sujetos compuestos y mixtos</li>
+            </ul>
+          </li>
+          <li>Si necesitas ayuda, pulsa 💡 para ver una <strong>pista gramatical</strong>.</li>
           <li><span class="penalty">⚠️ Usar la pista resta 3 puntos.</span></li>
           <li>⏱ <strong>1 minuto</strong> por nivel · ⭐ <strong>10 puntos</strong> por acierto.</li>
           <li>Tienes <strong>3 vidas</strong> ❤️❤️❤️.</li>
         </ul>
       </div>
 
-      <div class="motivation">🌟 "Look, think, and pick the right picture!"</div>
+      <div class="motivation">🌟 "Master the present simple with mixed subjects!"</div>
 
       <button class="btn-primary" id="startBtn">▶ Start Game</button>
     </div>
@@ -921,8 +936,8 @@
   <!-- ===== GAME ===== -->
   <div class="screen" id="screenGame">
     <div class="level-bar">
-      <span class="level-badge" id="levelBadge">Level 1 · Wild Animals</span>
-      <span class="category-badge" id="categoryBadge">🦁 Animals</span>
+      <span class="level-badge" id="levelBadge">Level 1 · Mixed Basics</span>
+      <span class="category-badge" id="categoryBadge">📝 Mixed</span>
       <span class="progress-badge" id="progressBadge">1/10</span>
       <span class="lives-box" id="livesBox"></span>
       <span class="score-box" id="scoreBox">⭐ 0</span>
@@ -930,22 +945,33 @@
     </div>
 
     <div class="game-area">
-      <div class="word-card">
-        <div class="word-info">
-          <div class="word-label">🔤 The word is</div>
-          <div class="word-display" id="wordDisplay">RACCOON</div>
-          <div class="word-sub" id="wordSub"></div>
-        </div>
-        <div class="word-actions">
-          <button class="icon-btn hint-btn" id="hintBtn" title="Ver pista (-3 pts)">
-            💡
-            <span class="hint-cost">-3</span>
-          </button>
-          <button class="icon-btn speak-word-btn" id="speakWordBtn" title="Escuchar">🔊</button>
+      <div class="game-avatar" id="gameAvatar">🦉</div>
+      
+      <p class="instruction">
+        Choose the correct form of the <span class="highlight">verb</span>
+      </p>
+
+      <div class="sentence-card">
+        <div class="sentence-label">✏️ Complete the sentence</div>
+        <div class="sentence-text" id="sentenceText">
+          I <span class="blank">?</span> English every day.
         </div>
       </div>
 
+      <div class="hint-box" id="hintBox">
+        <div class="label">💡 Grammar Hint</div>
+        <div class="rule" id="hintRule"></div>
+      </div>
+
       <div class="options-grid" id="optionsGrid"></div>
+
+      <div class="input-actions">
+        <button class="icon-btn hint-btn" id="hintBtn" title="Ver pista (-3 pts)">
+          💡
+          <span class="hint-cost">-3</span>
+        </button>
+        <button class="icon-btn speak-btn" id="speakBtn" title="Escuchar">🔊</button>
+      </div>
 
       <div class="feedback-banner" id="feedbackBanner"></div>
     </div>
@@ -990,144 +1016,145 @@
 <script src="../../supabase-config.js"></script>
 <script>
 /* ============================================================
-   LEVELS - 6 niveles × 10 palabras con pistas descriptivas EN ESPAÑOL
-   "clue" describe el objeto sin mencionar la palabra en inglés
+   LEVELS - 6 niveles progresivos con SUJETOS MEZCLADOS
+   Cada nivel combina pronombres, nombres propios, sujetos comunes
+   y compuestos para que el estudiante se adapte a distintos escenarios.
    ============================================================ */
 const LEVELS = [
   {
-    title: 'Wild Animals',
-    theme: '🦁',
+    title: 'Mixed Basics',
+    theme: '📝 Mixed',
+    hintRule: 'Regla: I/You/We/They → verbo base. He/She/It → verbo +s. Nombres propios y sujetos singulares también usan +s.',
     items: [
-      { word: 'raccoon', clue: 'Animal pequeño con cara como de antifaz y cola rayada.', image: '🦝' },
-      { word: 'hedgehog', clue: 'Animal pequeño cubierto de púas afiladas en el lomo.', image: '🦔' },
-      { word: 'squirrel', clue: 'Animal pequeño que trepa árboles y ama las nueces.', image: '🐿️' },
-      { word: 'flamingo', clue: 'Ave alta de color rosa con patas muy largas y cuello curvo.', image: '🦩' },
-      { word: 'dolphin', clue: 'Animal marino muy inteligente que salta fuera del agua.', image: '🐬' },
-      { word: 'cheetah', clue: 'El animal terrestre más rápido, con manchas y patas largas.', image: '🐆' },
-      { word: 'chimpanzee', clue: 'Simio muy inteligente que se parece a un humano pequeño.', image: '🐒' },
-      { word: 'crocodile', clue: 'Reptil grande con hocico largo y dientes afilados.', image: '🐊' },
-      { word: 'kangaroo', clue: 'Animal que salta y lleva a su cría en una bolsa.', image: '🦘' },
-      { word: 'porcupine', clue: 'Roedor grande cubierto de púas largas y afiladas.', image: '🦔' }
-    ],
-    pool: ['🦝','🦔','🐿️','🦩','🐬','🐆','🐒','🐊','🦘','🦡','🦫','🦥','🦦','🦨','🦣','🐘','🦏','🦛','🐪','🦒','🦓','🦬','🐃','🐂']
+      { before: 'I', after: 'English every day.', answer: 'study', distractors: ['studies', 'studys', 'studyes'] },
+      { before: 'Maria', after: 'in a big house.', answer: 'lives', distractors: ['live', 'livies', 'livees'] },
+      { before: 'We', after: 'soccer on Sundays.', answer: 'play', distractors: ['plays', 'plaies', 'playes'] },
+      { before: 'My dog', after: 'in the garden.', answer: 'runs', distractors: ['run', 'runes', 'runies'] },
+      { before: 'They', after: 'coffee in the morning.', answer: 'drink', distractors: ['drinks', 'drinkes', 'drinkies'] },
+      { before: 'The teacher', after: 'very well.', answer: 'explains', distractors: ['explain', 'explaines', 'explainies'] },
+      { before: 'You', after: 'in a small town.', answer: 'live', distractors: ['lives', 'livies', 'livees'] },
+      { before: 'My mother', after: 'dinner at 7.', answer: 'cooks', distractors: ['cook', 'cookes', 'cookies'] },
+      { before: 'He', after: 'to music every night.', answer: 'listens', distractors: ['listen', 'listenes', 'listenies'] },
+      { before: 'The cat', after: 'all day.', answer: 'sleeps', distractors: ['sleep', 'sleepes', 'sleepies'] }
+    ]
   },
   {
-    title: 'Exotic Fruits',
-    theme: '🥭',
+    title: 'Mixed +S / +ES',
+    theme: '➕ +S / +ES',
+    hintRule: 'Regla: Verbos en -ch, -sh, -ss, -x, -o → +es. El resto → +s. Sujetos plurales → verbo base.',
     items: [
-      { word: 'pineapple', clue: 'Fruta tropical con cáscara rugosa y corona de hojas.', image: '🍍' },
-      { word: 'mango', clue: 'Fruta tropical dulce con pulpa naranja y un hueso grande.', image: '🥭' },
-      { word: 'avocado', clue: 'Fruta verde con una semilla grande, se usa para guacamole.', image: '🥑' },
-      { word: 'coconut', clue: 'Fruta grande y marrón con pulpa blanca y agua dentro.', image: '🥥' },
-      { word: 'kiwi', clue: 'Fruta pequeña y marrón con pulpa verde y semillas negras.', image: '🥝' },
-      { word: 'blueberry', clue: 'Fruta muy pequeña y redonda de color azul oscuro.', image: '🫐' },
-      { word: 'cherry', clue: 'Fruta pequeña, redonda y roja con un tallo.', image: '🍒' },
-      { word: 'peach', clue: 'Fruta suave con piel peluda y una semilla grande.', image: '🍑' },
-      { word: 'pear', clue: 'Fruta dulce, estrecha arriba y redonda abajo.', image: '🍐' },
-      { word: 'pomegranate', clue: 'Fruta llena de pequeñas semillas rojas dentro.', image: '🍎' }
-    ],
-    pool: ['🍍','🥭','🥑','🥥','🥝','🫐','🍒','🍑','🍐','🍎','🍏','🍊','🍋','🍌','🍉','🍇','🍓','🥕','🌽','🥦','🍅','🍆','🥒','🫒']
+      { before: 'John and Mary', after: 'in the same house.', answer: 'live', distractors: ['lives', 'livies', 'livees'] },
+      { before: 'She', after: 'TV every night.', answer: 'watches', distractors: ['watch', 'watchs', 'watchies'] },
+      { before: 'My parents', after: 'in a small town.', answer: 'work', distractors: ['works', 'workes', 'workies'] },
+      { before: 'Peter', after: 'to school by bus.', answer: 'goes', distractors: ['go', 'gos', 'goies'] },
+      { before: 'We', after: 'to the gym on Mondays.', answer: 'go', distractors: ['goes', 'gos', 'goies'] },
+      { before: 'She', after: 'her teeth twice a day.', answer: 'brushes', distractors: ['brush', 'brushs', 'brushies'] },
+      { before: 'The children', after: 'in the garden.', answer: 'play', distractors: ['plays', 'plaies', 'playes'] },
+      { before: 'My father', after: 'coffee every morning.', answer: 'drinks', distractors: ['drink', 'drinkes', 'drinkies'] },
+      { before: 'You', after: 'this song.', answer: 'like', distractors: ['likes', 'likies', 'likees'] },
+      { before: 'The teacher', after: 'many books.', answer: 'reads', distractors: ['read', 'reades', 'readies'] }
+    ]
   },
   {
-    title: 'Musical Instruments',
-    theme: '🎸',
+    title: 'Mixed +IES',
+    theme: '➕ +IES',
+    hintRule: 'Regla: Verbo terminado en consonante + y → cambia a -ies (study → studies). I/You/We/They mantienen -y.',
     items: [
-      { word: 'guitar', clue: 'Instrumento de cuerdas que se toca con los dedos o una púa.', image: '🎸' },
-      { word: 'piano', clue: 'Instrumento grande con teclas blancas y negras.', image: '🎹' },
-      { word: 'violin', clue: 'Instrumento pequeño de cuerdas que se toca con un arco.', image: '🎻' },
-      { word: 'trumpet', clue: 'Instrumento de metal brillante que se toca con los labios.', image: '🎺' },
-      { word: 'saxophone', clue: 'Instrumento de metal curvo usado mucho en jazz.', image: '🎷' },
-      { word: 'drum', clue: 'Instrumento redondo que se golpea con baquetas.', image: '🥁' },
-      { word: 'flute', clue: 'Instrumento largo y delgado en el que se sopla.', image: '🪈' },
-      { word: 'harp', clue: 'Instrumento grande con muchas cuerdas que se puntean.', image: '🎼' },
-      { word: 'accordion', clue: 'Instrumento que se estira y se aprieta para hacer música.', image: '🪗' },
-      { word: 'banjo', clue: 'Instrumento redondo de cuerdas usado en música country.', image: '🪕' }
-    ],
-    pool: ['🎸','🎹','🎻','🎺','🎷','🥁','🪈','🎼','🪗','🪕','🎤','🎧','🎵','🎶','📯','🎙️','📻','🎚️','🎛️','📢','🔔','🎳','🎯','🎲']
+      { before: 'The baby', after: 'a lot.', answer: 'cries', distractors: ['cry', 'crys', 'cryes'] },
+      { before: 'I', after: 'English every day.', answer: 'study', distractors: ['studies', 'studys', 'studyies'] },
+      { before: 'My sister', after: 'the piano.', answer: 'plays', distractors: ['play', 'plaies', 'playes'] },
+      { before: 'We', after: 'in a beautiful city.', answer: 'live', distractors: ['lives', 'livies', 'livees'] },
+      { before: 'He', after: 'in a big office.', answer: 'works', distractors: ['work', 'workes', 'workies'] },
+      { before: 'The students', after: 'very hard.', answer: 'study', distractors: ['studies', 'studys', 'studyies'] },
+      { before: 'She', after: 'her friends every weekend.', answer: 'visits', distractors: ['visit', 'visites', 'visitíes'] },
+      { before: 'Tom and Anna', after: 'in New York.', answer: 'live', distractors: ['lives', 'livies', 'livees'] },
+      { before: 'My brother', after: 'his homework.', answer: 'does', distractors: ['do', 'dos', 'doies'] },
+      { before: 'They', after: 'to music all the time.', answer: 'listen', distractors: ['listens', 'listenes', 'listenies'] }
+    ]
   },
   {
-    title: 'Weather Phenomena',
-    theme: '🌪️',
+    title: 'Mixed Vocabulary',
+    theme: '🎯 Vocabulary',
+    hintRule: 'Regla: Recuerda que el sujeto determina la conjugación. Sujeto singular → +s/+es/+ies. Sujeto plural → verbo base.',
     items: [
-      { word: 'tornado', clue: 'Viento violento que gira como un embudo.', image: '🌪️' },
-      { word: 'lightning', clue: 'Destello brillante en el cielo durante una tormenta.', image: '⚡' },
-      { word: 'thunder', clue: 'Ruido fuerte en el cielo después de un destello.', image: '⛈️' },
-      { word: 'avalanche', clue: 'Gran masa de nieve que baja por una montaña.', image: '🏔️' },
-      { word: 'earthquake', clue: 'Sacudida repentina del suelo.', image: '🌋' },
-      { word: 'drought', clue: 'Largo período sin ninguna lluvia.', image: '🌵' },
-      { word: 'tsunami', clue: 'Ola gigante del océano causada por un terremoto.', image: '🌊' },
-      { word: 'blizzard', clue: 'Tormenta de nieve con viento muy fuerte.', image: '❄️' },
-      { word: 'hurricane', clue: 'Tormenta poderosa que se forma sobre océanos cálidos.', image: '🌀' },
-      { word: 'hail', clue: 'Bolas de hielo que caen del cielo.', image: '🧊' }
-    ],
-    pool: ['🌪️','⚡','⛈️','🏔️','🌋','🌵','🌊','❄️','🌀','🧊','☀️','🌤️','🌧️','🌈','☁️','🌫️','☂️','💧','🔥','⭐','🌙','☄️','🌡️','❄']
+      { before: 'My phone', after: 'a big screen.', answer: 'has', distractors: ['have', 'haves', 'havies'] },
+      { before: 'The birds', after: 'beautifully.', answer: 'sing', distractors: ['sings', 'singes', 'singies'] },
+      { before: 'London', after: 'a lot of rain.', answer: 'has', distractors: ['have', 'haves', 'havies'] },
+      { before: 'My friends', after: 'English very well.', answer: 'speak', distractors: ['speaks', 'speakes', 'speakies'] },
+      { before: 'The sun', after: 'in the east.', answer: 'rises', distractors: ['rise', 'rises', 'risees'] },
+      { before: 'My parents', after: 'in a big city.', answer: 'live', distractors: ['lives', 'livies', 'livees'] },
+      { before: 'The school', after: 'at 8 AM.', answer: 'opens', distractors: ['open', 'openes', 'openies'] },
+      { before: 'My cousins', after: 'in Canada.', answer: 'live', distractors: ['lives', 'livies', 'livees'] },
+      { before: 'The bird', after: 'in a nest.', answer: 'sleeps', distractors: ['sleep', 'sleepes', 'sleepies'] },
+      { before: 'We', after: 'TV at night.', answer: 'watch', distractors: ['watches', 'watchs', 'watchies'] }
+    ]
   },
   {
-    title: 'Advanced Objects',
-    theme: '⚙️',
+    title: 'Advanced 3rd Person',
+    theme: '🎓 Advanced',
+    hintRule: 'Regla: Mezcla de 3rd person singular. Presta atención al sujeto: nombres, pronombres, animales, cosas.',
     items: [
-      { word: 'telescope', clue: 'Herramienta para ver estrellas y planetas.', image: '🔭' },
-      { word: 'microscope', clue: 'Herramienta para ver cosas muy pequeñas.', image: '🔬' },
-      { word: 'compass', clue: 'Herramienta que siempre apunta al norte.', image: '🧭' },
-      { word: 'hourglass', clue: 'Objeto de vidrio que mide el tiempo con arena.', image: '⏳' },
-      { word: 'battery', clue: 'Objeto que da energía a los dispositivos.', image: '🔋' },
-      { word: 'magnet', clue: 'Objeto que atrae el metal.', image: '🧲' },
-      { word: 'gear', clue: 'Rueda con dientes que se usa en las máquinas.', image: '⚙️' },
-      { word: 'anchor', clue: 'Objeto pesado que mantiene un barco en su lugar.', image: '⚓' },
-      { word: 'thermometer', clue: 'Herramienta que mide la temperatura.', image: '🌡️' },
-      { word: 'syringe', clue: 'Herramienta con aguja para inyectar medicina.', image: '💉' }
-    ],
-    pool: ['🔭','🔬','🧭','⏳','🔋','🧲','⚙️','⚓','🌡️','💉','💊','🩺','🔧','🔨','🪛','🔩','🗜️','⚖️','🔌','💡','📡','🛰️','🕯️','🔒']
+      { before: 'My grandmother', after: 'wonderful cookies.', answer: 'makes', distractors: ['make', 'makes', 'makees'] },
+      { before: 'She', after: 'in a hospital.', answer: 'works', distractors: ['work', 'workes', 'workies'] },
+      { before: 'The dog', after: 'very loudly.', answer: 'barks', distractors: ['bark', 'barkes', 'barkies'] },
+      { before: 'Carlos', after: 'from Spain.', answer: 'comes', distractors: ['come', 'comes', 'comees'] },
+      { before: 'My sister', after: 'in a small town.', answer: 'lives', distractors: ['live', 'livies', 'livees'] },
+      { before: 'The clock', after: 'at 7 AM.', answer: 'rings', distractors: ['ring', 'ringes', 'ringies'] },
+      { before: 'He', after: 'his homework every day.', answer: 'does', distractors: ['do', 'dos', 'doies'] },
+      { before: 'My mother', after: 'dinner at 8.', answer: 'fixes', distractors: ['fix', 'fixs', 'fixies'] },
+      { before: 'Anna', after: 'Spanish and English.', answer: 'speaks', distractors: ['speak', 'speakes', 'speakies'] },
+      { before: 'The bus', after: 'at 6 in the morning.', answer: 'leaves', distractors: ['leave', 'leaves', 'leavees'] }
+    ]
   },
   {
-    title: 'Cultural Symbols',
-    theme: '🏛️',
+    title: 'Mixed Compound',
+    theme: '👥 Compound',
+    hintRule: 'Regla: Sujetos unidos por "and" son plurales → verbo base. Sujeto singular individual → +s/+es/+ies.',
     items: [
-      { word: 'crown', clue: 'Objeto decorativo que lleva un rey o reina en la cabeza.', image: '👑' },
-      { word: 'castle', clue: 'Edificio antiguo grande con torres y muros gruesos.', image: '🏰' },
-      { word: 'statue', clue: 'Figura grande hecha de piedra o metal.', image: '🗿' },
-      { word: 'temple', clue: 'Edificio usado para ceremonias religiosas.', image: '🏛️' },
-      { word: 'scroll', clue: 'Rollo antiguo de papel con escritura.', image: '📜' },
-      { word: 'gemstone', clue: 'Piedra preciosa como un diamante o rubí.', image: '💎' },
-      { word: 'feather', clue: 'Parte ligera y suave del cuerpo de un ave.', image: '🪶' },
-      { word: 'quill', clue: 'Herramienta antigua hecha de pluma para escribir.', image: '✒️' },
-      { word: 'medal', clue: 'Pieza redonda de metal que se da como premio.', image: '🏅' },
-      { word: 'trophy', clue: 'Premio que se da al ganador de una competencia.', image: '🏆' }
-    ],
-    pool: ['👑','🏰','🗿','🏛️','📜','💎','🪶','✒️','🏅','🏆','⚔️','🛡️','🗡️','🔱','⚱️','🗝️','📯','🎭','🪘','🎨','🖼️','📿','🕰️','📚']
+      { before: 'John and Mary', after: 'very happy.', answer: 'look', distractors: ['looks', 'lookes', 'lookies'] },
+      { before: 'My mom and dad', after: 'in a small town.', answer: 'work', distractors: ['works', 'workes', 'workies'] },
+      { before: 'The cat and the dog', after: 'together.', answer: 'play', distractors: ['plays', 'plaies', 'playes'] },
+      { before: 'Ana and Luis', after: 'Spanish at home.', answer: 'speak', distractors: ['speaks', 'speakes', 'speakies'] },
+      { before: 'You and I', after: 'to the same school.', answer: 'go', distractors: ['goes', 'gos', 'goies'] },
+      { before: 'He and his brother', after: 'TV every night.', answer: 'watch', distractors: ['watches', 'watchs', 'watchies'] },
+      { before: 'Maria', after: 'in a hospital.', answer: 'works', distractors: ['work', 'workes', 'workies'] },
+      { before: 'My sister', after: 'her homework every day.', answer: 'does', distractors: ['do', 'dos', 'doies'] },
+      { before: 'The students and the teacher', after: 'very happy.', answer: 'look', distractors: ['looks', 'lookes', 'lookies'] },
+      { before: 'Tom, Anna and Peter', after: 'good friends.', answer: 'are', distractors: ['is', 'am', 'be'] }
+    ]
   }
 ];
 
 /* ============================================================
    BACKGROUND
    ============================================================ */
-const BG_SHAPES = ['🖼️','🎨','🖌️','🖍️','📸','🎭','🎪','🎯','🎬','🔍','🌈','⭐'];
+const BG_WORDS = ['DO','DOES','PLAY','PLAYS','GO','GOES','WATCH','WATCHES','STUDY','STUDIES','WORK','WORKS'];
 const BG_POSITIONS = [
-  { top:'3%', left:'5%', size:'4em' }, { top:'12%', left:'82%', size:'3.5em' },
-  { top:'75%', left:'3%', size:'4em' }, { top:'82%', left:'88%', size:'4em' },
-  { top:'40%', left:'2%', size:'3.5em' }, { top:'35%', left:'92%', size:'4em' },
-  { top:'55%', left:'94%', size:'3em' }, { top:'93%', left:'45%', size:'3.5em' },
-  { top:'5%', left:'42%', size:'4em' }, { top:'92%', left:'18%', size:'3.5em' },
-  { top:'60%', left:'6%', size:'3em' }, { top:'22%', left:'50%', size:'3.5em' }
+  { top:'3%', left:'3%', size:'3.5em' }, { top:'12%', left:'78%', size:'3.2em' },
+  { top:'75%', left:'4%', size:'3.5em' }, { top:'82%', left:'83%', size:'3.2em' },
+  { top:'40%', left:'2%', size:'2.8em' }, { top:'35%', left:'86%', size:'3.5em' },
+  { top:'55%', left:'90%', size:'2.8em' }, { top:'92%', left:'44%', size:'3.2em' },
+  { top:'5%', left:'44%', size:'3.2em' }, { top:'92%', left:'18%', size:'2.8em' },
+  { top:'60%', left:'5%', size:'2.8em' }, { top:'22%', left:'47%', size:'3.2em' }
 ];
 
-function renderBgShapes() {
+function renderBgWords() {
   const container = document.getElementById('bgDesign');
   container.innerHTML = '';
   BG_POSITIONS.forEach((pos, i) => {
     const div = document.createElement('div');
-    div.className = 'shape';
-    div.textContent = BG_SHAPES[i % BG_SHAPES.length];
+    div.className = 'word';
+    div.textContent = BG_WORDS[i % BG_WORDS.length];
     div.style.top = pos.top;
     div.style.left = pos.left;
     div.style.fontSize = pos.size;
     div.style.animationDelay = (i * 0.4) + 's';
-    div.style.animationDuration = (8 + Math.random() * 4) + 's';
+    div.style.animationDuration = (9 + Math.random() * 4) + 's';
     container.appendChild(div);
   });
 }
 
-const DECOS = ['🖼️','🎨','🖌️','⭐','✨','🌟','🎈','🎉','💭','🎭','🌸','🍀','🏆','💎','🌈','🎯','🖍️','📸'];
+const DECOS = ['📝','📚','✏️','⭐','✨','🌟','🎈','🎉','💭','🎯','🌸','🍀','🏆','💎','🌈','📖','🖍️','📓'];
 const DECO_POSITIONS = [
   { top:'7%', left:'4%' }, { top:'15%', left:'90%' }, { top:'72%', left:'5%' },
   { top:'85%', left:'88%' }, { top:'38%', left:'3%' }, { top:'28%', left:'94%' },
@@ -1284,6 +1311,21 @@ function speak(text, callback, options = {}) {
   window.speechSynthesis.speak(utterance);
 }
 
+function speakSentenceWithPause() {
+  if (!state.currentItem || state.itemLocked) return;
+  const { before, after } = state.currentItem;
+  
+  el.speakBtn.disabled = true;
+  
+  speak(before, () => {
+    setTimeout(() => {
+      speak(after, () => {
+        el.speakBtn.disabled = false;
+      });
+    }, 500);
+  });
+}
+
 /* ============================================================
    PHRASES
    ============================================================ */
@@ -1380,8 +1422,7 @@ let state = {
   startTime: null,
   _answerLog: [],
   itemLocked: false,
-  hintUsed: false,
-  hintPenalty: 0
+  hintUsed: false
 };
 
 const screens = {
@@ -1398,11 +1439,12 @@ const el = {
   livesBox: document.getElementById('livesBox'),
   scoreBox: document.getElementById('scoreBox'),
   timerBox: document.getElementById('timerBox'),
-  wordDisplay: document.getElementById('wordDisplay'),
-  wordSub: document.getElementById('wordSub'),
-  hintBtn: document.getElementById('hintBtn'),
-  speakWordBtn: document.getElementById('speakWordBtn'),
+  sentenceText: document.getElementById('sentenceText'),
+  hintBox: document.getElementById('hintBox'),
+  hintRule: document.getElementById('hintRule'),
   optionsGrid: document.getElementById('optionsGrid'),
+  hintBtn: document.getElementById('hintBtn'),
+  speakBtn: document.getElementById('speakBtn'),
   feedbackBanner: document.getElementById('feedbackBanner'),
   countdownNum: document.getElementById('countdownNum'),
   cdMsg: document.getElementById('cdMsg'),
@@ -1590,7 +1632,7 @@ document.getElementById('startBtn').addEventListener('click', () => {
   
   getAudioCtx();
   startMusic();
-  renderBgShapes();
+  renderBgWords();
   renderDecos();
   startCountdown();
 });
@@ -1600,7 +1642,7 @@ function startCountdown() {
   let cd = 3;
   el.countdownNum.textContent = cd;
   el.cdMsg.textContent = `Welcome, ${state.studentName}! Get ready...`;
-  speak(`Welcome ${state.studentName}. Look at the picture and pick the right one. Good luck!`, () => {
+  speak(`Welcome ${state.studentName}. Let's practice the present simple. Good luck!`, () => {
     const timer = setInterval(() => {
       cd--;
       if (cd > 0) {
@@ -1623,11 +1665,10 @@ function startLevel() {
   state.currentIndex = 0;
   state.levelCorrect = 0;
   state.levelWrong = 0;
-  state.hintPenalty = 0;
   
   document.body.className = 'theme-' + (state.currentLevel + 1);
   el.levelBadge.textContent = `Level ${state.currentLevel + 1} · ${levelData.title}`;
-  el.categoryBadge.textContent = `${levelData.theme} ${levelData.title}`;
+  el.categoryBadge.textContent = `${levelData.theme}`;
   
   updateLivesDisplay();
   el.scoreBox.textContent = `⭐ ${state.score}`;
@@ -1650,49 +1691,37 @@ function loadItem() {
   state.currentItem = item;
   
   el.progressBadge.textContent = `${state.currentIndex + 1}/${levelData.items.length}`;
-  el.wordDisplay.textContent = item.word.toUpperCase();
-  el.wordSub.textContent = '💡 ' + item.clue;
   
-  el.wordSub.classList.remove('show');
+  el.sentenceText.innerHTML = `${item.before} <span class="blank" id="blankSlot">?</span> ${item.after}`;
+  
+  el.hintBox.classList.remove('show');
+  el.hintRule.innerHTML = levelData.hintRule;
   el.hintBtn.classList.remove('used');
   el.hintBtn.disabled = false;
   
   el.feedbackBanner.className = 'feedback-banner';
   el.feedbackBanner.textContent = '';
   
-  el.speakWordBtn.disabled = false;
+  el.speakBtn.disabled = false;
   
-  const distractors = levelData.pool.filter(e => e !== item.image);
-  const shuffledDistractors = shuffleArray([...distractors]).slice(0, 3);
-  const options = shuffleArray([item.image, ...shuffledDistractors]);
-  
+  // Build 4 options: correct + 3 distractors, shuffled
+  const allOptions = shuffleArray([item.answer, ...item.distractors]);
   el.optionsGrid.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  options.forEach((emoji, i) => {
-    const card = document.createElement('div');
-    card.className = 'option-card';
-    card.dataset.value = emoji;
-    card.innerHTML = `
-      <div class="option-label">${letters[i]}</div>
-      <div class="option-emoji">${emoji}</div>
-    `;
-    card.addEventListener('click', () => checkAnswer(emoji, card));
-    el.optionsGrid.appendChild(card);
+  allOptions.forEach(option => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.dataset.value = option;
+    btn.textContent = option;
+    btn.addEventListener('click', () => checkAnswer(option, btn));
+    el.optionsGrid.appendChild(btn);
   });
   
+  // Auto-speak with pause
   setTimeout(() => {
     if (!state.itemLocked && !muted) {
-      speakWord();
+      speakSentenceWithPause();
     }
-  }, 600);
-}
-
-function speakWord() {
-  if (!state.currentItem || state.itemLocked) return;
-  el.speakWordBtn.disabled = true;
-  speak(state.currentItem.word, () => {
-    el.speakWordBtn.disabled = false;
-  });
+  }, 400);
 }
 
 function useHint() {
@@ -1705,39 +1734,45 @@ function useHint() {
   
   el.hintBtn.classList.add('used');
   el.hintBtn.disabled = true;
-  el.wordSub.classList.add('show');
+  el.hintBox.classList.add('show');
   
   showCharacter('hint', `-${HINT_PENALTY} puntos`);
   showFeedbackBanner('warn', `💡 Pista usada: -${HINT_PENALTY} puntos`);
 }
 
 /* ============================================================
-   CHECK
+   CHECK ANSWER
    ============================================================ */
-function checkAnswer(value, card) {
+function checkAnswer(value, btn) {
   if (state.itemLocked) return;
   state.itemLocked = true;
   
   const item = state.currentItem;
-  const isCorrect = value === item.image;
+  const isCorrect = value === item.answer;
   
-  el.optionsGrid.querySelectorAll('.option-card').forEach(c => {
-    c.classList.add('locked');
-    if (c.dataset.value === item.image) {
-      c.classList.add('correct');
+  el.optionsGrid.querySelectorAll('.option-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.value === item.answer) {
+      b.classList.add('correct');
     }
   });
   if (!isCorrect) {
-    card.classList.add('incorrect');
+    btn.classList.add('incorrect');
   }
-  el.speakWordBtn.disabled = true;
+  el.speakBtn.disabled = true;
   el.hintBtn.disabled = true;
+  
+  const blank = document.getElementById('blankSlot');
+  if (blank) {
+    blank.textContent = item.answer;
+    blank.classList.add(isCorrect ? 'answered' : 'wrong');
+  }
   
   state._answerLog.push({
     level: state.currentLevel + 1,
     itemIndex: state.currentIndex + 1,
-    word: item.word,
-    correctAnswer: item.image,
+    sentence: `${item.before} ___ ${item.after}`,
+    correctAnswer: item.answer,
     userAnswer: value,
     correct: isCorrect,
     hintUsed: state.hintUsed,
@@ -1754,26 +1789,28 @@ function checkAnswer(value, card) {
     showCharacter('ok', phrase);
     if (!muted) speak(phrase);
     
-    showFeedbackBanner('ok', `✅ ¡Correcto! "${item.word}" = ${item.image}`);
-    setTimeout(() => nextItem(), 1600);
+    showFeedbackBanner('ok', `✅ ¡Correcto! "${item.before} ${item.answer} ${item.after}"`);
+    setTimeout(() => nextItem(), 1700);
   } else {
     state.wrongCount++;
     state.levelWrong++;
     state.lives--;
     updateLivesDisplay();
     
-    el.wordSub.classList.add('show');
+    if (!state.hintUsed) {
+      el.hintBox.classList.add('show');
+    }
     
     const phrase = getRandomWrongPhrase();
     showCharacter('no', phrase);
     if (!muted) speak(phrase);
     
-    showFeedbackBanner('no', `❌ "${item.word}" = ${item.image}`);
+    showFeedbackBanner('no', `❌ La respuesta correcta es "${item.answer}": ${item.before} ${item.answer} ${item.after}`);
     
     if (state.lives <= 0) {
-      setTimeout(() => endGame(false), 2400);
+      setTimeout(() => endGame(false), 2600);
     } else {
-      setTimeout(() => nextItem(), 2400);
+      setTimeout(() => nextItem(), 2600);
     }
   }
 }
@@ -1861,7 +1898,7 @@ async function saveScoreToSupabase(){
   try{
     const totalAnswered=state.correctCount+state.wrongCount;
     const accuracy=totalAnswered?Math.round((state.correctCount/totalAnswered)*100):0;
-    const {error}=await supabaseClient.from('puntajes').insert([{nombre:state.studentName,escuela:state.school,grado:String(state.grade),materia:'Inglés',juego:'Pick the Right Picture',puntaje:Number(state.score)}]);
+    const {error}=await supabaseClient.from('puntajes').insert([{nombre:state.studentName,escuela:state.school,grado:String(state.grade),materia:'Inglés',juego:'Present Simple',puntaje:Number(state.score)}]);
     if(error) throw error;
     scoreSavedToSupabase=true;
     console.log('Puntaje guardado en Supabase',{accuracy});
@@ -1894,7 +1931,7 @@ function showResults(completed) {
     el.resultsTitle.textContent = 'Game Over - No lives left';
   } else if (accuracy >= 90) {
     el.resultsIcon.textContent = '🏆';
-    el.resultsTitle.textContent = 'Picture Master!';
+    el.resultsTitle.textContent = 'Present Simple Master!';
   } else if (accuracy >= 70) {
     el.resultsIcon.textContent = '🎉';
     el.resultsTitle.textContent = 'Great Job!';
@@ -1919,7 +1956,7 @@ function showResults(completed) {
   
   if (!muted) {
     setTimeout(() => {
-      speak(`Game complete! You matched ${state.correctCount} pictures with ${accuracy} percent accuracy. ${accuracy >= 70 ? 'Excellent work!' : 'Keep practicing!'}`);
+      speak(`Game complete! You got ${state.correctCount} correct with ${accuracy} percent accuracy. ${accuracy >= 70 ? 'Excellent work!' : 'Keep practicing!'}`);
     }, 500);
   }
 }
@@ -1927,14 +1964,14 @@ function showResults(completed) {
 /* ============================================================
    DATA COLLECTION
    ============================================================ */
-const STORAGE_KEY = 'picturematch_sessions_v6';
+const STORAGE_KEY = 'presentsimple_sessions_v2';
 
 function saveSession(completed) {
   try {
     const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     const totalAnswered = state.correctCount + state.wrongCount;
     const session = {
-      id: 'pm_' + Date.now(),
+      id: 'ps_' + Date.now(),
       studentName: state.studentName,
       school: state.school,
       grade: state.grade,
@@ -1956,7 +1993,7 @@ function saveSession(completed) {
 
 function exportJSON() {
   const data = localStorage.getItem(STORAGE_KEY) || '[]';
-  downloadFile('picturematch_data.json', data, 'application/json');
+  downloadFile('presentsimple_data.json', data, 'application/json');
 }
 
 function exportCSV() {
@@ -1975,7 +2012,7 @@ function exportCSV() {
       }
     });
     const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-    downloadFile('picturematch_data.csv', csv, 'text/csv');
+    downloadFile('presentsimple_data.csv', csv, 'text/csv');
   } catch(e) { console.error('CSV error:', e); }
 }
 
@@ -2027,13 +2064,13 @@ function shuffleArray(arr) {
 /* ============================================================
    EVENT LISTENERS
    ============================================================ */
-el.speakWordBtn.addEventListener('click', () => {
-  if (state.itemLocked) return;
-  speakWord();
-});
-
 el.hintBtn.addEventListener('click', () => {
   useHint();
+});
+
+el.speakBtn.addEventListener('click', () => {
+  if (state.itemLocked) return;
+  speakSentenceWithPause();
 });
 
 el.muteBtn.addEventListener('click', () => {
@@ -2075,7 +2112,7 @@ document.addEventListener('click', () => {
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 }, { once: true });
 
-renderBgShapes();
+renderBgWords();
 renderDecos();
 
 </script>
