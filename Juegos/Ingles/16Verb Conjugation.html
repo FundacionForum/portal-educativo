@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verb Conjugation - English Practice</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  
+  html, body { height: 100%; overflow: hidden; }
+  
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    position: relative;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  body.theme-1 { background: linear-gradient(135deg, #4facfe, #00f2fe, #4facfe); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-2 { background: linear-gradient(135deg, #43e97b, #38f9d7, #43e97b); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-3 { background: linear-gradient(135deg, #fa709a, #fee140, #fa709a); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-4 { background: linear-gradient(135deg, #30cfd0, #330867, #30cfd0); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-5 { background: linear-gradient(135deg, #a18cd1, #fbc2eb, #a18cd1); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  body.theme-6 { background: linear-gradient(135deg, #ff9a9e, #fecfef, #ff9a9e); background-size: 300% 300%; animation: gradientShift 12s ease infinite; }
+  
+  .bg-design {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .bg-design .word {
+    position: absolute;
+    font-size: 4em;
+    font-weight: 900;
+    color: rgba(255,255,255,0.1);
+    animation: floatWord 12s ease-in-out infinite;
+    user-select: none;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+  }
+  
+  @keyframes floatWord {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-30px) rotate(6deg); }
+  }
+  
+  .deco-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .deco-bg .note {
+    position: absolute;
+    font-size: 1.8em;
+    opacity: 0.35;
+    animation: floatNote 7s ease-in-out infinite;
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+    user-select: none;
+  }
+  
+  @keyframes floatNote {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+  }
+  
+  #characterPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 999;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
+    opacity: 0;
+    text-align: center;
+  }
+  
+  #characterPopup.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    animation: charPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  @keyframes charPop {
+    0% { transform: translate(-50%, -50%) scale(0.3) rotate(-10deg); }
+    60% { transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  }
+  
+  .char-bubble {
+    background: white;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-size: 1.2em;
+    font-weight: 800;
+    color: #2c3e50;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+    margin-bottom: 12px;
+    position: relative;
+    white-space: nowrap;
+    border: 4px solid;
+  }
+  
+  .char-bubble.ok { border-color: #28a745; color: #155724; background: #d4edda; }
+  .char-bubble.no { border-color: #dc3545; color: #721c24; background: #f8d7da; }
+  .char-bubble.info { border-color: #ffc107; color: #856404; background: #fff3cd; }
+  
+  .char-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid;
+  }
+  
+  .char-bubble.ok::after { border-top-color: #28a745; }
+  .char-bubble.no::after { border-top-color: #dc3545; }
+  .char-bubble.info::after { border-top-color: #ffc107; }
+  
+  .char-avatar {
+    font-size: 3.5em;
+    line-height: 1;
+    animation: charBounce 0.7s ease-in-out infinite alternate;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+  }
+  
+  @keyframes charBounce {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(-12px) scale(1.05); }
+  }
+  
+  .game-container {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    overflow: hidden;
+  }
+  
+  .screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+  }
+  
+  .screen.active { display: flex; animation: fadeIn 0.4s ease; }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  #screenWelcome.active,
+  #screenCountdown.active,
+  #screenResults.active {
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  
+  .welcome-card {
+    width: 100%;
+    max-width: 640px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: 22px 26px;
+    max-height: 96vh;
+    overflow-y: auto;
+  }
+  
+  .welcome-icon { text-align: center; font-size: 2.6em; margin-bottom: 2px; animation: charBounce 1s infinite alternate; }
+  
+  .welcome-title {
+    text-align: center;
+    font-size: 1.5em;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  
+  .welcome-sub {
+    text-align: center;
+    color: #666;
+    margin-bottom: 14px;
+    font-size: 0.83em;
+  }
+  
+  .form-group { margin-bottom: 12px; }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-size: 0.85em;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #d0d8e0;
+    border-radius: 10px;
+    font-size: 0.92em;
+    color: #2c3e50;
+    transition: all 0.25s;
+    background: white;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79,172,254,0.15);
+  }
+  
+  .rules-box {
+    background: #e3f2fd;
+    border-left: 5px solid #2196f3;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 0.8em;
+    line-height: 1.55;
+    color: #0d3c61;
+  }
+  
+  .rules-box h3 {
+    color: #1976d2;
+    margin-bottom: 4px;
+    font-size: 1em;
+  }
+  
+  .rules-box ul { padding-left: 18px; }
+  
+  .rules-box code {
+    background: #fff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #d32f2f;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .rules-box .penalty { color: #d32f2f; font-weight: 700; }
+  
+  .motivation {
+    text-align: center;
+    font-style: italic;
+    color: #7a5a3d;
+    font-size: 0.85em;
+    margin-bottom: 12px;
+    padding: 6px;
+    background: #fdf6e3;
+    border-radius: 8px;
+  }
+  
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #4facfe, #0066cc);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79,172,254,0.5); }
+  
+  .countdown-display {
+    text-align: center;
+    font-size: 5em;
+    font-weight: 900;
+    color: #2196f3;
+    text-shadow: 3px 3px 0 rgba(33,150,243,0.25);
+    animation: pulse 1s infinite;
+    line-height: 1.2;
+    background: white;
+    border-radius: 18px;
+    padding: 20px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  
+  .countdown-msg {
+    text-align: center;
+    font-size: 1em;
+    color: #fff;
+    margin-top: 12px;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  
+  #screenGame {
+    display: none;
+    height: 100%;
+    gap: 8px;
+  }
+  
+  #screenGame.active {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .level-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    padding: 2px 0;
+  }
+  
+  .level-badge {
+    background: #1976d2;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.72em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  
+  .category-badge {
+    background: #e3f2fd;
+    color: #0d3c61;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7em;
+    font-weight: 700;
+    border: 1px solid #2196f3;
+    white-space: nowrap;
+  }
+  
+  .progress-badge {
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.72em;
+    font-weight: 700;
+    border: 1px solid #ffc107;
+    white-space: nowrap;
+  }
+  
+  .lives-box {
+    background: #ffe8e8;
+    color: #c0392b;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: 700;
+    border: 1px solid #e74c3c;
+    white-space: nowrap;
+  }
+  
+  .lives-box .heart { margin-right: 2px; }
+  .lives-box .lost { opacity: 0.25; filter: grayscale(1); }
+  
+  .score-box {
+    background: #d4edda;
+    color: #155724;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: 700;
+    border: 1px solid #28a745;
+    white-space: nowrap;
+  }
+  
+  .timer-box {
+    background: #e3f2fd;
+    color: #0d3c61;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 700;
+    border: 1px solid #2196f3;
+    white-space: nowrap;
+  }
+  
+  .timer-box.warning {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #dc3545;
+    animation: blink 0.8s infinite;
+  }
+  
+  @keyframes blink { 50% { opacity: 0.6; } }
+  
+  .game-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 0;
+    padding: 0 4px;
+    overflow-y: auto;
+  }
+  
+  .game-avatar {
+    font-size: 2.5em;
+    animation: floatAvatar 2s ease-in-out infinite;
+    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.2));
+    flex-shrink: 0;
+  }
+  
+  @keyframes floatAvatar {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+  
+  .instruction {
+    text-align: center;
+    font-size: 0.95em;
+    color: #0d3c61;
+    font-weight: 600;
+    max-width: 90%;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  
+  .instruction .highlight { color: #1976d2; font-weight: 800; }
+  
+  /* ===== VERB CARD ===== */
+  .verb-card {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 4px solid #2196f3;
+    border-radius: 20px;
+    padding: 18px 30px;
+    text-align: center;
+    box-shadow: 0 10px 35px rgba(33,150,243,0.3);
+    max-width: 720px;
+    width: 100%;
+    animation: sentencePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+  }
+  
+  @keyframes sentencePop {
+    0% { transform: scale(0.9) rotate(-1deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  
+  .verb-label {
+    font-size: 0.7em;
+    color: #1976d2;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  
+  .base-verb {
+    font-size: clamp(1.8em, 4.5vw, 2.8em);
+    font-weight: 900;
+    color: #0d3c61;
+    letter-spacing: 1.5px;
+    font-family: 'Courier New', monospace;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  
+  .tense-tag {
+    display: inline-block;
+    background: #1976d2;
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  
+  .tense-tag.gerund { background: #8e44ad; }
+  .tense-tag.present { background: #28a745; }
+  .tense-tag.past { background: #d32f2f; }
+  .tense-tag.irregular { background: #ff6b35; }
+  
+  /* ===== OPTIONS GRID ===== */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 720px;
+    flex-shrink: 0;
+  }
+  
+  .option-btn {
+    padding: 20px 14px;
+    background: white;
+    border: 3px solid #d0d8e0;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 800;
+    color: #2c3e50;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    font-family: 'Courier New', monospace;
+  }
+  
+  .option-btn:hover:not(:disabled) {
+    border-color: #2196f3;
+    background: #e3f2fd;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(33,150,243,0.3);
+  }
+  
+  .option-btn:disabled { cursor: not-allowed; }
+  
+  .option-btn.correct {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+    animation: correctPop 0.5s;
+  }
+  
+  .option-btn.incorrect {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+    animation: wrongShake 0.4s;
+  }
+  
+  @keyframes correctPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  
+  /* ===== HINT ===== */
+  .hint-box {
+    background: #fff8e1;
+    border: 2px dashed #ffc107;
+    border-radius: 12px;
+    padding: 10px 18px;
+    max-width: 720px;
+    width: 100%;
+    font-size: 0.85em;
+    color: #5a4a2a;
+    line-height: 1.5;
+    display: none;
+    animation: hintPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+  }
+  
+  .hint-box.show { display: block; }
+  
+  @keyframes hintPop {
+    0% { transform: scale(0.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  .hint-box .label {
+    font-weight: 800;
+    color: #d68812;
+    margin-bottom: 4px;
+    font-size: 0.9em;
+  }
+  
+  .hint-box .rule { color: #4a2a6a; }
+  .hint-box .rule strong { color: #d32f2f; }
+  
+  .input-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  
+  .icon-btn {
+    border: none;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    cursor: pointer;
+    font-size: 1.15em;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  
+  .speak-btn {
+    background: linear-gradient(135deg, #4facfe, #0066cc);
+    color: white;
+    box-shadow: 0 5px 15px rgba(79,172,254,0.4);
+  }
+  
+  .speak-btn:hover { transform: scale(1.08); box-shadow: 0 8px 20px rgba(79,172,254,0.6); }
+  .speak-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  
+  .hint-btn {
+    background: linear-gradient(135deg, #ffc107, #d68812);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255,193,7,0.4);
+  }
+  
+  .hint-btn:hover { transform: scale(1.08); box-shadow: 0 8px 20px rgba(255,193,7,0.6); }
+  .hint-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .hint-btn.used {
+    background: linear-gradient(135deg, #ccc, #999);
+    cursor: default;
+  }
+  
+  .hint-cost {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #d32f2f;
+    color: white;
+    font-size: 0.6em;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 8px;
+    border: 2px solid white;
+    white-space: nowrap;
+  }
+  
+  .feedback-banner {
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85em;
+    text-align: center;
+    max-width: 95%;
+    display: none;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+  
+  .feedback-banner.show { display: block; animation: fadeIn 0.3s; }
+  .feedback-banner.ok { background: #d4edda; color: #155724; border: 2px solid #28a745; }
+  .feedback-banner.no { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
+  .feedback-banner.warn { background: #fff3cd; color: #856404; border: 2px solid #ffc107; }
+  
+  /* ===== RESULTS ===== */
+  .results-card {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: 22px 26px;
+    max-height: 96vh;
+    overflow-y: auto;
+  }
+  
+  .results-icon { text-align: center; font-size: 3em; margin-bottom: 6px; }
+  .results-title { text-align: center; font-size: 1.35em; color: #2c3e50; margin-bottom: 10px; }
+  .student-name { text-align: center; color: #1976d2; font-size: 0.9em; margin-bottom: 12px; font-weight: 600; }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+  }
+  
+  .stat-card { background: #f0f4f8; border-radius: 12px; padding: 10px; text-align: center; }
+  .stat-value { font-size: 1.3em; font-weight: 800; color: #1976d2; }
+  .stat-label { font-size: 0.7em; color: #777; margin-top: 4px; }
+  
+  .level-results { max-height: 180px; overflow-y: auto; margin-bottom: 12px; }
+  
+  .level-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    background: #f8f9fa;
+    font-size: 0.82em;
+  }
+  
+  .level-row .lv-name { font-weight: 600; color: #2c3e50; }
+  .level-row .lv-score { font-weight: 700; color: #1976d2; }
+  
+  .data-actions { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  
+  .data-actions button {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px;
+    font-size: 0.75em;
+    border-radius: 8px;
+    border: 1px solid #d0d8e0;
+    background: #f8f9fa;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  
+  .data-actions button:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    color: #0d3c61;
+  }
+  
+  .mute-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.25s;
+    z-index: 20;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  }
+  
+  .mute-btn:hover { background: white; transform: scale(1.05); }
+  
+  .level-complete-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    animation: fadeIn 0.3s;
+    backdrop-filter: blur(4px);
+    padding: 16px;
+  }
+  
+  .level-complete-box {
+    background: white;
+    border-radius: 20px;
+    padding: 24px 32px;
+    text-align: center;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+    animation: levelPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 90vw;
+  }
+  
+  @keyframes levelPop {
+    0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  
+  .level-complete-box h3 { color: #28a745; font-size: 1.3em; margin-bottom: 8px; }
+  .level-complete-box p { color: #1976d2; font-size: 0.92em; }
+  
+  @media (max-width: 500px) {
+    .game-container { padding: 6px 8px; }
+    .verb-card { padding: 14px 18px; }
+    .base-verb { font-size: clamp(1.4em, 6vw, 2em); }
+    .option-btn { padding: 14px 10px; font-size: 0.95em; }
+    .icon-btn { width: 40px; height: 40px; font-size: 1.05em; }
+    .hint-cost { font-size: 0.55em; padding: 1px 4px; }
+    .level-bar { gap: 4px; font-size: 0.9em; }
+    .level-badge, .category-badge, .progress-badge, .score-box, .lives-box, .timer-box {
+      padding: 3px 8px;
+      font-size: 0.9em;
+    }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-card:last-child { grid-column: span 2; }
+    .feedback-banner { font-size: 0.75em; padding: 6px 12px; }
+  }
+  
+  @media (max-height: 650px) {
+    .game-container { padding: 6px 12px; }
+    .game-area { gap: 8px; }
+    .base-verb { font-size: clamp(1.4em, 3.5vw, 2.2em); }
+    .verb-card { padding: 14px 22px; }
+    .option-btn { padding: 14px 12px; font-size: 1em; }
+    .icon-btn { width: 42px; height: 42px; }
+    .feedback-banner { padding: 6px 14px; font-size: 0.78em; }
+    .game-avatar { font-size: 1.9em; }
+  }
+  
+  @media (max-height: 520px) {
+    .verb-card { padding: 10px 16px; }
+    .base-verb { font-size: clamp(1.2em, 3vw, 1.7em); }
+    .option-btn { padding: 10px 8px; font-size: 0.88em; }
+    .icon-btn { width: 38px; height: 38px; font-size: 0.95em; }
+    .feedback-banner { font-size: 0.72em; padding: 5px 10px; }
+    .game-avatar { font-size: 1.6em; }
+  }
+
+/* Fundación Academia Forum: formulario y selector compartidos */
+.forum-data-fields{display:grid;gap:10px;margin:12px 0;text-align:left;}
+.forum-data-fields label{display:block;font-weight:700;margin-bottom:5px;}
+.forum-data-fields input,.forum-data-fields select{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff;color:#243247;}
+.forum-school-wrap{position:relative;}
+.forum-school-options{display:none;position:absolute;left:0;right:0;top:100%;max-height:200px;overflow:auto;background:#fff;border:1px solid #d7e1eb;border-radius:0 0 10px 10px;z-index:99999;box-shadow:0 8px 16px #0b315526;}
+.forum-school-option{padding:9px 12px;cursor:pointer;color:#27354a;}
+.forum-school-option:hover{background:#eef6ff;}
+.forum-return-link{position:fixed;z-index:100000;top:12px;left:12px;text-decoration:none;background:#fff;color:#123f68;border:1px solid #cbd5e1;border-radius:10px;padding:9px 13px;font-weight:700;box-shadow:0 4px 12px #0002;}
+
+/* Fundación Academia Forum: formulario y selector compartidos */
+.forum-data-fields{display:grid;gap:10px;margin:12px 0;text-align:left;}
+.forum-data-fields label{display:block;font-weight:700;margin-bottom:5px;}
+.forum-data-fields input,.forum-data-fields select{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff;color:#243247;}
+.forum-school-wrap{position:relative;}
+.forum-school-options{display:none;position:absolute;left:0;right:0;top:100%;max-height:200px;overflow:auto;background:#fff;border:1px solid #d7e1eb;border-radius:0 0 10px 10px;z-index:99999;box-shadow:0 8px 16px #0b315526;}
+.forum-school-option{padding:9px 12px;cursor:pointer;color:#27354a;}
+.forum-school-option:hover{background:#eef6ff;}
+.forum-return-link{position:fixed;z-index:100000;top:12px;left:12px;text-decoration:none;background:#fff;color:#123f68;border:1px solid #cbd5e1;border-radius:10px;padding:9px 13px;font-weight:700;box-shadow:0 4px 12px #0002;}
+
+/* Fundación Academia Forum: formulario y selector compartidos */
+.forum-data-fields{display:grid;gap:10px;margin:12px 0;text-align:left;}
+.forum-data-fields label{display:block;font-weight:700;margin-bottom:5px;}
+.forum-data-fields input,.forum-data-fields select{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff;color:#243247;}
+.forum-school-wrap{position:relative;}
+.forum-school-options{display:none;position:absolute;left:0;right:0;top:100%;max-height:200px;overflow:auto;background:#fff;border:1px solid #d7e1eb;border-radius:0 0 10px 10px;z-index:99999;box-shadow:0 8px 16px #0b315526;}
+.forum-school-option{padding:9px 12px;cursor:pointer;color:#27354a;}
+.forum-school-option:hover{background:#eef6ff;}
+.forum-return-link{position:fixed;z-index:100000;top:12px;left:12px;text-decoration:none;background:#fff;color:#123f68;border:1px solid #cbd5e1;border-radius:10px;padding:9px 13px;font-weight:700;box-shadow:0 4px 12px #0002;}
+</style>
+</head>
+<body class="theme-1">
+
+<div class="bg-design" id="bgDesign"></div>
+<div class="deco-bg" id="decoBg"></div>
+
+<div id="characterPopup">
+  <div class="char-bubble" id="charBubble">Great!</div>
+  <div class="char-avatar" id="charAvatar">🦉</div>
+</div>
+
+<div class="game-container">
+  <button class="mute-btn" id="muteBtn" title="Mute">🔊</button>
+
+  <!-- ===== WELCOME ===== -->
+  <div class="screen active" id="screenWelcome">
+    <div class="welcome-card">
+      <div class="welcome-icon">📚</div>
+      <h1 class="welcome-title">Verb Conjugation</h1>
+      <p class="welcome-sub">6 Levels · -ing, +s/-es, +ed & Irregulars</p>
+
+      <div class="form-group">
+        <label for="studentName">👤 Student Name / Nombre del estudiante</label>
+        <input type="text" id="studentName" placeholder="Escribe tu nombre..." maxlength="40">
+      </div>
+
+      <div class="rules-box">
+        <h3>📋 Rules / Reglas</h3>
+        <ul>
+          <li>Verás un <strong>verbo en inglés</strong> y el tipo de conjugación requerida.</li>
+          <li>Elige la forma correcta entre 4 opciones.</li>
+          <li>Los 6 niveles mezclan:
+            <ul>
+              <li><strong>Nivel 1</strong>: Gerundio (-ing) simple</li>
+              <li><strong>Nivel 2</strong>: Gerundio (-ing) con cambios ortográficos</li>
+              <li><strong>Nivel 3</strong>: Presente simple +s / +es</li>
+              <li><strong>Nivel 4</strong>: Pasado regular +ed</li>
+              <li><strong>Nivel 5</strong>: Pasado irregular (verbos comunes)</li>
+              <li><strong>Nivel 6</strong>: Mezcla total de todas las formas</li>
+            </ul>
+          </li>
+          <li>💡 Pista gramatical disponible (-3 puntos).</li>
+          <li>⏱ <strong>1 minuto 30</strong> por nivel · ⭐ <strong>10 puntos</strong> por acierto.</li>
+          <li>Tienes <strong>3 vidas</strong> ❤️❤️❤️.</li>
+        </ul>
+      </div>
+
+      <div class="motivation">🌟 "Master every verb form — one conjugation at a time!"</div>
+
+      <button class="btn-primary" id="startBtn">▶ Start Game</button>
+    </div>
+  </div>
+
+  <!-- ===== COUNTDOWN ===== -->
+  <div class="screen" id="screenCountdown">
+    <div class="countdown-display" id="countdownNum">3</div>
+    <p class="countdown-msg" id="cdMsg">Get ready...</p>
+  </div>
+
+  <!-- ===== GAME ===== -->
+  <div class="screen" id="screenGame">
+    <div class="level-bar">
+      <span class="level-badge" id="levelBadge">Level 1 · Gerund -ing</span>
+      <span class="category-badge" id="categoryBadge">🎨 Gerund</span>
+      <span class="progress-badge" id="progressBadge">1/10</span>
+      <span class="lives-box" id="livesBox"></span>
+      <span class="score-box" id="scoreBox">⭐ 0</span>
+      <span class="timer-box" id="timerBox">⏱ 1:30</span>
+    </div>
+
+    <div class="game-area">
+      <div class="game-avatar" id="gameAvatar">🦉</div>
+      
+      <p class="instruction">
+        Choose the correct <span class="highlight">conjugated form</span>
+      </p>
+
+      <div class="verb-card">
+        <div class="verb-label">🔤 Base verb</div>
+        <div class="base-verb" id="baseVerb">play</div>
+        <div class="tense-tag" id="tenseTag">Gerund -ing</div>
+      </div>
+
+      <div class="hint-box" id="hintBox">
+        <div class="label">💡 Grammar Hint</div>
+        <div class="rule" id="hintRule"></div>
+      </div>
+
+      <div class="options-grid" id="optionsGrid"></div>
+
+      <div class="input-actions">
+        <button class="icon-btn hint-btn" id="hintBtn" title="Ver pista (-3 pts)">
+          💡
+          <span class="hint-cost">-3</span>
+        </button>
+        <button class="icon-btn speak-btn" id="speakBtn" title="Escuchar">🔊</button>
+      </div>
+
+      <div class="feedback-banner" id="feedbackBanner"></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS ===== -->
+  <div class="screen" id="screenResults">
+    <div class="results-card">
+      <div class="results-icon" id="resultsIcon">🏆</div>
+      <h2 class="results-title" id="resultsTitle">Game Complete!</h2>
+      <p class="student-name" id="resultStudentName"></p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="statCorrect">0</div>
+          <div class="stat-label">Correct</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statWrong">0</div>
+          <div class="stat-label">Incorrect</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statAccuracy">0%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+
+      <div class="level-results" id="levelResults"></div>
+
+      <button class="btn-primary" id="playAgainBtn">🔄 Play Again</button>
+      <div class="data-actions">
+        <button id="exportJsonBtn">⬇ JSON</button>
+        <button id="exportCsvBtn">⬇ CSV</button>
+        <button id="viewDataBtn">📊 View</button>
+        <button id="clearDataBtn">🗑 Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-config.js"></script>
+<script>
+/* ============================================================
+   LEVELS - 6 niveles progresivos de conjugación verbal
+   Nivel 1: Gerundio simple (verb + ing)
+   Nivel 2: Gerundio con cambios ortográficos (drop e, double consonant)
+   Nivel 3: Presente simple +s / +es
+   Nivel 4: Pasado regular +ed
+   Nivel 5: Pasado irregular (verbos comunes)
+   Nivel 6: Mezcla total
+   ============================================================ */
+const LEVELS = [
+  {
+    title: 'Gerund -ing',
+    theme: '🎨 Gerund',
+    tagClass: 'gerund',
+    tagLabel: 'Gerund -ing',
+    hintRule: 'Regla: Para formar el gerundio, agrega <strong>-ing</strong> al verbo base. Ejemplo: play → play<strong>ing</strong>.',
+    items: [
+      { verb: 'play',   answer: 'playing',   distractors: ['playying', 'playeing', 'plaing'] },
+      { verb: 'read',   answer: 'reading',   distractors: ['readding', 'readeing', 'readng'] },
+      { verb: 'walk',   answer: 'walking',   distractors: ['walkking', 'walkeing', 'walkng'] },
+      { verb: 'sing',   answer: 'singing',   distractors: ['singging', 'singeing', 'singng'] },
+      { verb: 'eat',    answer: 'eating',    distractors: ['eatting', 'eateing', 'eatng'] },
+      { verb: 'sleep',  answer: 'sleeping',  distractors: ['sleepping', 'sleepeing', 'sleepng'] },
+      { verb: 'talk',   answer: 'talking',   distractors: ['talkking', 'talkeing', 'talkng'] },
+      { verb: 'cook',   answer: 'cooking',   distractors: ['cookking', 'cookeing', 'cookng'] },
+      { verb: 'clean',  answer: 'cleaning',  distractors: ['cleanning', 'cleaneing', 'cleanng'] },
+      { verb: 'start',  answer: 'starting',  distractors: ['startting', 'starteing', 'startng'] }
+    ]
+  },
+  {
+    title: 'Gerund -ing Advanced',
+    theme: '🎨 Gerund+',
+    tagClass: 'gerund',
+    tagLabel: 'Gerund -ing',
+    hintRule: 'Regla: Verbos que terminan en <strong>-e</strong> la eliminan (write → writing). Verbos CVC cortos duplican la consonante (run → running).',
+    items: [
+      { verb: 'write',  answer: 'writing',   distractors: ['writeing', 'writting', 'writng'] },
+      { verb: 'run',    answer: 'running',   distractors: ['runing', 'runeing', 'runnng'] },
+      { verb: 'make',   answer: 'making',    distractors: ['makeing', 'makking', 'makng'] },
+      { verb: 'sit',    answer: 'sitting',   distractors: ['siting', 'siteing', 'sitng'] },
+      { verb: 'take',   answer: 'taking',    distractors: ['takeing', 'takking', 'takng'] },
+      { verb: 'swim',   answer: 'swimming',  distractors: ['swiming', 'swimeing', 'swimng'] },
+      { verb: 'come',   answer: 'coming',    distractors: ['comeing', 'comming', 'comng'] },
+      { verb: 'get',    answer: 'getting',   distractors: ['geting', 'geteing', 'getng'] },
+      { verb: 'dance',  answer: 'dancing',   distractors: ['danceing', 'dancingg', 'dancng'] },
+      { verb: 'stop',   answer: 'stopping',  distractors: ['stoping', 'stopeing', 'stopng'] }
+    ]
+  },
+  {
+    title: 'Present +s / +es',
+    theme: '➕ +s / +es',
+    tagClass: 'present',
+    tagLabel: 'Present Simple (he/she/it)',
+    hintRule: 'Regla: La 3ra persona (he/she/it) agrega <strong>-s</strong>. Verbos en -ch/-sh/-ss/-x/-o agregan <strong>-es</strong>. Verbos en consonante+y → <strong>-ies</strong>.',
+    items: [
+      { verb: 'play',   answer: 'plays',     distractors: ['playes', 'plaies', 'play'] },
+      { verb: 'watch',  answer: 'watches',   distractors: ['watchs', 'watchies', 'watch'] },
+      { verb: 'study',  answer: 'studies',   distractors: ['studys', 'studyes', 'study'] },
+      { verb: 'go',     answer: 'goes',      distractors: ['gos', 'goies', 'go'] },
+      { verb: 'read',   answer: 'reads',     distractors: ['reades', 'readies', 'read'] },
+      { verb: 'wash',   answer: 'washes',    distractors: ['washs', 'washies', 'wash'] },
+      { verb: 'fly',    answer: 'flies',     distractors: ['flys', 'flyes', 'fly'] },
+      { verb: 'do',     answer: 'does',      distractors: ['dos', 'doies', 'do'] },
+      { verb: 'work',   answer: 'works',     distractors: ['workes', 'workies', 'work'] },
+      { verb: 'kiss',   answer: 'kisses',    distractors: ['kisss', 'kissies', 'kiss'] }
+    ]
+  },
+  {
+    title: 'Past +ed',
+    theme: '📅 Past +ed',
+    tagClass: 'past',
+    tagLabel: 'Past Simple',
+    hintRule: 'Regla: Verbos regulares agregan <strong>-ed</strong> (walk → walked). Verbos en -e solo agregan <strong>-d</strong> (like → liked). Verbos en consonante+y → <strong>-ied</strong> (study → studied).',
+    items: [
+      { verb: 'play',   answer: 'played',    distractors: ['playd', 'playied', 'play'] },
+      { verb: 'walk',   answer: 'walked',    distractors: ['walkd', 'walkied', 'walk'] },
+      { verb: 'like',   answer: 'liked',     distractors: ['likeed', 'likied', 'like'] },
+      { verb: 'study',  answer: 'studied',   distractors: ['studyed', 'studyd', 'study'] },
+      { verb: 'stop',   answer: 'stopped',   distractors: ['stoped', 'stopied', 'stop'] },
+      { verb: 'watch',  answer: 'watched',   distractors: ['watchd', 'watchied', 'watch'] },
+      { verb: 'cook',   answer: 'cooked',    distractors: ['cookd', 'cookied', 'cook'] },
+      { verb: 'cry',    answer: 'cried',     distractors: ['cryed', 'cryd', 'cry'] },
+      { verb: 'dance',  answer: 'danced',    distractors: ['danceed', 'dancd', 'dance'] },
+      { verb: 'clean',  answer: 'cleaned',   distractors: ['cleand', 'cleanied', 'clean'] }
+    ]
+  },
+  {
+    title: 'Irregular Past',
+    theme: '🎯 Irregular',
+    tagClass: 'irregular',
+    tagLabel: 'Past - Irregular',
+    hintRule: 'Regla: Los verbos irregulares NO siguen la regla del -ed. Cada uno tiene su propia forma (go → went, eat → ate, see → saw).',
+    items: [
+      { verb: 'go',     answer: 'went',      distractors: ['goed', 'gone', 'going'] },
+      { verb: 'eat',    answer: 'ate',       distractors: ['eated', 'eaten', 'ating'] },
+      { verb: 'see',    answer: 'saw',       distractors: ['seed', 'seen', 'seeing'] },
+      { verb: 'come',   answer: 'came',      distractors: ['comed', 'comen', 'coming'] },
+      { verb: 'take',   answer: 'took',      distractors: ['taked', 'taken', 'taking'] },
+      { verb: 'give',   answer: 'gave',      distractors: ['gived', 'given', 'giving'] },
+      { verb: 'make',   answer: 'made',      distractors: ['maked', 'maken', 'making'] },
+      { verb: 'have',   answer: 'had',       distractors: ['haved', 'haven', 'having'] },
+      { verb: 'do',     answer: 'did',       distractors: ['doed', 'done', 'doing'] },
+      { verb: 'say',    answer: 'said',      distractors: ['sayed', 'sayen', 'saying'] }
+    ]
+  },
+  {
+    title: 'All Forms Mixed',
+    theme: '🔀 Mixed',
+    tagClass: 'gerund',
+    tagLabel: 'Mixed Form',
+    hintRule: 'Regla: Fíjate en la etiqueta de cada verbo. Cada forma tiene su propia regla: -ing, +s/-es, +ed, o irregular.',
+    items: [
+      { verb: 'play',   tense: 'Gerund -ing',  answer: 'playing',  distractors: ['played', 'plays', 'play'] },
+      { verb: 'watch',  tense: 'Present +es',  answer: 'watches',  distractors: ['watched', 'watching', 'watch'] },
+      { verb: 'study',  tense: 'Past +ed',     answer: 'studied',  distractors: ['studies', 'studying', 'study'] },
+      { verb: 'go',     tense: 'Past Irregular', answer: 'went',   distractors: ['goes', 'going', 'goed'] },
+      { verb: 'run',    tense: 'Gerund -ing',  answer: 'running',  distractors: ['ran', 'runs', 'runed'] },
+      { verb: 'eat',    tense: 'Past Irregular', answer: 'ate',    distractors: ['eats', 'eating', 'eated'] },
+      { verb: 'fly',    tense: 'Present +ies', answer: 'flies',    distractors: ['flew', 'flying', 'flyed'] },
+      { verb: 'stop',   tense: 'Past +ed',     answer: 'stopped',  distractors: ['stops', 'stopping', 'stoped'] },
+      { verb: 'see',    tense: 'Past Irregular', answer: 'saw',    distractors: ['sees', 'seeing', 'seed'] },
+      { verb: 'write',  tense: 'Gerund -ing',  answer: 'writing',  distractors: ['wrote', 'writes', 'writeing'] }
+    ]
+  }
+];
+
+/* ============================================================
+   BACKGROUND
+   ============================================================ */
+const BG_WORDS = ['-ING','+S','+ES','+ED','-IES','GO-WENT','EAT-ATE','SEE-SAW','RUN-RAN','WRITE-WROTE','MAKE-MADE','DO-DID'];
+const BG_POSITIONS = [
+  { top:'3%', left:'3%', size:'3em' }, { top:'12%', left:'78%', size:'2.8em' },
+  { top:'75%', left:'4%', size:'3em' }, { top:'82%', left:'83%', size:'2.8em' },
+  { top:'40%', left:'2%', size:'2.5em' }, { top:'35%', left:'86%', size:'3em' },
+  { top:'55%', left:'90%', size:'2.5em' }, { top:'92%', left:'44%', size:'2.8em' },
+  { top:'5%', left:'44%', size:'2.8em' }, { top:'92%', left:'18%', size:'2.5em' },
+  { top:'60%', left:'5%', size:'2.5em' }, { top:'22%', left:'47%', size:'2.8em' }
+];
+
+function renderBgWords() {
+  const container = document.getElementById('bgDesign');
+  container.innerHTML = '';
+  BG_POSITIONS.forEach((pos, i) => {
+    const div = document.createElement('div');
+    div.className = 'word';
+    div.textContent = BG_WORDS[i % BG_WORDS.length];
+    div.style.top = pos.top;
+    div.style.left = pos.left;
+    div.style.fontSize = pos.size;
+    div.style.animationDelay = (i * 0.4) + 's';
+    div.style.animationDuration = (9 + Math.random() * 4) + 's';
+    container.appendChild(div);
+  });
+}
+
+const DECOS = ['📚','✏️','📖','⭐','✨','🌟','🎈','🎉','💭','🎯','🌸','🍀','🏆','💎','🌈','🖍️','📓','📝'];
+const DECO_POSITIONS = [
+  { top:'7%', left:'4%' }, { top:'15%', left:'90%' }, { top:'72%', left:'5%' },
+  { top:'85%', left:'88%' }, { top:'38%', left:'3%' }, { top:'28%', left:'94%' },
+  { top:'58%', left:'96%' }, { top:'92%', left:'48%' }, { top:'6%', left:'48%' },
+  { top:'95%', left:'20%' }, { top:'62%', left:'2%' }, { top:'22%', left:'52%' }
+];
+
+function renderDecos() {
+  const container = document.getElementById('decoBg');
+  container.innerHTML = '';
+  DECO_POSITIONS.forEach((pos, i) => {
+    const div = document.createElement('div');
+    div.className = 'note';
+    div.textContent = DECOS[i % DECOS.length];
+    div.style.top = pos.top;
+    div.style.left = pos.left;
+    div.style.animationDelay = (i * 0.3) + 's';
+    div.style.animationDuration = (5 + Math.random() * 3) + 's';
+    div.style.fontSize = (1.2 + Math.random() * 0.8) + 'em';
+    container.appendChild(div);
+  });
+}
+
+/* ============================================================
+   AUDIO ENGINE
+   ============================================================ */
+let audioCtx = null;
+let musicInterval = null;
+let musicPlaying = false;
+let muted = false;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function startMusic() {
+  if (musicPlaying || muted) return;
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.03;
+    masterGain.connect(ctx.destination);
+    
+    const chords = [
+      [261.63, 329.63, 392.00],
+      [392.00, 493.88, 587.33],
+      [440.00, 523.25, 659.25],
+      [349.23, 440.00, 523.25]
+    ];
+    const melodies = [
+      [523.25, 659.25, 783.99, 659.25],
+      [783.99, 987.77, 1174.66, 987.77],
+      [880.00, 1046.50, 1318.51, 1046.50],
+      [698.46, 880.00, 1046.50, 880.00]
+    ];
+    let chordIndex = 0;
+    
+    function playChord() {
+      if (!musicPlaying || muted) return;
+      const now = ctx.currentTime;
+      const freqs = chords[chordIndex % chords.length];
+      
+      freqs.forEach((freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.1, now + 0.4);
+        gain.gain.linearRampToValueAtTime(0.06, now + 1.8);
+        gain.gain.linearRampToValueAtTime(0, now + 2.3);
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start(now);
+        osc.stop(now + 2.4);
+      });
+      
+      const melody = melodies[chordIndex % melodies.length];
+      melody.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const start = now + (i * 0.3);
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.07, start + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.3);
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start(start);
+        osc.stop(start + 0.35);
+      });
+      
+      chordIndex++;
+    }
+    
+    musicPlaying = true;
+    playChord();
+    musicInterval = setInterval(playChord, 2400);
+  } catch(e) { console.log('Music error:', e); }
+}
+
+function stopMusic() {
+  musicPlaying = false;
+  if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
+}
+
+/* ============================================================
+   SPEECH SYNTHESIS
+   ============================================================ */
+let voiceToggle = 0;
+
+const MALE_VOICE_PREFS = ['google us english male','google uk english male','microsoft david','microsoft mark','microsoft george','daniel','alex','fred','james','oliver','thomas','male'];
+const FEMALE_VOICE_PREFS = ['google us english','google uk english female','microsoft zira','microsoft hazel','microsoft susan','samantha','victoria','karen','moira','tessa','fiona','serena','female'];
+
+function pickVoice(voices, profile) {
+  if (!voices || voices.length === 0) return null;
+  const langVoices = voices.filter(v => v.lang.replace('_','-').toLowerCase().startsWith(profile.lang.toLowerCase()));
+  const pool = langVoices.length > 0 ? langVoices : voices;
+  const prefs = profile.gender === 'female' ? FEMALE_VOICE_PREFS : MALE_VOICE_PREFS;
+  for (const pref of prefs) {
+    const found = pool.find(v => v.name.toLowerCase().includes(pref));
+    if (found) return found;
+  }
+  return pool[0];
+}
+
+function speak(text, callback, options = {}) {
+  if (muted) { if (callback) setTimeout(callback, 200); return; }
+  try { window.speechSynthesis.cancel(); } catch(e) {}
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  const profiles = [
+    { gender: 'male',   lang: 'en-US' },
+    { gender: 'female', lang: 'en-GB' },
+    { gender: 'male',   lang: 'en-GB' },
+    { gender: 'female', lang: 'en-US' }
+  ];
+  const profile = profiles[voiceToggle % profiles.length];
+  voiceToggle++;
+  utterance.lang = options.lang || profile.lang;
+  utterance.rate = options.rate || 0.85;
+  utterance.pitch = profile.gender === 'male' ? 0.98 : 1.12;
+  utterance.volume = 1.0;
+  const selectedVoice = pickVoice(voices, profile);
+  if (selectedVoice) utterance.voice = selectedVoice;
+  let finished = false;
+  const done = () => { if (finished) return; finished = true; if (callback) callback(); };
+  utterance.onend = done;
+  utterance.onerror = done;
+  setTimeout(done, Math.max(3000, text.length * 100));
+  window.speechSynthesis.speak(utterance);
+}
+
+/* Speak the base verb to help the student hear it */
+function speakBaseVerb() {
+  if (!state.currentItem || state.itemLocked) return;
+  el.speakBtn.disabled = true;
+  speak(state.currentItem.verb, () => {
+    el.speakBtn.disabled = false;
+  });
+}
+
+/* ============================================================
+   PHRASES
+   ============================================================ */
+const CORRECT_PHRASES = [
+  "Perfect!", "Well done!", "Excellent!", "Great job!", "Awesome!",
+  "Brilliant!", "Fantastic!", "You got it!", "Amazing!", "Super!"
+];
+
+const WRONG_PHRASES = [
+  "Not quite!", "Oops!", "Almost!", "Try again!", "Keep going!",
+  "Close!", "Better luck!", "Focus!", "Not this time!", "Keep trying!"
+];
+
+let lastCorrectIdx = -1;
+let lastWrongIdx = -1;
+
+function getRandomCorrectPhrase() {
+  let idx;
+  do { idx = Math.floor(Math.random() * CORRECT_PHRASES.length); }
+  while (idx === lastCorrectIdx && CORRECT_PHRASES.length > 1);
+  lastCorrectIdx = idx;
+  return CORRECT_PHRASES[idx];
+}
+
+function getRandomWrongPhrase() {
+  let idx;
+  do { idx = Math.floor(Math.random() * WRONG_PHRASES.length); }
+  while (idx === lastWrongIdx && WRONG_PHRASES.length > 1);
+  lastWrongIdx = idx;
+  return WRONG_PHRASES[idx];
+}
+
+/* ============================================================
+   CHARACTER POPUP
+   ============================================================ */
+const HAPPY_CHARS = ['🦉','🐶','🐱','🐰','🦊','🐼','🐨','🐯','🦁','🐸','🧒','👦','👧'];
+const SAD_CHARS   = ['🦉','🐶','🐱','🐰','🦊','🐼','🐨','🐯','🦁','🐸','🧒','👦','👧'];
+let lastHappyIdx = -1;
+let lastSadIdx = -1;
+
+function showCharacter(type, phrase) {
+  const popup = document.getElementById('characterPopup');
+  const bubble = document.getElementById('charBubble');
+  const avatar = document.getElementById('charAvatar');
+  
+  if (type === 'ok') {
+    bubble.textContent = phrase + ' 🎉';
+    bubble.className = 'char-bubble ok';
+    let idx;
+    do { idx = Math.floor(Math.random() * HAPPY_CHARS.length); } while (idx === lastHappyIdx && HAPPY_CHARS.length > 1);
+    lastHappyIdx = idx;
+    avatar.textContent = HAPPY_CHARS[idx];
+  } else if (type === 'hint') {
+    bubble.textContent = phrase;
+    bubble.className = 'char-bubble info';
+    avatar.textContent = '💡';
+  } else {
+    bubble.textContent = phrase + ' 😢';
+    bubble.className = 'char-bubble no';
+    let idx;
+    do { idx = Math.floor(Math.random() * SAD_CHARS.length); } while (idx === lastSadIdx && SAD_CHARS.length > 1);
+    lastSadIdx = idx;
+    avatar.textContent = SAD_CHARS[idx];
+  }
+  
+  popup.classList.remove('show');
+  void popup.offsetWidth;
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1400);
+}
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+const MAX_LIVES = 3;
+const TIME_LIMIT = 90;
+const POINTS_PER_ANSWER = 10;
+const HINT_PENALTY = 3;
+
+let state = {
+  studentName: '',
+  currentLevel: 0,
+  currentIndex: 0,
+  currentItem: null,
+  score: 0,
+  correctCount: 0,
+  wrongCount: 0,
+  lives: MAX_LIVES,
+  levelScores: [],
+  levelCorrect: 0,
+  levelWrong: 0,
+  startTime: null,
+  _answerLog: [],
+  itemLocked: false,
+  hintUsed: false
+};
+
+const screens = {
+  welcome: document.getElementById('screenWelcome'),
+  countdown: document.getElementById('screenCountdown'),
+  game: document.getElementById('screenGame'),
+  results: document.getElementById('screenResults')
+};
+
+const el = {
+  levelBadge: document.getElementById('levelBadge'),
+  categoryBadge: document.getElementById('categoryBadge'),
+  progressBadge: document.getElementById('progressBadge'),
+  livesBox: document.getElementById('livesBox'),
+  scoreBox: document.getElementById('scoreBox'),
+  timerBox: document.getElementById('timerBox'),
+  baseVerb: document.getElementById('baseVerb'),
+  tenseTag: document.getElementById('tenseTag'),
+  hintBox: document.getElementById('hintBox'),
+  hintRule: document.getElementById('hintRule'),
+  optionsGrid: document.getElementById('optionsGrid'),
+  hintBtn: document.getElementById('hintBtn'),
+  speakBtn: document.getElementById('speakBtn'),
+  feedbackBanner: document.getElementById('feedbackBanner'),
+  countdownNum: document.getElementById('countdownNum'),
+  cdMsg: document.getElementById('cdMsg'),
+  muteBtn: document.getElementById('muteBtn'),
+  studentName: document.getElementById('studentName'),
+  resultStudentName: document.getElementById('resultStudentName'),
+  resultsIcon: document.getElementById('resultsIcon'),
+  resultsTitle: document.getElementById('resultsTitle'),
+  statCorrect: document.getElementById('statCorrect'),
+  statWrong: document.getElementById('statWrong'),
+  statAccuracy: document.getElementById('statAccuracy'),
+  levelResults: document.getElementById('levelResults'),
+  playAgainBtn: document.getElementById('playAgainBtn')
+};
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+}
+
+function updateLivesDisplay() {
+  let html = '';
+  for (let i = 0; i < MAX_LIVES; i++) {
+    html += `<span class="heart ${i < state.lives ? '' : 'lost'}">❤️</span>`;
+  }
+  el.livesBox.innerHTML = html;
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+let timerInterval = null;
+let timeLeft = TIME_LIMIT;
+
+function startTimer() {
+  timeLeft = TIME_LIMIT;
+  updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timeUp();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  el.timerBox.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
+  if (timeLeft <= 15) el.timerBox.classList.add('warning');
+  else el.timerBox.classList.remove('warning');
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function timeUp() {
+  state.itemLocked = true;
+  showFeedbackBanner('warn', `⏰ Time's up!`);
+  showCharacter('no', "Time is up!");
+  if (!muted) speak("Time is up!");
+  
+  setTimeout(() => {
+    state.levelScores.push({
+      level: state.currentLevel + 1,
+      title: LEVELS[state.currentLevel].title,
+      correct: state.levelCorrect,
+      wrong: state.levelWrong,
+      total: LEVELS[state.currentLevel].items.length,
+      timeUp: true
+    });
+    nextLevelOrFinish();
+  }, 2000);
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+document.getElementById('startBtn').addEventListener('click', () => {
+  const name = el.studentName.value.trim();
+  if (!name) {
+    alert('Please enter your name / Por favor escribe tu nombre');
+    el.studentName.focus();
+    return;
+  }
+  state.studentName = name;
+  state.currentLevel = 0;
+  state.score = 0;
+  state.correctCount = 0;
+  state.wrongCount = 0;
+  state.lives = MAX_LIVES;
+  state.levelScores = [];
+  state.startTime = Date.now();
+  state._answerLog = [];
+  lastCorrectIdx = -1;
+  lastWrongIdx = -1;
+  voiceToggle = 0;
+  
+  getAudioCtx();
+  startMusic();
+  renderBgWords();
+  renderDecos();
+  startCountdown();
+});
+
+function startCountdown() {
+  showScreen('countdown');
+  let cd = 3;
+  el.countdownNum.textContent = cd;
+  el.cdMsg.textContent = `Welcome, ${state.studentName}! Get ready...`;
+  speak(`Welcome ${state.studentName}. Let's practice verb conjugation. Good luck!`, () => {
+    const timer = setInterval(() => {
+      cd--;
+      if (cd > 0) {
+        el.countdownNum.textContent = cd;
+      } else if (cd === 0) {
+        el.countdownNum.textContent = 'GO!';
+        el.cdMsg.textContent = "Let's go!";
+        clearInterval(timer);
+        setTimeout(() => startLevel(), 700);
+      }
+    }, 1100);
+  });
+}
+
+/* ============================================================
+   LEVEL MANAGEMENT
+   ============================================================ */
+function startLevel() {
+  const levelData = LEVELS[state.currentLevel];
+  state.currentIndex = 0;
+  state.levelCorrect = 0;
+  state.levelWrong = 0;
+  
+  document.body.className = 'theme-' + (state.currentLevel + 1);
+  el.levelBadge.textContent = `Level ${state.currentLevel + 1} · ${levelData.title}`;
+  el.categoryBadge.textContent = `${levelData.theme}`;
+  
+  updateLivesDisplay();
+  el.scoreBox.textContent = `⭐ ${state.score}`;
+  
+  showScreen('game');
+  startTimer();
+  loadItem();
+}
+
+function loadItem() {
+  const levelData = LEVELS[state.currentLevel];
+  if (state.currentIndex >= levelData.items.length) {
+    endLevel();
+    return;
+  }
+  
+  state.itemLocked = false;
+  state.hintUsed = false;
+  const item = levelData.items[state.currentIndex];
+  state.currentItem = item;
+  
+  el.progressBadge.textContent = `${state.currentIndex + 1}/${levelData.items.length}`;
+  
+  el.baseVerb.textContent = item.verb;
+  
+  // Set tag: could be from item (mixed level) or from level
+  const tagLabel = item.tense || levelData.tagLabel;
+  const tagClass = item.tense 
+    ? (item.tense.includes('Gerund') ? 'gerund' : 
+       item.tense.includes('Present') ? 'present' : 
+       item.tense.includes('Irregular') ? 'irregular' : 'past')
+    : levelData.tagClass;
+  el.tenseTag.textContent = tagLabel;
+  el.tenseTag.className = 'tense-tag ' + tagClass;
+  
+  el.hintBox.classList.remove('show');
+  el.hintRule.innerHTML = levelData.hintRule;
+  el.hintBtn.classList.remove('used');
+  el.hintBtn.disabled = false;
+  
+  el.feedbackBanner.className = 'feedback-banner';
+  el.feedbackBanner.textContent = '';
+  
+  el.speakBtn.disabled = false;
+  
+  const allOptions = shuffleArray([item.answer, ...item.distractors]);
+  el.optionsGrid.innerHTML = '';
+  allOptions.forEach(option => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.dataset.value = option;
+    btn.textContent = option;
+    btn.addEventListener('click', () => checkAnswer(option, btn));
+    el.optionsGrid.appendChild(btn);
+  });
+  
+  setTimeout(() => {
+    if (!state.itemLocked && !muted) {
+      speakBaseVerb();
+    }
+  }, 400);
+}
+
+function useHint() {
+  if (state.hintUsed || state.itemLocked) return;
+  state.hintUsed = true;
+  
+  state.score -= HINT_PENALTY;
+  if (state.score < 0) state.score = 0;
+  el.scoreBox.textContent = `⭐ ${state.score}`;
+  
+  el.hintBtn.classList.add('used');
+  el.hintBtn.disabled = true;
+  el.hintBox.classList.add('show');
+  
+  showCharacter('hint', `-${HINT_PENALTY} puntos`);
+  showFeedbackBanner('warn', `💡 Pista usada: -${HINT_PENALTY} puntos`);
+}
+
+/* ============================================================
+   CHECK ANSWER (auto-avance)
+   ============================================================ */
+function checkAnswer(value, btn) {
+  if (state.itemLocked) return;
+  state.itemLocked = true;
+  
+  const item = state.currentItem;
+  const isCorrect = value === item.answer;
+  
+  el.optionsGrid.querySelectorAll('.option-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.value === item.answer) {
+      b.classList.add('correct');
+    }
+  });
+  if (!isCorrect) {
+    btn.classList.add('incorrect');
+  }
+  el.speakBtn.disabled = true;
+  el.hintBtn.disabled = true;
+  
+  state._answerLog.push({
+    level: state.currentLevel + 1,
+    itemIndex: state.currentIndex + 1,
+    verb: item.verb,
+    correctAnswer: item.answer,
+    userAnswer: value,
+    correct: isCorrect,
+    hintUsed: state.hintUsed,
+    timestamp: Date.now()
+  });
+  
+  if (isCorrect) {
+    state.correctCount++;
+    state.levelCorrect++;
+    state.score += POINTS_PER_ANSWER;
+    el.scoreBox.textContent = `⭐ ${state.score}`;
+    
+    const phrase = getRandomCorrectPhrase();
+    showCharacter('ok', phrase);
+    if (!muted) speak(phrase);
+    
+    showFeedbackBanner('ok', `✅ ¡Correcto! ${item.verb} → ${item.answer}`);
+    setTimeout(() => nextItem(), 1500);
+  } else {
+    state.wrongCount++;
+    state.levelWrong++;
+    state.lives--;
+    updateLivesDisplay();
+    
+    if (!state.hintUsed) {
+      el.hintBox.classList.add('show');
+    }
+    
+    const phrase = getRandomWrongPhrase();
+    showCharacter('no', phrase);
+    if (!muted) speak(phrase);
+    
+    showFeedbackBanner('no', `❌ La respuesta correcta es "${item.answer}"`);
+    
+    if (state.lives <= 0) {
+      setTimeout(() => endGame(false), 2400);
+    } else {
+      setTimeout(() => nextItem(), 2400);
+    }
+  }
+}
+
+function showFeedbackBanner(type, message) {
+  el.feedbackBanner.className = 'feedback-banner show ' + type;
+  el.feedbackBanner.textContent = message;
+}
+
+/* ============================================================
+   NEXT / END
+   ============================================================ */
+function nextItem() {
+  try { window.speechSynthesis.cancel(); } catch(e) {}
+  state.currentIndex++;
+  const levelData = LEVELS[state.currentLevel];
+  if (state.currentIndex >= levelData.items.length) {
+    endLevel();
+  } else {
+    loadItem();
+  }
+}
+
+function endLevel() {
+  stopTimer();
+  
+  state.levelScores.push({
+    level: state.currentLevel + 1,
+    title: LEVELS[state.currentLevel].title,
+    correct: state.levelCorrect,
+    wrong: state.levelWrong,
+    total: LEVELS[state.currentLevel].items.length,
+    timeUp: false
+  });
+  
+  if (state.lives <= 0) { endGame(false); return; }
+  
+  if (state.currentLevel < LEVELS.length - 1) {
+    state.currentLevel++;
+    const overlay = document.createElement('div');
+    overlay.className = 'level-complete-overlay';
+    overlay.innerHTML = `
+      <div class="level-complete-box">
+        <h3>🎉 Level ${state.currentLevel} Complete!</h3>
+        <p>${state.levelCorrect} correct · ${state.levelWrong} incorrect<br>Score: ⭐ ${state.score}</p>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    if (!muted) speak("Level complete! Well done!");
+    setTimeout(() => {
+      overlay.remove();
+      startLevel();
+    }, 2300);
+  } else {
+    endGame(true);
+  }
+}
+
+function nextLevelOrFinish() {
+  if (state.lives <= 0) { endGame(false); return; }
+  if (state.currentLevel < LEVELS.length - 1) {
+    state.currentLevel++;
+    const overlay = document.createElement('div');
+    overlay.className = 'level-complete-overlay';
+    overlay.innerHTML = `
+      <div class="level-complete-box">
+        <h3>⏰ Level ${state.currentLevel} Time's Up!</h3>
+        <p>${state.levelCorrect} correct<br>Score: ⭐ ${state.score}</p>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    setTimeout(() => {
+      overlay.remove();
+      startLevel();
+    }, 2300);
+  } else {
+    endGame(true);
+  }
+}
+
+function endGame(completed) {
+  stopTimer();
+  stopMusic();
+  try { window.speechSynthesis.cancel(); } catch(e) {}
+  saveSession(completed);
+  showResults(completed);
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function showResults(completed) {
+  showScreen('results');
+  const totalAnswered = state.correctCount + state.wrongCount;
+  const accuracy = totalAnswered > 0 ? Math.round((state.correctCount / totalAnswered) * 100) : 0;
+  
+  el.resultStudentName.textContent = `👤 ${state.studentName}`;
+  el.statCorrect.textContent = state.correctCount;
+  el.statWrong.textContent = state.wrongCount;
+  el.statAccuracy.textContent = accuracy + '%';
+  
+  if (!completed || state.lives <= 0) {
+    el.resultsIcon.textContent = '💔';
+    el.resultsTitle.textContent = 'Game Over - No lives left';
+  } else if (accuracy >= 90) {
+    el.resultsIcon.textContent = '🏆';
+    el.resultsTitle.textContent = 'Conjugation Master!';
+  } else if (accuracy >= 70) {
+    el.resultsIcon.textContent = '🎉';
+    el.resultsTitle.textContent = 'Great Job!';
+  } else if (accuracy >= 50) {
+    el.resultsIcon.textContent = '👍';
+    el.resultsTitle.textContent = 'Good Effort!';
+  } else {
+    el.resultsIcon.textContent = '📚';
+    el.resultsTitle.textContent = 'Keep Practicing!';
+  }
+  
+  el.levelResults.innerHTML = '';
+  state.levelScores.forEach(ls => {
+    const row = document.createElement('div');
+    row.className = 'level-row';
+    row.innerHTML = `
+      <span class="lv-name">Level ${ls.level} · ${ls.title}</span>
+      <span class="lv-score">${ls.correct}/${ls.total}</span>
+    `;
+    el.levelResults.appendChild(row);
+  });
+  
+  if (!muted) {
+    setTimeout(() => {
+      speak(`Game complete! You got ${state.correctCount} correct with ${accuracy} percent accuracy. ${accuracy >= 70 ? 'Excellent work!' : 'Keep practicing!'}`);
+    }, 500);
+  }
+}
+
+/* ============================================================
+   DATA COLLECTION
+   ============================================================ */
+const STORAGE_KEY = 'verbconjugation_sessions_v1';
+
+function saveSession(completed) {
+  try {
+    const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const totalAnswered = state.correctCount + state.wrongCount;
+    const session = {
+      id: 'vc_' + Date.now(),
+      studentName: state.studentName,
+      startTime: state.startTime,
+      endTime: Date.now(),
+      completed: !!completed,
+      livesLeft: state.lives,
+      totalScore: state.score,
+      totalCorrect: state.correctCount,
+      totalWrong: state.wrongCount,
+      accuracy: totalAnswered > 0 ? Math.round((state.correctCount / totalAnswered) * 100) : 0,
+      levelScores: state.levelScores,
+      answerLog: state._answerLog || []
+    };
+    sessions.push(session);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+  } catch(e) { console.error('Save error:', e); }
+}
+
+function exportJSON() {
+  const data = localStorage.getItem(STORAGE_KEY) || '[]';
+  downloadFile('verbconjugation_data.json', data, 'application/json');
+}
+
+function exportCSV() {
+  try {
+    const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const rows = [
+      ['session_id','student_name','start_time','end_time','completed','lives_left','total_score','total_correct','total_wrong','accuracy','level','title','level_correct','level_wrong','level_total']
+    ];
+    sessions.forEach(s => {
+      if (s.levelScores && s.levelScores.length > 0) {
+        s.levelScores.forEach(ls => {
+          rows.push([s.id, s.studentName, s.startTime, s.endTime, s.completed, s.livesLeft, s.totalScore, s.totalCorrect, s.totalWrong, s.accuracy, ls.level, ls.title, ls.correct, ls.wrong, ls.total]);
+        });
+      } else {
+        rows.push([s.id, s.studentName, s.startTime, s.endTime, s.completed, s.livesLeft, s.totalScore, s.totalCorrect, s.totalWrong, s.accuracy, '','','','','']);
+      }
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    downloadFile('verbconjugation_data.csv', csv, 'text/csv');
+  } catch(e) { console.error('CSV error:', e); }
+}
+
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function viewData() {
+  const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  if (sessions.length === 0) { alert('No data collected yet.'); return; }
+  let summary = `📊 SESSIONS: ${sessions.length}\n\n`;
+  sessions.slice(-10).forEach(s => {
+    summary += `👤 ${s.studentName}\n`;
+    summary += `   Correct: ${s.totalCorrect} · Wrong: ${s.totalWrong} · Accuracy: ${s.accuracy}%\n`;
+    summary += `   Score: ⭐ ${s.totalScore} · Lives left: ${s.livesLeft}\n`;
+    summary += `   Date: ${new Date(s.startTime).toLocaleString()}\n\n`;
+  });
+  if (sessions.length > 10) summary += `... and ${sessions.length - 10} more sessions.`;
+  alert(summary);
+}
+
+function clearData() {
+  if (confirm('⚠️ Delete ALL collected data? This cannot be undone.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    alert('Data cleared.');
+  }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ============================================================
+   EVENT LISTENERS
+   ============================================================ */
+el.hintBtn.addEventListener('click', () => {
+  useHint();
+});
+
+el.speakBtn.addEventListener('click', () => {
+  if (state.itemLocked) return;
+  speakBaseVerb();
+});
+
+el.muteBtn.addEventListener('click', () => {
+  muted = !muted;
+  el.muteBtn.textContent = muted ? '🔇' : '🔊';
+  if (muted) {
+    try { window.speechSynthesis.cancel(); } catch(e){}
+    stopMusic();
+  } else {
+    startMusic();
+  }
+});
+
+el.playAgainBtn.addEventListener('click', () => {
+  state.currentLevel = 0;
+  state.score = 0;
+  state.correctCount = 0;
+  state.wrongCount = 0;
+  state.lives = MAX_LIVES;
+  state.levelScores = [];
+  state._answerLog = [];
+  lastCorrectIdx = -1;
+  lastWrongIdx = -1;
+  document.body.className = 'theme-1';
+  showScreen('welcome');
+});
+
+document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
+document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
+document.getElementById('viewDataBtn').addEventListener('click', viewData);
+document.getElementById('clearDataBtn').addEventListener('click', clearData);
+
+if (typeof speechSynthesis !== 'undefined') {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  speechSynthesis.getVoices();
+}
+
+document.addEventListener('click', () => {
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}, { once: true });
+
+renderBgWords();
+renderDecos();
+
+</script>
+<script>
+
+/* ===== Integración común con Supabase basada en 03Spelling Bee.html ===== */
+(function(){
+ const escuelas = [
+  "C.E. Atré",
+  "C.E. Boca de las Minas",
+  "C.E. Boca de Tucué",
+  "C.E. Candelario Ovalle",
+  "C.E. Chiguirí Abajo",
+  "C.E. José de los Reyes Vásquez",
+  "C.E. Los Pilares",
+  "C.E. Mercedes Bustamante",
+  "C.E. Modesto Morán Herrera",
+  "C.E. Ojo de Agua",
+  "C.E. Pablo Alzamora Vargas",
+  "C.E. San Miguel Arriba",
+  "C.E.B.G. Asunción Chirú",
+  "C.E.B.G. Caño de San Miguel",
+  "C.E.B.G. Cristóbal Alabarca",
+  "C.E.B.G. Jorge Conte Porras",
+  "C.E.B.G. Pajonal Arriba",
+  "C.E.B.G. La Negrita",
+  "C.E. Boca de Chiguirí",
+  "C.E. Brazos de U",
+  "C.E. El Barrero",
+  "C.E. Las Marías",
+  "C.E. Paso Real",
+  "C.E. Rincón de Las Palmas",
+  "C.E. Santa Ana",
+  "C.E. Sonadora",
+  "C.E. Uracillo Centro",
+  "C.E. Valle de San Miguel",
+  "Escuela Altos de San Miguel",
+  "Escuela Altos del Coco",
+  "Escuela Bilingüe Membrillo",
+  "Escuela Bilingüe Víctor Pérez Flores",
+  "Escuela Celestino del Rosario",
+  "Escuela Churuquita Grande",
+  "Escuela de Miraflores",
+  "Escuela de Sabana Larga",
+  "Escuela de Tambo",
+  "Escuela de Vaquilla",
+  "Escuela El Águila",
+  "Escuela Francisco Figueroa Herrera",
+  "Escuela Loma Grande",
+  "Escuela Manuel Jaén Rodríguez",
+  "Escuela Oajaca",
+  "Escuela Pozo Azul",
+  "Escuela Rubén Darío Carles",
+  "Escuela Simón Martínez Pérez"
+];
+ const gameName = 'Verb Conjugation';
+ const backHref = '../../ingles/index.html';
+ const gradeOptions = '<option value="1-6">Grades 1–6</option><option value="7-9">Grades 7–9</option><option value="10-12">Grades 10–12</option>';
+ const $ = id => document.getElementById(id);
+ let scoreSaved = false;
+ let identity = {name:'', school:'', grade:'1-6'};
+ const start = $('startBtn');
+ const isHangman = gameName === 'Hangman Game';
+ const nameInput = $('studentName');
+ let host = nameInput ? nameInput.parentElement : null;
+ if (isHangman) {
+   host = document.querySelector('.menu-sub');
+   if (host) {
+     const form = document.createElement('div'); form.className='forum-data-fields'; form.id='forumDataFields';
+     form.innerHTML='<label for="forumStudentName">👤 Nombre del estudiante</label><input id="forumStudentName" maxlength="40" placeholder="Escribe tu nombre" required><label for="schoolInput">🏫 Escuela</label><div class="forum-school-wrap"><input id="schoolInput" autocomplete="off" placeholder="Selecciona tu escuela" required><div class="forum-school-options"></div></div><label for="forumGrade">🎓 Grado</label><select id="forumGrade">'+gradeOptions+'</select>';
+     host.insertAdjacentElement('afterend',form);
+   }
+ } else if (start) {
+   const form = document.createElement('div'); form.className='forum-data-fields'; form.id='forumDataFields';
+   form.innerHTML='<label for="schoolInput">🏫 Escuela</label><div class="forum-school-wrap"><input id="schoolInput" autocomplete="off" placeholder="Selecciona tu escuela" required><div class="forum-school-options"></div></div><label for="forumGrade">🎓 Grado</label><select id="forumGrade">'+gradeOptions+'</select>';
+   start.insertAdjacentElement('beforebegin',form);
+ }
+ const schoolInput=$('schoolInput');
+ if(schoolInput){
+  const wrap=schoolInput.closest('.forum-school-wrap'), opts=wrap.querySelector('.forum-school-options');
+  const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  function render(){const q=norm(schoolInput.value);const found=escuelas.filter(s=>norm(s).includes(q));opts.innerHTML='';(found.length?found:['No se encontraron escuelas']).forEach(s=>{const d=document.createElement('div');d.className='forum-school-option';d.textContent=s;if(found.length)d.addEventListener('mousedown',e=>{e.preventDefault();schoolInput.value=s;opts.style.display='none';});else d.style.cursor='default';opts.appendChild(d);});opts.style.display='block';}
+  schoolInput.addEventListener('focus',render);schoolInput.addEventListener('input',render);document.addEventListener('click',e=>{if(!wrap.contains(e.target))opts.style.display='none';});
+ }
+ const back=document.createElement('a');back.className='forum-return-link';back.href=backHref;back.textContent='← Volver';document.body.appendChild(back);
+ function readIdentity(){const nm=isHangman?$('forumStudentName'):nameInput;identity.name=(nm?.value||'').trim();identity.school=(schoolInput?.value||'').trim();identity.grade=$('forumGrade')?.value||'1-6';if(!identity.name){alert('Escribe el nombre del estudiante.');nm?.focus();return false;}if(!identity.school||!escuelas.includes(identity.school)){alert('Selecciona una escuela de la lista.');schoolInput?.focus();return false;}return true;}
+ if(isHangman){document.querySelectorAll('.level-btn').forEach(btn=>btn.addEventListener('click',e=>{if(!readIdentity()){e.stopImmediatePropagation();e.preventDefault();}},true));}
+ else if(start){start.addEventListener('click',e=>{if(!readIdentity()){e.stopImmediatePropagation();e.preventDefault();}},true);}
+ function currentScore(){const el=$('finalPoints')||$('scoreBox')||$('hudPoints');if(!el)return 0;const n=Number(String(el.textContent||'').replace(/[^0-9.-]/g,''));return Number.isFinite(n)?n:0;}
+ async function saveScore(){if(scoreSaved)return;scoreSaved=true;if(!identity.name||!identity.school)return;try{if(typeof supabaseClient==='undefined'||!supabaseClient){console.error('Supabase client no disponible; revisa ../../supabase-config.js');return;}const {error}=await supabaseClient.from('puntajes').insert([{nombre:identity.name,escuela:identity.school,grado:String(identity.grade),materia:'Inglés',juego:gameName,puntaje:currentScore()}]);if(error){scoreSaved=false;console.error('Error guardando puntaje de '+gameName,error);}}catch(err){scoreSaved=false;console.error('Error guardando puntaje:',err);}}
+ const finals=[$('screen-final'),$('screenResults')].filter(Boolean);
+ if(finals.length){const observer=new MutationObserver(()=>{if(finals.some(el=>el.classList.contains('active'))){saveScore();}});finals.forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['class']}));}
+})();
+
+</script>
+<script>
+
+/* ===== Integración común con Supabase basada en 03Spelling Bee.html ===== */
+(function(){
+ const escuelas = [
+  "C.E. Atré",
+  "C.E. Boca de las Minas",
+  "C.E. Boca de Tucué",
+  "C.E. Candelario Ovalle",
+  "C.E. Chiguirí Abajo",
+  "C.E. José de los Reyes Vásquez",
+  "C.E. Los Pilares",
+  "C.E. Mercedes Bustamante",
+  "C.E. Modesto Morán Herrera",
+  "C.E. Ojo de Agua",
+  "C.E. Pablo Alzamora Vargas",
+  "C.E. San Miguel Arriba",
+  "C.E.B.G. Asunción Chirú",
+  "C.E.B.G. Caño de San Miguel",
+  "C.E.B.G. Cristóbal Alabarca",
+  "C.E.B.G. Jorge Conte Porras",
+  "C.E.B.G. Pajonal Arriba",
+  "C.E.B.G. La Negrita",
+  "C.E. Boca de Chiguirí",
+  "C.E. Brazos de U",
+  "C.E. El Barrero",
+  "C.E. Las Marías",
+  "C.E. Paso Real",
+  "C.E. Rincón de Las Palmas",
+  "C.E. Santa Ana",
+  "C.E. Sonadora",
+  "C.E. Uracillo Centro",
+  "C.E. Valle de San Miguel",
+  "Escuela Altos de San Miguel",
+  "Escuela Altos del Coco",
+  "Escuela Bilingüe Membrillo",
+  "Escuela Bilingüe Víctor Pérez Flores",
+  "Escuela Celestino del Rosario",
+  "Escuela Churuquita Grande",
+  "Escuela de Miraflores",
+  "Escuela de Sabana Larga",
+  "Escuela de Tambo",
+  "Escuela de Vaquilla",
+  "Escuela El Águila",
+  "Escuela Francisco Figueroa Herrera",
+  "Escuela Loma Grande",
+  "Escuela Manuel Jaén Rodríguez",
+  "Escuela Oajaca",
+  "Escuela Pozo Azul",
+  "Escuela Rubén Darío Carles",
+  "Escuela Simón Martínez Pérez"
+];
+ const gameName = 'Verb Conjugation';
+ const backHref = '../../ingles/index.html';
+ const gradeOptions = '<option value="1-6">Grades 1–6</option><option value="7-9">Grades 7–9</option><option value="10-12">Grades 10–12</option>';
+ const $ = id => document.getElementById(id);
+ let scoreSaved = false;
+ let identity = {name:'', school:'', grade:'1-6'};
+ const start = $('startBtn');
+ const isHangman = gameName === 'Hangman Game';
+ const nameInput = $('studentName');
+ let host = nameInput ? nameInput.parentElement : null;
+ if (isHangman) {
+   host = document.querySelector('.menu-sub');
+   if (host) {
+     const form = document.createElement('div'); form.className='forum-data-fields'; form.id='forumDataFields';
+     form.innerHTML='<label for="forumStudentName">👤 Nombre del estudiante</label><input id="forumStudentName" maxlength="40" placeholder="Escribe tu nombre" required><label for="schoolInput">🏫 Escuela</label><div class="forum-school-wrap"><input id="schoolInput" autocomplete="off" placeholder="Selecciona tu escuela" required><div class="forum-school-options"></div></div><label for="forumGrade">🎓 Grado</label><select id="forumGrade">'+gradeOptions+'</select>';
+     host.insertAdjacentElement('afterend',form);
+   }
+ } else if (start) {
+   const form = document.createElement('div'); form.className='forum-data-fields'; form.id='forumDataFields';
+   form.innerHTML='<label for="schoolInput">🏫 Escuela</label><div class="forum-school-wrap"><input id="schoolInput" autocomplete="off" placeholder="Selecciona tu escuela" required><div class="forum-school-options"></div></div><label for="forumGrade">🎓 Grado</label><select id="forumGrade">'+gradeOptions+'</select>';
+   start.insertAdjacentElement('beforebegin',form);
+ }
+ const schoolInput=$('schoolInput');
+ if(schoolInput){
+  const wrap=schoolInput.closest('.forum-school-wrap'), opts=wrap.querySelector('.forum-school-options');
+  const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  function render(){const q=norm(schoolInput.value);const found=escuelas.filter(s=>norm(s).includes(q));opts.innerHTML='';(found.length?found:['No se encontraron escuelas']).forEach(s=>{const d=document.createElement('div');d.className='forum-school-option';d.textContent=s;if(found.length)d.addEventListener('mousedown',e=>{e.preventDefault();schoolInput.value=s;opts.style.display='none';});else d.style.cursor='default';opts.appendChild(d);});opts.style.display='block';}
+  schoolInput.addEventListener('focus',render);schoolInput.addEventListener('input',render);document.addEventListener('click',e=>{if(!wrap.contains(e.target))opts.style.display='none';});
+ }
+ const back=document.createElement('a');back.className='forum-return-link';back.href=backHref;back.textContent='← Volver';document.body.appendChild(back);
+ function readIdentity(){const nm=isHangman?$('forumStudentName'):nameInput;identity.name=(nm?.value||'').trim();identity.school=(schoolInput?.value||'').trim();identity.grade=$('forumGrade')?.value||'1-6';if(!identity.name){alert('Escribe el nombre del estudiante.');nm?.focus();return false;}if(!identity.school||!escuelas.includes(identity.school)){alert('Selecciona una escuela de la lista.');schoolInput?.focus();return false;}return true;}
+ if(isHangman){document.querySelectorAll('.level-btn').forEach(btn=>btn.addEventListener('click',e=>{if(!readIdentity()){e.stopImmediatePropagation();e.preventDefault();}else{scoreSaved=false;}},true));}
+ else if(start){start.addEventListener('click',e=>{if(!readIdentity()){e.stopImmediatePropagation();e.preventDefault();}else{scoreSaved=false;}},true);}
+ function currentScore(){const el=$('finalPoints')||$('scoreBox')||$('hudPoints');if(!el)return 0;const n=Number(String(el.textContent||'').replace(/[^0-9.-]/g,''));return Number.isFinite(n)?n:0;}
+ async function saveScore(){if(scoreSaved)return;scoreSaved=true;if(!identity.name||!identity.school)return;try{if(typeof supabaseClient==='undefined'||!supabaseClient){console.error('Supabase client no disponible; revisa ../../supabase-config.js');return;}const {error}=await supabaseClient.from('puntajes').insert([{nombre:identity.name,escuela:identity.school,grado:String(identity.grade),materia:'Inglés',juego:gameName,puntaje:currentScore()}]);if(error){scoreSaved=false;console.error('Error guardando puntaje de '+gameName,error);}}catch(err){scoreSaved=false;console.error('Error guardando puntaje:',err);}}
+ const finals=[$('screen-final'),$('screenResults')].filter(Boolean);
+ if(finals.length){const observer=new MutationObserver(()=>{if(finals.some(el=>el.classList.contains('active'))){saveScore();}});finals.forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['class']}));}
+})();
+
+</script>
+<script>
+
+/* ===== Integración común con Supabase basada en 03Spelling Bee.html ===== */
+(function(){
+ const escuelas = [
+  "C.E. Atré",
+  "C.E. Boca de las Minas",
+  "C.E. Boca de Tucué",
+  "C.E. Candelario Ovalle",
+  "C.E. Chiguirí Abajo",
+  "C.E. José de los Reyes Vásquez",
+  "C.E. Los Pilares",
+  "C.E. Mercedes Bustamante",
+  "C.E. Modesto Morán Herrera",
+  "C.E. Ojo de Agua",
+  "C.E. Pablo Alzamora Vargas",
+  "C.E. San Miguel Arriba",
+  "C.E.B.G. Asunción Chirú",
+  "C.E.B.G. Caño de San Miguel",
+  "C.E.B.G. Cristóbal Alabarca",
+  "C.E.B.G. Jorge Conte Porras",
+  "C.E.B.G. Pajonal Arriba",
+  "C.E.B.G. La Negrita",
+  "C.E. Boca de Chiguirí",
+  "C.E. Brazos de U",
+  "C.E. El Barrero",
+  "C.E. Las Marías",
+  "C.E. Paso Real",
+  "C.E. Rincón de Las Palmas",
+  "C.E. Santa Ana",
+  "C.E. Sonadora",
+  "C.E. Uracillo Centro",
+  "C.E. Valle de San Miguel",
+  "Escuela Altos de San Miguel",
+  "Escuela Altos del Coco",
+  "Escuela Bilingüe Membrillo",
+  "Escuela Bilingüe Víctor Pérez Flores",
+  "Escuela Celestino del Rosario",
+  "Escuela Churuquita Grande",
+  "Escuela de Miraflores",
+  "Escuela de Sabana Larga",
+  "Escuela de Tambo",
+  "Escuela de Vaquilla",
+  "Escuela El Águila",
+  "Escuela Francisco Figueroa Herrera",
+  "Escuela Loma Grande",
+  "Escuela Manuel Jaén Rodríguez",
+  "Escuela Oajaca",
+  "Escuela Pozo Azul",
+  "Escuela Rubén Darío Carles",
+  "Escuela Simón Martínez Pérez"
+];
+ const gameName = 'Verb Conjugation';
+ const backHref = '../../ingles/index.html';
+ const gradeOptions = '<option value="1-6">Grades 1–6</option><option value="7-9">Grades 7–9</option><option value="10-12">Grades 10–12</option>';
+ const $ = id => document.getElementById(id);
+ let scoreSaved = false;
+ let identity = {name:'', school:'', grade:'1-6'};
+ const start = $('startBtn');
+ const isHangman = gameName === 'Hangman Game';
+ const nameInput = $('studentName');
+ let host = nameInput ? nameInput.parentElement : null;
+ if (isHangman) {
+   host = document.querySelector('.menu-sub');
+   if (host) {
+     const form = document.createElement('div'); form.className='forum-data-fields'; form.id='forumDataFields';
+     form.innerHTML='<label for="forumStudentName">👤 Nombre del estudiante</label><input id="forumStudentName" maxlength="40" placeholder="Escribe tu nombre" required><label for="schoolInput">🏫 Escuela</label><div class="forum-school-wrap"><input id="schoolInput" autocomplete="off" placeholder="Selecciona tu escuela" required><div class="forum-school-options"></div></div><label for="forumGrade">🎓 Grado</label><select id="forumGrade">'+gradeOptions+'</select>';
+     host.insertAdjacentElement('afterend',form);
+   }
+ } else if (start) {
+   const form = document.createElement('div'); form.className='forum-data-fields'; form.id='forumDataFields';
+   form.innerHTML='<label for="schoolInput">🏫 Escuela</label><div class="forum-school-wrap"><input id="schoolInput" autocomplete="off" placeholder="Selecciona tu escuela" required><div class="forum-school-options"></div></div><label for="forumGrade">🎓 Grado</label><select id="forumGrade">'+gradeOptions+'</select>';
+   start.insertAdjacentElement('beforebegin',form);
+ }
+ const schoolInput=$('schoolInput');
+ if(schoolInput){
+  const wrap=schoolInput.closest('.forum-school-wrap'), opts=wrap.querySelector('.forum-school-options');
+  const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  function render(){const q=norm(schoolInput.value);const found=escuelas.filter(s=>norm(s).includes(q));opts.innerHTML='';(found.length?found:['No se encontraron escuelas']).forEach(s=>{const d=document.createElement('div');d.className='forum-school-option';d.textContent=s;if(found.length)d.addEventListener('mousedown',e=>{e.preventDefault();schoolInput.value=s;opts.style.display='none';});else d.style.cursor='default';opts.appendChild(d);});opts.style.display='block';}
+  schoolInput.addEventListener('focus',render);schoolInput.addEventListener('input',render);document.addEventListener('click',e=>{if(!wrap.contains(e.target))opts.style.display='none';});
+ }
+ const back=document.createElement('a');back.className='forum-return-link';back.href=backHref;back.textContent='← Volver';document.body.appendChild(back);
+ function readIdentity(){const nm=isHangman?$('forumStudentName'):nameInput;identity.name=(nm?.value||'').trim();identity.school=(schoolInput?.value||'').trim();identity.grade=$('forumGrade')?.value||'1-6';if(!identity.name){alert('Escribe el nombre del estudiante.');nm?.focus();return false;}if(!identity.school||!escuelas.includes(identity.school)){alert('Selecciona una escuela de la lista.');schoolInput?.focus();return false;}return true;}
+ if(isHangman){document.querySelectorAll('.level-btn').forEach(btn=>btn.addEventListener('click',e=>{if(!readIdentity()){e.stopImmediatePropagation();e.preventDefault();}else{scoreSaved=false;}},true));}
+ else if(start){start.addEventListener('click',e=>{if(!readIdentity()){e.stopImmediatePropagation();e.preventDefault();}else{scoreSaved=false;}},true);}
+ function currentScore(){const el=$('finalPoints')||$('scoreBox')||$('hudPoints');if(!el)return 0;const n=Number(String(el.textContent||'').replace(/[^0-9.-]/g,''));return Number.isFinite(n)?n:0;}
+ async function saveScore(){if(scoreSaved)return;scoreSaved=true;if(!identity.name||!identity.school)return;try{if(typeof supabaseClient==='undefined'||!supabaseClient){console.error('Supabase client no disponible; revisa ../../supabase-config.js');return;}const {error}=await supabaseClient.from('puntajes').insert([{nombre:identity.name,escuela:identity.school,grado:String(identity.grade),materia:'Inglés',juego:gameName,puntaje:currentScore()}]);if(error){scoreSaved=false;console.error('Error guardando puntaje de '+gameName,error);}}catch(err){scoreSaved=false;console.error('Error guardando puntaje:',err);}}
+ const finals=[$('screen-final'),$('screenResults')].filter(Boolean);
+ if(finals.length){let saveTimer=null;const observer=new MutationObserver(()=>{if(finals.some(el=>el.classList.contains('active'))){clearTimeout(saveTimer);saveTimer=setTimeout(saveScore,1700);}});finals.forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['class']}));}
+})();
+
+</script>
+</body>
+</html>
